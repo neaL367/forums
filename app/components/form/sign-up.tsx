@@ -1,15 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
-import { signUp } from "../../../lib/actions";
-import { Button } from "../../../components/ui/button";
-import { Input } from "../../../components/ui/input";
-import { Label } from "../../../components/ui/label";
-import type { FormField, SignUpFormState } from "../../../lib/difinitions";
+
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { Label } from "@/ui/label";
+import { signUp } from "@/lib/actions/sign.up";
+
+import type { FormField, SignUpFormState } from "@/lib/difinitions";
 
 export function SignUpForm() {
-  const initialState: SignUpFormState = {};
-  const [state, action, pending] = useActionState(signUp, initialState);
+  const [state, action, pending] = useActionState<SignUpFormState, FormData>(
+    signUp,
+    {}
+  );
+
 
   const fields: FormField[] = [
     { name: "username", label: "Username", type: "text", required: true },
@@ -42,7 +48,9 @@ export function SignUpForm() {
               className={
                 state.fieldErrors?.[field.name] ? "border-red-500" : ""
               }
-              defaultValue={(state.payload?.get(`${field.name}`) || "") as string}
+              defaultValue={
+                (state.payload?.get(`${field.name}`) || "") as string
+              }
             />
             {state.fieldErrors?.[field.name] && (
               <div className="text-red-500 text-sm space-y-1">
@@ -69,6 +77,13 @@ export function SignUpForm() {
           {pending ? "Signing up…" : "Sign Up"}
         </Button>
       </form>
+
+      <p className="text-center text-sm mt-4">
+        Already have an account?{" "}
+        <Link href="/sign-in" className="text-blue-500 hover:underline">
+          Sign In
+        </Link>
+      </p>
     </div>
   );
 }

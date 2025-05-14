@@ -13,25 +13,21 @@ import {
   LogOut,
   Settings,
 } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { SignInForm } from "../(pages)/(auth)/sign-in/form";
-import { signOut } from "../lib/auth-client";
-
-export interface User {
-  username?: string | null;
-  avatar_url?: string | null;
-}
+} from "@/ui/dropdown-menu";
+import { signOut } from "@/lib/auth-client";
+import { SignInForm } from "@/components/form/sign-in";
+import { SessionUser } from "@/lib/db/schema";
 
 export interface HeaderProps {
-  user?: User;
+  user?: SessionUser;
 }
 
 export function Header({ user }: HeaderProps) {
@@ -57,10 +53,10 @@ export function Header({ user }: HeaderProps) {
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-bold tracking-tight">
-                  GTAFORUMS
+                  Forums
                 </span>
                 <span className="text-xs text-zinc-400">
-                  YEP, MAN WOULD BE IMPRESSED
+                  Your community, your voice
                 </span>
               </div>
             </Link>
@@ -103,10 +99,10 @@ export function Header({ user }: HeaderProps) {
                   <DropdownMenuTrigger asChild>
                     <Button className="flex items-center gap-2 text-zinc-300 hover:text-white">
                       <div className="relative h-8 w-8 overflow-hidden rounded-full">
-                        {user.avatar_url ? (
+                        {user.image ? (
                           <Image
-                            src={user.avatar_url}
-                            alt={user.username || ""}
+                            src={user.image}
+                            alt={user.name || ""}
                             width={32}
                             height={32}
                             className="object-cover"
@@ -117,17 +113,17 @@ export function Header({ user }: HeaderProps) {
                           </div>
                         )}
                       </div>
-                      <span>{user.username}</span>
+                      <span>{user.name}</span>
                       <ChevronDown className="h-4 w-4 ml-1" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <div className="px-2 py-1.5 text-sm font-medium">
                       Signed in as{" "}
-                      <span className="font-bold">{user.username}</span>
+                      <span className="font-bold">{user.name}</span>
                     </div>
                     <DropdownMenuSeparator />
-                    <Link href="/profile">
+                    <Link href={`/profile/${user.id}-${user.name}`}>
                       <DropdownMenuItem>
                         <UserIcon className="mr-2 h-4 w-4" />
                         <span>Profile</span>
@@ -212,10 +208,10 @@ export function Header({ user }: HeaderProps) {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 px-2 py-1">
                   <div className="relative h-8 w-8 overflow-hidden rounded-full">
-                    {user.avatar_url ? (
+                    {user.image ? (
                       <Image
-                        src={user.avatar_url}
-                        alt={user.username || ""}
+                        src={user.image}
+                        alt={user.name || ""}
                         width={32}
                         height={32}
                         className="object-cover"
@@ -226,7 +222,7 @@ export function Header({ user }: HeaderProps) {
                       </div>
                     )}
                   </div>
-                  <span className="font-medium">{user.username}</span>
+                  <span className="font-medium">{user.name}</span>
                 </div>
                 <Link href="/profile" className="block">
                   <Button

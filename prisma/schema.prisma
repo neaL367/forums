@@ -1,0 +1,390 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  Members
+  Administrator
+  Moderator
+  Staff
+}
+
+model Users {
+  id              String    @id @default(uuid())
+  updatedAt       DateTime
+  createdAt       DateTime
+  
+  name            String
+  email           String
+  emailVerified   Boolean
+  image           String?
+  username        String?
+  displayUsername String?
+  sessions        Session[]
+  accounts        Account[]
+
+  role       UserRole  @default(Members)
+  banned     Boolean?
+  banReason  String?
+  banExpires DateTime?
+
+  sentMessages   PrivateMessage[]  @relation("MessageSent")
+  recvMessages   PrivateMessage[]  @relation("MessageReceived")
+  posts          ForumPost[]
+  votes          PollVote[]
+  subscriptions  Subscription[]
+  notifications  Notification[]
+  favorites      Favorite[]
+  repEvents      ReputationEvent[]
+  badges         UserBadge[]
+  reportsMade    Report[]          @relation("ReportReporter")
+  reportsHandled Report[]          @relation("ReportHandler")
+  modLogs        ModerationLog[]
+  UserProfile    UserProfile[]
+
+  @@unique([email])
+  @@unique([username])
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  expiresAt      DateTime
+  token          String   @unique
+  ipAddress      String?
+  userAgent      String?
+  impersonatedBy String?
+
+  userId  String
+  Users   Users?  @relation(fields: [usersId], references: [id])
+  usersId String?
+
+  @@map("sessions")
+}
+
+model Account {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+
+  userId  String
+  Users   Users?  @relation(fields: [usersId], references: [id])
+  usersId String?
+
+  @@map("accounts")
+}
+
+model Verification {
+  id        String    @id @default(uuid())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  identifier String
+  value      String
+  expiresAt  DateTime
+
+  @@map("verifications")
+}
+
+// Forum models
+
+model Category {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  name         String
+  description  String?
+  displayOrder Int     @map("display_order")
+
+  forums Forum[]
+
+  @@map("categories")
+}
+
+model Forum {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  categoryId   String    @map("category_id")
+  name         String
+  description  String?
+  displayOrder Int       @map("display_order")
+  lastPostAt   DateTime? @map("last_post_at")
+  threadCount  Int       @map("thread_count")
+  postCount    Int       @map("post_count")
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  threads  Thread[]
+
+  @@map("forums")
+}
+
+model Thread {
+  id         String    @id @default(uuid())
+  createdAt  DateTime  @default(now()) @map("created_at")
+  forumId    String    @map("forum_id")
+  userId     String?   @map("user_id")
+  title      String
+  isSticky   Boolean   @map("is_sticky")
+  isLocked   Boolean   @map("is_locked")
+  viewCount  Int       @map("view_count")
+  lastPostAt DateTime? @map("last_post_at")
+  postCount  Int       @map("post_count")
+
+  forum         Forum          @relation(fields: [forumId], references: [id], onDelete: Cascade)
+  posts         ForumPost[]
+  tags          ThreadTag[]
+  subscriptions Subscription[]
+  polls         Poll[]
+  Favorite      Favorite[]
+
+  @@map("threads")
+}
+
+model ForumPost {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  threadId  String    @map("thread_id")
+  userId    String?   @map("user_id")
+  content   String
+  isDeleted Boolean   @map("is_deleted")
+
+  thread      Thread       @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  attachments Attachment[]
+  User        Users?        @relation(fields: [userId], references: [id])
+  Favorite    Favorite[]
+
+  @@map("forum_posts")
+}
+
+model UserProfile {
+  userId      String    @id @map("user_id")
+  displayName String?   @map("display_name")
+  signature   String?
+  location    String?
+  website     String?
+  bio         String?
+  joinDate    DateTime  @default(now()) @map("join_date")
+  birthDate   DateTime? @map("birth_date")
+
+  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model PrivateMessage {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  senderId    String?  @map("sender_id")
+  recipientId String?  @map("recipient_id")
+  subject     String
+  content     String
+  isRead      Boolean  @map("is_read")
+
+  sender    Users? @relation("MessageSent", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient Users? @relation("MessageReceived", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@map("private_messages")
+}
+
+model Attachment {
+  id         String   @id @default(uuid())
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+  postId     String   @map("post_id")
+  uploaderId String?  @map("uploader_id")
+  fileName   String   @map("file_name")
+  fileSize   Int      @map("file_size")
+  mimeType   String?  @map("mime_type")
+  url        String
+
+  post ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("attachments")
+}
+
+model Poll {
+  id        String    @id @default(uuid())
+  threadId  String    @map("thread_id")
+  question  String
+  expiresAt DateTime? @map("expires_at")
+
+  thread  Thread       @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  options PollOption[]
+  votes   PollVote[]
+
+  @@map("polls")
+}
+
+model PollOption {
+  id           String @id @default(uuid())
+  pollId       String @map("poll_id")
+  optionText   String @map("option_text")
+  displayOrder Int    @map("display_order")
+
+  poll  Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes PollVote[]
+
+  @@map("poll_options")
+}
+
+model PollVote {
+  pollId   String   @map("poll_id")
+  optionId String   @map("option_id")
+  userId   String   @map("user_id")
+  votedAt  DateTime @default(now()) @map("voted_at")
+
+  poll   Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  option PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  user   Users       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([pollId, optionId, userId])
+  @@map("poll_votes")
+}
+
+model Subscription {
+  userId       String   @map("user_id")
+  threadId     String   @map("thread_id")
+  subscribedAt DateTime @default(now()) @map("subscribed_at")
+
+  user   Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  thread Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@id([userId, threadId])
+  @@map("subscriptions")
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  userId      String   @map("user_id")
+  type        String
+  referenceId String?  @map("reference_id")
+  isRead      Boolean  @map("is_read")
+
+  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Favorite {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  threadId    String?  @map("thread_id")
+  postId      String?  @map("post_id")
+  favoritedAt DateTime @default(now()) @map("favorited_at")
+
+  user   Users       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  thread Thread?    @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  post   ForumPost? @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("favorites")
+}
+
+model ReputationEvent {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  userId    String   @map("user_id")
+  eventType String   @map("event_type")
+  delta     Int
+
+  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reputation_events")
+}
+
+model Badge {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  userBadges UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  userId    String   @map("user_id")
+  badgeId   String   @map("badge_id")
+  awardedAt DateTime @default(now()) @map("awarded_at")
+
+  user  Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, badgeId])
+  @@map("user_badges")
+}
+
+model Tag {
+  id   String @id @default(uuid())
+  name String @unique
+
+  threads ThreadTag[]
+
+  @@map("tags")
+}
+
+model ThreadTag {
+  threadId String @map("thread_id")
+  tagId    String @map("tag_id")
+
+  thread Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([threadId, tagId])
+  @@map("thread_tags")
+}
+
+model Report {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  reporterId  String?  @map("reporter_id")
+  contentType String   @map("content_type")
+  contentId   String   @map("content_id")
+  reason      String?
+  handledBy   String?  @map("handled_by")
+
+  reporter Users? @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  handler  Users? @relation("ReportHandler", fields: [handledBy], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}
+
+model ModerationLog {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  moderatorId String?  @map("moderator_id")
+  action      String
+  targetType  String   @map("target_type")
+  targetId    String?  @map("target_id")
+  notes       String?
+
+  moderator Users? @relation(fields: [moderatorId], references: [id], onDelete: Cascade)
+
+  @@map("moderation_logs")
+}

@@ -1,15 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
-import { signIn } from "../../../lib/actions";
 
-import { Button } from "../../../components/ui/button";
-import { Input } from "../../../components/ui/input";
-import { Label } from "../../../components/ui/label";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { Label } from "@/ui/label";
+
+import { signIn } from "@/actions/sign-in";
+import { SignInFormState } from "@/lib/difinitions";
 
 export function SignInForm() {
-  const initialState = { fieldErrors: {}, formError: "" };
-  const [state, action, pending] = useActionState(signIn, initialState);
+  const [state, action, pending] = useActionState<SignInFormState, FormData>(signIn, {});
 
   return (
     <div className="space-y-4 w-full max-w-md mx-auto p-6">
@@ -25,7 +27,6 @@ export function SignInForm() {
             id="identifier"
             name="identifier"
             className={state?.fieldErrors?.identifier ? "border-red-500" : ""}
-            defaultValue={(state.payload?.get("identifier") || "") as string}
           />
           {state?.fieldErrors?.identifier && (
             <p className="text-red-500 text-sm">
@@ -57,6 +58,16 @@ export function SignInForm() {
           {pending ? "Signing in…" : "Sign In"}
         </Button>
       </form>
+
+      <div className="flex justify-between text-sm mt-4">
+        <Link href="/forgot-username" className="text-blue-500 hover:underline">
+          Forgot Username?
+        </Link>
+        <Link href="/forgot-password" className="text-blue-500 hover:underline">
+          Forgot Password?
+        </Link>
+      </div>
+      
     </div>
   );
 }

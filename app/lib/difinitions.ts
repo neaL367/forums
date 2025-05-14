@@ -31,7 +31,7 @@ export type FormField = {
     required?: boolean
 }
 
-const passwordSchema = z
+export const passwordSchema = z
     .string()
     .min(8, { message: "Be at least 8 characters long" })
     .max(20, { message: "Password is too long" })
