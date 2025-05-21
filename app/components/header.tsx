@@ -22,9 +22,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
-import { signOut } from "@/lib/auth-client";
 import { SignInForm } from "@/components/form/sign-in";
-import { SessionUser } from "@/lib/db/schema";
+import { SessionUser } from "@/app/lib/db/types";
+import { authClient } from "../lib/auth-client";
 
 export interface HeaderProps {
   user?: SessionUser;
@@ -97,7 +97,7 @@ export function Header({ user }: HeaderProps) {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button className="flex items-center gap-2 text-zinc-300 hover:text-white">
+                    <Button variant='ghost' className="flex items-center gap-2 text-zinc-300 hover:text-white">
                       <div className="relative h-8 w-8 overflow-hidden rounded-full">
                         {user.image ? (
                           <Image
@@ -132,7 +132,7 @@ export function Header({ user }: HeaderProps) {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={async () => {
-                        await signOut({
+                        await authClient.signOut({
                           fetchOptions: {
                             onSuccess: () => {
                               router.push("/");
@@ -152,7 +152,7 @@ export function Header({ user }: HeaderProps) {
                   {/* Sign In Dropdown */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button className="flex items-center gap-2 text-zinc-300 hover:text-white">
+                      <Button variant='ghost' className="flex items-center gap-2 text-zinc-300 hover:text-white">
                         <span>Existing user?</span>
                         <div className="flex items-center">
                           <span>Sign In</span>
@@ -244,7 +244,7 @@ export function Header({ user }: HeaderProps) {
                 </Link>
                 <Button
                   onClick={async () => {
-                    await signOut({
+                    await authClient.signOut({
                       fetchOptions: {
                         onSuccess: () => {
                           router.push("/");

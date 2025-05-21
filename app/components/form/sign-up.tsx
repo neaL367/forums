@@ -1,89 +1,198 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { useActionState } from "react";
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { useState } from "react"
+import { Loader2, User, Mail, Lock, KeyRound, ArrowRight } from "lucide-react"
+import { zodResolver } from "@hookform/resolvers/zod"
 
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
-import { Label } from "@/ui/label";
-import { signUp } from "@/lib/actions/sign.up";
+import type { z } from "zod"
 
-import type { FormField, SignUpFormState } from "@/lib/difinitions";
+import { authClient } from "@/lib/auth-client"
+import { Button } from "@/ui/button"
+import { Input } from "@/ui/input"
+import { Label } from "@/ui/label"
+
+import { SignupFormSchema } from "@/lib/definitions"
+
+// Infer the form input types from the Zod schemas
+type SignupFormInput = z.infer<typeof SignupFormSchema>
 
 export function SignUpForm() {
-  const [state, action, pending] = useActionState<SignUpFormState, FormData>(
-    signUp,
-    {}
-  );
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
 
-
-  const fields: FormField[] = [
-    { name: "username", label: "Username", type: "text", required: true },
-    { name: "email", label: "Email", type: "email", required: true },
-    { name: "password", label: "Password", type: "password", required: true },
-    {
-      name: "confirm_password",
-      label: "Confirm Password",
-      type: "password",
-      required: true,
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupFormInput>({
+    resolver: zodResolver(SignupFormSchema),
+    mode: "onBlur",
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirm_password: "",
     },
-  ];
+  })
+
+  const onSubmit = async ({ username, email, password }: SignupFormInput) => {
+    setLoading(true)
+
+    try {
+      const { error: signUpError } = await authClient.signUp.email(
+        {
+          email,
+          password,
+          name: username,
+          username: username,
+          callbackURL: "/",
+        },
+        {
+          onRequest: () => setLoading(true),
+          onSuccess: () => {
+            toast.success("Account created! Please verify your email.")
+            router.push(`/verify-email?email=${encodeURIComponent(email)}`)
+          },
+          onError: (ctx) => {
+            const message = ctx.error.message || "Sign up failed"
+            toast.error(message)
+          },
+        },
+      )
+
+      if (signUpError) {
+        toast.error(signUpError.message || "Sign up failed")
+      }
+    } catch {
+      const message = "An unexpected error occurred"
+      toast.error(message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <div className="space-y-4 w-full max-w-md mx-auto p-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold">Sign Up</h2>
-        <p className="text-muted-foreground">Create a new account</p>
+    <div className="w-full max-w-md mx-auto p-8 space-y-8 ">
+      <div className="text-center space-y-2">
+        <h2 className="text-3xl font-bold tracking-tight text-white">Sign Up</h2>
+        <p className="text-sm text-muted-foreground">Create your account to get started</p>
       </div>
 
-      <form action={action} className="space-y-4">
-        {fields.map((field) => (
-          <div key={field.name} className="space-y-2">
-            <Label htmlFor={field.name}>{field.label}</Label>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/** Username Field **/}
+        <div className="space-y-2">
+          <Label htmlFor="username" className="text-sm font-medium">
+            Username
+          </Label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+              <User size={18} />
+            </div>
             <Input
-              id={field.name}
-              name={field.name}
-              type={field.type}
-              required={field.required}
-              className={
-                state.fieldErrors?.[field.name] ? "border-red-500" : ""
-              }
-              defaultValue={
-                (state.payload?.get(`${field.name}`) || "") as string
-              }
+              id="username"
+              className={`pl-10 ${errors.username ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+              placeholder="johndoe"
+              {...register("username")}
+              aria-invalid={errors.username ? "true" : "false"}
             />
-            {state.fieldErrors?.[field.name] && (
-              <div className="text-red-500 text-sm space-y-1">
-                {Array.isArray(state.fieldErrors[field.name]) ? (
-                  state.fieldErrors[field.name]?.map((error, index) => (
-                    <p key={index}>{error}</p>
-                  ))
-                ) : (
-                  <p>{state.fieldErrors[field.name]}</p>
-                )}
-              </div>
-            )}
           </div>
-        ))}
+          {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>}
+        </div>
 
-        {state.formError && (
-          <p className="text-red-500 text-center">{state.formError}</p>
-        )}
-        {state.errorMessage && (
-          <p className="text-red-500 text-center">{state.errorMessage}</p>
-        )}
+        {/** Email Field **/}
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-sm font-medium">
+            Email
+          </Label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+              <Mail size={18} />
+            </div>
+            <Input
+              id="email"
+              type="email"
+              className={`pl-10 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+              placeholder="you@example.com"
+              {...register("email")}
+              aria-invalid={errors.email ? "true" : "false"}
+            />
+          </div>
+          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+        </div>
 
-        <Button type="submit" disabled={pending} className="w-full">
-          {pending ? "Signing up…" : "Sign Up"}
+        {/** Password Field **/}
+        <div className="space-y-2">
+          <Label htmlFor="password" className="text-sm font-medium">
+            Password
+          </Label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+              <Lock size={18} />
+            </div>
+            <Input
+              id="password"
+              type="password"
+              className={`pl-10 ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+              placeholder="••••••••"
+              {...register("password")}
+              aria-invalid={errors.password ? "true" : "false"}
+            />
+          </div>
+          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+        </div>
+
+        {/** Confirm Password Field **/}
+        <div className="space-y-2">
+          <Label htmlFor="confirm_password" className="text-sm font-medium">
+            Confirm Password
+          </Label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+              <KeyRound size={18} />
+            </div>
+            <Input
+              id="confirm_password"
+              type="password"
+              className={`pl-10 ${errors.confirm_password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+              placeholder="••••••••"
+              {...register("confirm_password")}
+              aria-invalid={errors.confirm_password ? "true" : "false"}
+            />
+          </div>
+          {errors.confirm_password && <p className="text-red-500 text-sm mt-1">{errors.confirm_password.message}</p>}
+        </div>
+
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full h-11 mt-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-md transition-all duration-200"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Creating Account...
+            </>
+          ) : (
+            <>
+              Sign Up
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </>
+          )}
         </Button>
       </form>
 
-      <p className="text-center text-sm mt-4">
-        Already have an account?{" "}
-        <Link href="/sign-in" className="text-blue-500 hover:underline">
-          Sign In
-        </Link>
-      </p>
+      <div className="text-center">
+        <p className="text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link href="/sign-in" className="font-medium text-yellow-600 hover:text-yellow-500 transition-colors">
+            Sign In
+          </Link>
+        </p>
+      </div>
     </div>
-  );
+  )
 }

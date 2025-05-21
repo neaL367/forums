@@ -1,28 +1,25 @@
-'use server'
+"use server"
 
-import { searchUsername } from "@/actions/search-username"
+import { db } from "@/db/db"
+import { users } from "@/db/schema"
+import { eq } from "drizzle-orm"
+import { sendUsernameRecoveryEmail } from "@/actions/email"
 
-export type RecoverState = {
-    message?: string
-    error?: string
-}
+export async function recoverUsername(email: string) {
+  try {
+    const foundUsers = await db.select().from(users).where(eq(users.email, email)).limit(1)
 
-export async function recoverUsername(
-    prev: RecoverState,
-    formData: FormData
-): Promise<RecoverState> {
-    const email = String(formData.get('email') ?? '')
+    const user = foundUsers[0]
 
-    if (!email) {
-        return { error: 'Email is required.' }
+    // If user exists, send email with username
+    if (user && user.username) {
+      await sendUsernameRecoveryEmail(email, user.username, user.name)
     }
 
-    const username = await searchUsername(email)
-
-    if (!username) {
-        return { error: 'No account found with that email.' }
-    }
-
-    // send the email here
-    return { message: `Sent username to ${email}` }
+    // Always return success to prevent email enumeration
+    return { success: true }
+  } catch (error) {
+    console.error("Error recovering username:", error)
+    return { success: true }
+  }
 }

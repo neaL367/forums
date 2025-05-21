@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/header";
 import { Toaster } from "@/ui/sonner";
 import { auth } from "@/lib/auth";
-import { SessionUser } from "./lib/db/schema";
+import { SessionUser } from "./lib/db/types";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,10 +32,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${geistSans.className} antialiased`}>
+      <body className={`${geistSans.className} antialiased dark`}>
         <Header user={user} />
         {children}
-        <Toaster position="top-center" richColors />
+        <Toaster position="bottom-right" richColors />
       </body>
     </html>
   );

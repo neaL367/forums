@@ -28,6 +28,7 @@
       "@/hooks/*": ["./app/hooks/*"],
       "@/db/*": ["./app/lib/db/*"],
       "@/generated/*": ["./app/generated/*"],
+      "@/queries/*": ["./app/lib/db/queries/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

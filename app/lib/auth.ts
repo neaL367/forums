@@ -1,54 +1,41 @@
 import { betterAuth } from "better-auth";
-import { username } from "better-auth/plugins";
-import { prismaAdapter } from "better-auth/adapters/prisma";
+import { username } from "better-auth/plugins/username";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { sendEmail } from "@/actions/send-email";
-import { PrismaClient } from "@/generated/prisma";
-
-const prisma = new PrismaClient()
+import { db } from "./db/db";
+import * as schema from "@/db/schema";
+import { sendVerificationEmail, sendResetPasswordEmail } from "@/app/lib/actions/email";
 
 export const auth = betterAuth({
-    database: prismaAdapter(prisma, {
-        provider: "postgresql",
-    }),
-    emailVerification: {
-        sendVerificationEmail: async ({ user, url }) => {
-            await sendEmail({
-                to: user.email,
-                subject: 'Verify your email address',
-                html: `<p>Please verify by clicking <a href="${url}">here</a>.</p>`,
-                text: `Please verify by visiting: ${url}`,
-            });
-        },
-        sendOnSignUp: true,
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: {
+      ...schema,
+      user: schema.users,
+      account: schema.accounts,
+      session: schema.sessions,
+      verification: schema.verification,
     },
-    emailAndPassword: {
-        enabled: true,
-        sendResetPassword: async ({ user, url }) => {
-            await sendEmail({
-                to: user.email,
-                subject: 'Reset your password',
-                html: `<p>Reset your password by clicking <a href="${url}">here</a>.</p>`,
-                text: `Reset your password: ${url}`,
-            });
-        },
-        requireEmailVerification: false,
-        resetPasswordTokenExpiresIn: 300, // 5 min
+  }),
+  advanced: { database: { generateId: false } },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendVerificationEmail(user.email, url, user.name);
     },
-    user: {
-        modelName: "users",
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    emailVerificationTokenExpiresIn: 3600, // 1 hour
+  },
+  emailAndPassword: {
+    enabled: true,
+    sendResetPassword: async ({ user, url }) => {
+      await sendResetPasswordEmail(user.email, url, user.name);
     },
-    session: {
-        cookieCache: {
-            enabled: true,
-            maxAge: 5 * 60, // Cache duration in seconds
-        },
-    },
-    plugins: [
-        username({
-            minUsernameLength: 3,
-            maxUsernameLength: 16
-        }),
-        nextCookies()
-    ],
+    requireEmailVerification: true,
+    resetPasswordTokenExpiresIn: 3600, // 1 hour
+  },
+  session: {
+    cookieCache: { enabled: true, maxAge: 5 * 60 },
+  },
+  plugins: [username(), nextCookies()],
 });
