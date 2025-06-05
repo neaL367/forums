@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { signUpSchema } from "@/lib/definitions";
+import Link from "next/link";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -45,16 +46,15 @@ export function SignUpForm() {
         name: values.username,
         username: values.username,
         displayUsername: values.username,
-        callbackURL: "/",
         fetchOptions: {
-          onRequest: () => {},
-          onResponse: () => {},
           onError: (ctx) => {
-            toast.error(ctx.error.message);
+            toast.error(`Sign up failed: ${ctx.error.message}`);
           },
           onSuccess: async () => {
             router.push("/");
-            toast.success("Successfully signed up! Please check your email to verify your account.");
+            toast.success(
+              "Successfully signed up! Please check your email to verify your account."
+            );
           },
         },
       });
@@ -76,7 +76,11 @@ export function SignUpForm() {
         <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-2">
             <Label htmlFor="username">Username</Label>
-            <Input id="userName" placeholder="JaneDoe" {...register("username")} />
+            <Input
+              id="userName"
+              placeholder="JaneDoe"
+              {...register("username")}
+            />
             {errors.username && (
               <p className="text-red-500 text-sm">{errors.username.message}</p>
             )}
@@ -130,6 +134,12 @@ export function SignUpForm() {
             )}
           </Button>
         </form>
+        <div className="mt-4 text-center text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link href="/sign-in" className="underline text-foreground">
+            Sign in
+          </Link>
+        </div>
       </CardContent>
       <CardFooter>
         <div className="flex justify-center w-full border-t py-4">

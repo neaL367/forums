@@ -11,7 +11,6 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
-    plugins: [username(), nextCookies()],
     session: {
         expiresIn: 60 * 60 * 24 * 7, // 7 days
         // BUG: Prob a bug with updateAge method. It throws an error - Argument `where` of type SessionWhereUniqueInput needs at least one of `id` arguments. 
@@ -31,4 +30,17 @@ export const auth = betterAuth({
     //     sendOnSignUp: true,
     //     autoSignInAfterVerification: true,
     // }
+    user: {
+        additionalFields: {
+            role: {
+                type: ["MEMBERS", "ADMINISTRATOR", "MODERATOR", "GUEST", "OWNER", "STAFF"],
+            }
+        },
+    },
+    advanced: {
+        database: {
+            generateId: false,
+        },
+    },
+    plugins: [username(), nextCookies()],
 })

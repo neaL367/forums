@@ -24,9 +24,7 @@ import { signInSchema } from "@/lib/definitions";
 
 export function SignInForm() {
   const router = useRouter();
-  const {
-    refetch, //refetch the session
-  } = authClient.useSession();
+  const { refetch } = authClient.useSession();
   const {
     register,
     handleSubmit,
@@ -44,10 +42,8 @@ export function SignInForm() {
           password: values.password,
         },
         {
-          onRequest: () => {},
-          onResponse: () => {},
           onError: (ctx) => {
-            toast.error(ctx.error.message);
+            toast.error(`Sign in failed: ${ctx.error.message}`);
           },
           onSuccess: async () => {
             router.push("/");
@@ -115,6 +111,12 @@ export function SignInForm() {
             )}
           </Button>
         </form>
+        <div className="mt-4 text-center text-sm text-muted-foreground">
+          Don&apos;t have an account?{" "}
+          <Link href="/sign-up" className="underline text-foreground">
+            Sign up
+          </Link>
+        </div>
       </CardContent>
       <CardFooter>
         <div className="flex justify-center w-full border-t py-4">

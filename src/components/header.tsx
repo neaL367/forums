@@ -38,7 +38,7 @@ export function Header() {
         <div className="relative flex-1 max-w-md">
           <Input
             type="search"
-            placeholder="Search discussions, people, or topics..."
+            placeholder="Search forums, members, or topics..."
             className="w-full bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400 pr-10"
           />
           <Button
