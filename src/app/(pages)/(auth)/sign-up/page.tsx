@@ -1,9 +1,16 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { SignUpForm } from "@/components/form/sign-up";
 
-export default function SignUpPage() {
-  return (
-    <div className="flex items-center justify-center h-full">
-      <SignUpForm />
-    </div>
-  );
+export default async function SignUpPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session) {
+    redirect("/");
+  }
+
+  return <SignUpForm />;
 }

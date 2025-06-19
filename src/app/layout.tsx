@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Header } from "@/components/header";
-import { SidebarProvider } from "@/components/ui/sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,25 +22,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SidebarProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${geistSans.className} antialiased`}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Toaster position="top-center" richColors />
-
-            <main className="flex flex-col w-full ">
-              <Header />
-
-              {children}
-            </main>
-          </ThemeProvider>
-        </body>
-      </html>
-    </SidebarProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.className} antialiased min-h-screen bg-background text-foreground`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Toaster position="top-center" richColors />
+          <div className="w-full flex flex-col">
+            <Header />
+            <main className="">{children}</main>
+          </div>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

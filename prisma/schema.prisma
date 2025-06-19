@@ -23,6 +23,21 @@ enum Role {
   GUEST
 }
 
+enum TopicStatus {
+  OPEN
+  CLOSED
+  PINNED
+  LOCKED
+  MOVED
+}
+
+enum PostStatus {
+  PUBLISHED
+  HIDDEN
+  DELETED
+  PENDING_APPROVAL
+}
+
 model User {
   id            String    @id @default(uuid())
   name          String
@@ -30,13 +45,34 @@ model User {
   emailVerified Boolean
   image         String?
   role          Role      @default(MEMBERS)
-  createdAt     DateTime
-  updatedAt     DateTime
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
 
   username        String?
   displayUsername String?
+  signature       String?
+  bio             String?
+  location        String?
+  website         String?
+  joinDate        DateTime  @default(now())
+  lastActive      DateTime?
+  postCount       Int       @default(0)
+  reputation      Int       @default(0)
+  isOnline        Boolean   @default(false)
+  isBanned        Boolean   @default(false)
+  banReason       String?
+  banExpiresAt    DateTime?
+
+  // Forum relations
+  topics         Topic[]
+  posts          Post[]
+  topicFollows   TopicFollow[]
+  forumFollows   ForumFollow[]
+  reactions      Reaction[]
+  reports        Report[]
+  moderationLogs ModerationLog[]
 
   @@unique([email])
   @@unique([username])
@@ -47,8 +83,8 @@ model Session {
   id        String   @id @default(uuid())
   expiresAt DateTime
   token     String
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
   userId    String
@@ -71,8 +107,8 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime
-  updatedAt             DateTime
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   @@map("account")
 }
@@ -82,8 +118,246 @@ model Verification {
   identifier String
   value      String
   expiresAt  DateTime
-  createdAt  DateTime?
-  updatedAt  DateTime?
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
 
   @@map("verification")
+}
+
+// Forum Models
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  slug        String   @unique
+  order       Int      @default(0)
+  isVisible   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  forums Forum[]
+
+  @@map("category")
+}
+
+model Forum {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  slug        String  @unique
+  order       Int     @default(0)
+  isVisible   Boolean @default(true)
+  isLocked    Boolean @default(false)
+
+  // Hierarchy support
+  parentId String?
+  parent   Forum?  @relation("ForumHierarchy", fields: [parentId], references: [id])
+  children Forum[] @relation("ForumHierarchy")
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  // Permissions
+  canView  Role[] @default([GUEST, MEMBERS, MODERATOR, ADMINISTRATOR, OWNER, STAFF])
+  canPost  Role[] @default([MEMBERS, MODERATOR, ADMINISTRATOR, OWNER, STAFF])
+  canReply Role[] @default([MEMBERS, MODERATOR, ADMINISTRATOR, OWNER, STAFF])
+
+  // Statistics
+  topicCount Int @default(0)
+  postCount  Int @default(0)
+
+  // Last activity
+  lastTopicId String?
+  lastTopic   Topic?    @relation("ForumLastTopic", fields: [lastTopicId], references: [id])
+  lastPostAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  topics         Topic[]
+  follows        ForumFollow[]
+  moderationLogs ModerationLog[]
+
+  @@map("forum")
+}
+
+model Topic {
+  id             String      @id @default(uuid())
+  title          String
+  slug           String      @unique
+  description    String?
+  content        String? // First post content
+  status         TopicStatus @default(OPEN)
+  isPinned       Boolean     @default(false)
+  isLocked       Boolean     @default(false)
+  isAnnouncement Boolean     @default(false)
+
+  // Forum relation
+  forumId String
+  forum   Forum  @relation(fields: [forumId], references: [id], onDelete: Cascade)
+
+  // Author
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Statistics
+  viewCount  Int @default(0)
+  replyCount Int @default(0)
+
+  // Last activity
+  lastPostId String?
+  lastPost   Post?     @relation("TopicLastPost", fields: [lastPostId], references: [id])
+  lastPostAt DateTime?
+
+  // SEO and metadata
+  metaTitle       String?
+  metaDescription String?
+  tags            String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts           Post[]
+  follows         TopicFollow[]
+  lastTopicForums Forum[]         @relation("ForumLastTopic")
+  moderationLogs  ModerationLog[]
+
+  @@map("topic")
+}
+
+model Post {
+  id         String     @id @default(uuid())
+  content    String
+  status     PostStatus @default(PUBLISHED)
+  isEdited   Boolean    @default(false)
+  editedAt   DateTime?
+  editReason String?
+
+  // Topic relation
+  topicId String
+  topic   Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  // Author
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Reply system
+  parentId String?
+  parent   Post?   @relation("PostReplies", fields: [parentId], references: [id])
+  replies  Post[]  @relation("PostReplies")
+
+  // IP tracking for moderation
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reactions         Reaction[]
+  reports           Report[]
+  lastPostForTopics Topic[]         @relation("TopicLastPost")
+  moderationLogs    ModerationLog[]
+
+  @@map("post")
+}
+
+model TopicFollow {
+  id      String @id @default(uuid())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topicId String
+  topic   Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, topicId])
+  @@map("topic_follow")
+}
+
+model ForumFollow {
+  id      String @id @default(uuid())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  forumId String
+  forum   Forum  @relation(fields: [forumId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, forumId])
+  @@map("forum_follow")
+}
+
+model Reaction {
+  id     String @id @default(uuid())
+  type   String // like, dislike, love, laugh, etc.
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId, type])
+  @@map("reaction")
+}
+
+model Report {
+  id      String  @id @default(uuid())
+  reason  String
+  details String?
+  status  String  @default("PENDING") // PENDING, REVIEWED, RESOLVED, DISMISSED
+
+  reporterId String
+  reporter   User   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  reviewedBy String?
+  reviewedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("report")
+}
+
+model ModerationLog {
+  id      String  @id @default(uuid())
+  action  String // MOVE_TOPIC, LOCK_TOPIC, DELETE_POST, BAN_USER, etc.
+  reason  String?
+  details String?
+
+  moderatorId String
+  moderator   User   @relation(fields: [moderatorId], references: [id], onDelete: Cascade)
+
+  // Optional relations based on action type
+  forumId String?
+  forum   Forum?  @relation(fields: [forumId], references: [id])
+  topicId String?
+  topic   Topic?  @relation(fields: [topicId], references: [id])
+  postId  String?
+  post    Post?   @relation(fields: [postId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("moderation_log")
+}
+
+// Statistics and analytics
+model ForumStats {
+  id          String   @id @default(uuid())
+  date        DateTime @unique @db.Date
+  totalUsers  Int      @default(0)
+  totalTopics Int      @default(0)
+  totalPosts  Int      @default(0)
+  activeUsers Int      @default(0)
+  newUsers    Int      @default(0)
+  newTopics   Int      @default(0)
+  newPosts    Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("forum_stats")
 }

@@ -22,8 +22,8 @@ export function Header() {
   const { data: session, isPending } = authClient.useSession();
 
   return (
-    <header className="sticky top-0 w-full bg-zinc-900 border-b border-zinc-800">
-      <div className="flex items-center justify-between gap-4 px-4 py-3.5">
+    <header className="z-10 sticky top-0 w-full border-b bg-background">
+      <div className="flex items-center justify-between gap-4 px-8 h-20">
         {/* Left side - Logo and title */}
         <Link href="/" className="flex items-center gap-2">
           <div className="flex flex-col">
