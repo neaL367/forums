@@ -1,13 +1,10 @@
 "use client";
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useActionState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
-
 import {
   Card,
   CardContent,
@@ -19,44 +16,37 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+import { signInAction } from "@/actions/sign-in";
+import { SignInFormState } from "@/models/auth";
 import { authClient } from "@/lib/auth-client";
-import { signInSchema } from "@/lib/definitions";
+
+const initialState: SignInFormState = {
+  success: false,
+  message: "",
+};
 
 export function SignInForm() {
   const router = useRouter();
   const { refetch } = authClient.useSession();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: zodResolver(signInSchema),
-    defaultValues: { username: "", password: "" },
-  });
 
-  const onSubmit = async (values: z.infer<typeof signInSchema>) => {
-    try {
-      await authClient.signIn.username(
-        {
-          username: values.username,
-          password: values.password,
-        },
-        {
-          onError: (ctx) => {
-            toast.error(`Sign in failed: ${ctx.error.message}`);
-          },
-          onSuccess: async () => {
-            router.push("/");
-            refetch();
-            toast.success("Successfully signed in!");
-          },
-        }
-      );
-    } catch (e) {
-      console.error("Sign-in error:", e);
-      toast.error("Failed to sign in. Please try again.");
+  const [state, formAction, pending] = useActionState(
+    signInAction,
+    initialState
+  );
+
+  useEffect(() => {
+    if (state?.message) {
+      if (state.success) {
+        toast.success(state.message);
+
+        router.push("/");
+        refetch();
+      } else {
+        toast.error(state.message);
+      }
     }
-  };
+  }, [refetch, router, state]);
 
   return (
     <Card className="z-50 rounded-md rounded-t-none min-w-lg">
@@ -67,44 +57,54 @@ export function SignInForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <form className="grid gap-4" action={formAction}>
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="username">Username</Label>
-              <Link href="#" className="text-sm underline">
+              <Link href="/forgot-username" className="text-sm underline">
                 Forgot username?
               </Link>
             </div>
             <Input
               id="username"
-              placeholder="Your username"
-              {...register("username")}
+              name="username"
+              placeholder="JaneDoe"
+              defaultValue={state.inputs?.username ?? ""}
+              className={state.errors?.username ? "border-red-500" : ""}
+              required
             />
-            {errors.username && (
-              <p className="text-red-500 text-sm">{errors.username.message}</p>
+            {state?.errors?.username && (
+              <p className="text-red-500 text-sm">
+                {state?.errors?.username[0]}
+              </p>
             )}
           </div>
 
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <Link href="#" className="text-sm underline">
+              <Link href="/forgot-password" className="text-sm underline">
                 Forgot password?
               </Link>
             </div>
             <Input
               id="password"
               type="password"
+              name="password"
               placeholder="Password"
               autoComplete="current-password"
-              {...register("password")}
+              defaultValue={state.inputs?.password ?? ""}
+              className={state.errors?.password ? "border-red-500" : ""}
+              required
             />
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
+            {state.errors?.password && (
+              <p className="text-red-500 text-sm">
+                {state.errors?.password[0]}
+              </p>
             )}
           </div>
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? (
+          <Button type="submit" className="w-full" disabled={pending}>
+            {pending ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
               <p>Login</p>

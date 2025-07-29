@@ -8,6 +8,16 @@ const passwordSchema = z
     .regex(/[0-9]/, { message: "Contain at least one number" })
     .regex(/[^a-zA-Z0-9]/, { message: "Contain at least one special character" });
 
+const emailSchema = z
+    .string()
+    .trim()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Please enter a valid email." })
+    .refine((val: string) => val === val.toLowerCase(), {
+        message: "Email must be all lowercase",
+    })
+    .transform((val: string) => val.toLowerCase());
+
 export const signUpSchema = z
     .object({
         username: z
@@ -18,15 +28,7 @@ export const signUpSchema = z
                 message: "Username can only contain letters, numbers, underscores, and hyphens.",
             })
             .trim(),
-        email: z
-            .string()
-            .trim()
-            .min(1, { message: "Email is required" })
-            .email({ message: "Please enter a valid email." })
-            .refine((val: string) => val === val.toLowerCase(), {
-                message: "Email must be all lowercase",
-            })
-            .transform((val: string) => val.toLowerCase()),
+        email: emailSchema,
         password: passwordSchema,
         passwordConfirmation: z
             .string()
@@ -43,3 +45,17 @@ export const signInSchema = z.object({
     // rememberMe: z.boolean().optional(),
 });
 
+export const forgotUsernameOrPasswordSchema = z.object({
+    email: emailSchema,
+})
+
+export const resetPasswordSchema = z.object({
+    token: z.string().min(1, { message: "Token is required" }),
+    password: passwordSchema,
+    passwordConfirmation: z
+        .string()
+        .min(8, { message: "Confirmation must be at least 8 characters" }),
+}).refine((data) => data.password === data.passwordConfirmation, {
+    path: ["passwordConfirmation"],
+    message: "Passwords do not match",
+});

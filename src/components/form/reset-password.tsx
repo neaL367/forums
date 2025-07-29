@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useActionState, useEffect } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -16,22 +16,25 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import { SignUpFormState } from "@/models/auth";
-import { signUpAction } from "@/actions/sign-up";
 import { authClient } from "@/lib/auth-client";
+import { resetPasswordAction } from "@/actions/reset-password";
+import { ResetPasswordFormState } from "@/models/auth";
 
-const initialState: SignUpFormState = {
+const initialState: ResetPasswordFormState = {
   success: false,
   message: "",
 };
 
-export function SignUpForm() {
+interface ResetPasswordFormProps {
+  token: string
+}
+
+export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const router = useRouter();
   const { refetch } = authClient.useSession();
 
   const [state, formAction, pending] = useActionState(
-    signUpAction,
+    resetPasswordAction,
     initialState
   );
 
@@ -39,9 +42,7 @@ export function SignUpForm() {
     if (state?.message) {
       if (state.success) {
         toast.success(state.message);
-
         router.push("/");
-        refetch();
       } else {
         toast.error(state.message);
       }
@@ -51,104 +52,65 @@ export function SignUpForm() {
   return (
     <Card className="z-50 rounded-md rounded-t-none min-w-lg">
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
+        <CardTitle className="text-lg md:text-xl">Reset Password</CardTitle>
         <CardDescription className="text-xs md:text-sm">
-          Enter your information to create an account
+          Enter your new password below
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form className="grid gap-4" action={formAction}>
-          <div className="grid gap-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              name="username"
-              placeholder="JaneDoe"
-              defaultValue={state.inputs?.username ?? ""}
-              className={state.errors?.username ? "border-red-500" : ""}
-              required
-            />
-            {state?.errors?.username && (
-              <div className="text-red-500 text-sm">
-                {state.errors.username[0]}
-              </div>
-            )}
-          </div>
+          <input type="hidden" name="token" value={token} />
 
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="janedoe@example.com"
-              defaultValue={state.inputs?.email ?? ""}
-              className={state.errors?.email ? "border-red-500" : ""}
-              required
-            />
-            {state?.errors?.email && (
-              <div className="text-red-500 text-sm">
-                {state.errors.email[0]}
-              </div>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">New Password</Label>
             <Input
               id="password"
-              name="password"
               type="password"
-              placeholder="Password"
-              autoComplete="new-password"
-              defaultValue={state.inputs?.password ?? ""}
+              name="password"
               className={state.errors?.password ? "border-red-500" : ""}
-              required
+              defaultValue={state.inputs?.password ?? ""}
+              placeholder="Enter your new password"
+              autoComplete="password"
             />
             {state?.errors?.password && (
-              <div className="text-red-500 text-sm">
-                <p>Password must:</p>
-                <ul className="list-disc list-inside">
-                  {state.errors.password[0]}
-                </ul>
-              </div>
+              <p className="text-red-500 text-sm">
+                {state?.errors?.password[0]}
+              </p>
             )}
           </div>
-
           <div className="grid gap-2">
             <Label htmlFor="passwordConfirmation">Confirm Password</Label>
             <Input
               id="passwordConfirmation"
-              name="passwordConfirmation"
               type="password"
-              placeholder="Confirm Password"
-              autoComplete="new-password"
-              defaultValue={state.inputs?.passwordConfirmation ?? ""}
+              name="passwordConfirmation"
               className={
                 state.errors?.passwordConfirmation ? "border-red-500" : ""
               }
-              required
+              defaultValue={state.inputs?.passwordConfirmation ?? ""}
+              placeholder="Confirm your new password"
+              autoComplete="passwordConfirmation"
             />
             {state?.errors?.passwordConfirmation && (
-              <div className="text-red-500 text-sm">
-                {state.errors.passwordConfirmation[0]}
-              </div>
+              <p className="text-red-500 text-sm">
+                {state?.errors?.passwordConfirmation[0]}
+              </p>
             )}
           </div>
-
           <Button type="submit" className="w-full" disabled={pending}>
             {pending ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
-              "Create an account"
+              <p>Reset Password</p>
             )}
           </Button>
         </form>
-
-        <div className="mt-4 text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Link href="/sign-in" className="underline text-foreground">
-            Sign in
+        <div className="mt-4">
+          <Link href="/sign-in" className="w-full">
+            <Button variant="outline" className="w-full bg-transparent">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Sign In
+            </Button>
           </Link>
         </div>
       </CardContent>
