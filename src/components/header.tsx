@@ -110,7 +110,7 @@ export function Header() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center gap-2">
+                  <Link href={`/profile/${session.user.username}`} className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     Profile
                   </Link>

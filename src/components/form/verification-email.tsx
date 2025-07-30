@@ -29,7 +29,7 @@ const initialState: VerificationEmailFormState = {
 
 export function VerificationEmailForm() {
   const router = useRouter();
-  const { refetch } = authClient.useSession();
+  const { data: session, refetch } = authClient.useSession();
 
   const [state, formAction, pending] = useActionState(
     VerificationEmailAction,
@@ -64,7 +64,7 @@ export function VerificationEmailForm() {
               type="email"
               name="email"
               placeholder="Enter your email address"
-              defaultValue={state.inputs?.email ?? ""}
+              defaultValue={state.inputs?.email ?? session?.user.email ?? ""}
               className={state.errors?.email ? "border-red-500" : ""}
               required
             />
