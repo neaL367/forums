@@ -31,7 +31,7 @@ export async function forgotUsernameAction(prevState: ForgotUsernameFormState, f
       FROM "user" 
       WHERE email = ${email}
       LIMIT 1
-    `    
+    `
 
     if (users.length === 0) {
       return {
@@ -58,6 +58,10 @@ export async function forgotUsernameAction(prevState: ForgotUsernameFormState, f
         inputs: rawData,
       };
     }
-    throw err
+    return {
+      message: "An unexpected error occurred. Please try again.",
+      inputs: rawData,
+    }
+    // throw err
   }
 }

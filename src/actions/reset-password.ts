@@ -61,7 +61,11 @@ export async function resetPasswordAction(prevState: ResetPasswordFormState, for
         inputs: rawData,
       }
     }
-    throw err
+    return {
+      message: "An unexpected error occurred. Please try again.",
+      inputs: rawData,
+    }
+    // throw err
 
   }
 }

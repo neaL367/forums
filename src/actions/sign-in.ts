@@ -43,6 +43,10 @@ export async function signInAction(prevState: SignInFormState, formData: FormDat
         inputs: rawData,
       };
     }
-    throw err
+    return {
+      message: "An unexpected error occurred. Please try again.",
+      inputs: rawData,
+    }
+    // throw err
   }
 }

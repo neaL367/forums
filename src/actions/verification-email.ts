@@ -47,5 +47,6 @@ export async function VerificationEmailAction(prevState: VerificationEmailFormSt
       message: "An unexpected error occurred. Please try again.",
       inputs: rawData,
     }
+    // throw err
   }
 }

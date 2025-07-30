@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 // import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
@@ -6,11 +7,10 @@ import { Mail } from "lucide-react";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-import { getAllUsers, getUserByUsername } from "@/dal/user";
 import { User } from "@/models/user";
 import { auth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
+import { getAllUsers, getUserByUsername } from "@/services/user";
 
 export async function generateStaticParams() {
   const users: User[] = await getAllUsers();

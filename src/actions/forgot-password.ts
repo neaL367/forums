@@ -47,5 +47,7 @@ export async function forgotPasswordAction(prevState: ForgotPasswordFormState, f
       message: "An unexpected error occurred. Please try again.",
       inputs: rawData,
     }
+    // throw err
+
   }
 }

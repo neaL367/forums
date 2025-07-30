@@ -29,12 +29,13 @@ export async function signUpAction(prevState: SignUpFormState, formData: FormDat
 
   try {
     await auth.api.signUpEmail({
-      body: { 
-        name: username, 
-        username, 
-        displayUsername: username, 
-        email, 
-        password },
+      body: {
+        name: username,
+        username: username,
+        displayUsername: username,
+        email,
+        password
+      },
       headers: await headers(),
     });
 
@@ -58,6 +59,10 @@ export async function signUpAction(prevState: SignUpFormState, formData: FormDat
         inputs: rawData,
       };
     }
-    throw err
+    return {
+      message: "An unexpected error occurred. Please try again.",
+      inputs: rawData,
+    }
+    // throw err
   }
 }
