@@ -45,17 +45,25 @@ export const signInSchema = z.object({
     // rememberMe: z.boolean().optional(),
 });
 
-export const forgotUsernameOrPasswordSchema = z.object({
-    email: emailSchema,
-})
-
 export const resetPasswordSchema = z.object({
     token: z.string().min(1, { message: "Token is required" }),
     password: passwordSchema,
     passwordConfirmation: z
-        .string()
-        .min(8, { message: "Confirmation must be at least 8 characters" }),
+    .string()
+    .min(8, { message: "Confirmation must be at least 8 characters" }),
 }).refine((data) => data.password === data.passwordConfirmation, {
     path: ["passwordConfirmation"],
     message: "Passwords do not match",
+});
+
+export const forgotUsernameSchema = z.object({
+    email: emailSchema,
+})
+
+export const forgotPasswordSchema = z.object({
+    email: emailSchema,
+});
+
+export const VerificationEmailSchema = z.object({
+    email: emailSchema,
 });

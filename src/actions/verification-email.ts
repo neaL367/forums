@@ -2,17 +2,17 @@
 
 import { APIError } from "better-auth/api";
 import { headers } from "next/headers";
-import { ForgotPasswordFormData, ForgotPasswordFormState } from "@/models/auth";
-import { forgotPasswordSchema } from "@/lib/definitions";
+import { VerificationEmailFormData, VerificationEmailFormState} from "@/models/auth";
+import { VerificationEmailSchema } from "@/lib/definitions";
 import { auth } from "@/lib/auth";
 
-export async function forgotPasswordAction(prevState: ForgotPasswordFormState, formData: FormData): Promise<ForgotPasswordFormState> {
+export async function VerificationEmailAction(prevState: VerificationEmailFormState, formData: FormData): Promise<VerificationEmailFormState> {
 
-  const rawData: ForgotPasswordFormData = {
+  const rawData: VerificationEmailFormData = {
     email: formData.get("email") as string,
   }
 
-  const validated = forgotPasswordSchema.safeParse(rawData)
+  const validated = VerificationEmailSchema.safeParse(rawData)
 
   if (!validated.success) {
     return {
@@ -25,14 +25,14 @@ export async function forgotPasswordAction(prevState: ForgotPasswordFormState, f
   const { email } = validated.data;
 
   try {
-    await auth.api.forgetPassword({
-      body: { email, redirectTo: `${process.env.BETTER_AUTH_URL}/reset-password` },
+    await auth.api.sendVerificationEmail({
+      body: { email, callbackURL: `${process.env.BETTER_AUTH_URL}/` },
       headers: await headers(),
     });
 
     return {
       success: true,
-      message: "A password reset link has been sent to your email address.",
+      message: "A verification email has been sent to your email address. Please check your inbox.",
       inputs: {}
     };
   } catch (err) {

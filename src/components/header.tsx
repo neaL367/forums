@@ -91,15 +91,21 @@ export function Header() {
                   <ChevronDown className="h-3 w-3 text-zinc-400" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48" align="end">
+              <DropdownMenuContent className="w-52" align="end">
                 <DropdownMenuLabel>
-                  <div>
+                  <div className="flex items-center justify-between gap-2">
                     <p className="text-sm font-medium">
                       {session.user.username}
                     </p>
-                    {/* <p className="text-xs text-muted-foreground">
-                      {session.user.email}
-                    </p> */}
+                    {session.user.emailVerified ? (
+                      <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded">
+                        Verified
+                      </span>
+                    ) : (
+                      <Link href="/verification-email" className="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded">
+                        Unverified
+                      </Link>
+                    )}
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

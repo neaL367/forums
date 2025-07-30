@@ -18,11 +18,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { ForgotUsernameOrPasswordFormState } from "@/models/auth";
+import { ForgotUsernameFormState } from "@/models/auth";
 import { forgotUsernameAction } from "@/actions/forgot-username";
 import { authClient } from "@/lib/auth-client";
 
-const initialState: ForgotUsernameOrPasswordFormState = {
+const initialState: ForgotUsernameFormState = {
   success: false,
   message: "",
 };

@@ -2,17 +2,17 @@
 
 import { APIError } from "better-auth/api";
 import { neon } from "@neondatabase/serverless";
-import { ForgotUsernameOrPasswordFormData, ForgotUsernameOrPasswordFormState } from "@/models/auth";
-import { forgotUsernameOrPasswordSchema } from "@/lib/definitions";
+import { ForgotUsernameFormData, ForgotUsernameFormState } from "@/models/auth";
+import { forgotUsernameSchema } from "@/lib/definitions";
 import { sendUsernameReminderEmail } from '@/lib/email';
 
-export async function forgotUsernameAction(prevState: ForgotUsernameOrPasswordFormState, formData: FormData): Promise<ForgotUsernameOrPasswordFormState> {
+export async function forgotUsernameAction(prevState: ForgotUsernameFormState, formData: FormData): Promise<ForgotUsernameFormState> {
 
-  const rawData: ForgotUsernameOrPasswordFormData = {
+  const rawData: ForgotUsernameFormData = {
     email: formData.get("email") as string,
   }
 
-  const validated = forgotUsernameOrPasswordSchema.safeParse(rawData)
+  const validated = forgotUsernameSchema.safeParse(rawData)
 
   if (!validated.success) {
     return {

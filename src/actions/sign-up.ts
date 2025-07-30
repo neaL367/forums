@@ -29,7 +29,12 @@ export async function signUpAction(prevState: SignUpFormState, formData: FormDat
 
   try {
     await auth.api.signUpEmail({
-      body: { name: username, username, displayUsername: username, email, password, role: "MEMBERS" },
+      body: { 
+        name: username, 
+        username, 
+        displayUsername: username, 
+        email, 
+        password },
       headers: await headers(),
     });
 

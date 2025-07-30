@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useActionState, useEffect } from "react";
 import { Loader2, ArrowLeft } from "lucide-react";
+
 import {
   Card,
   CardContent,
@@ -17,19 +18,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { forgotPasswordAction } from "@/actions/forgot-password";
-import { ForgotPasswordFormState } from "@/models/auth";
+import { VerificationEmailFormState } from "@/models/auth";
+import { VerificationEmailAction } from "@/actions/verification-email";
+import { authClient } from "@/lib/auth-client";
 
-const initialState: ForgotPasswordFormState = {
+const initialState: VerificationEmailFormState = {
   success: false,
   message: "",
 };
 
-export function ForgotPasswordForm() {
+export function VerificationEmailForm() {
   const router = useRouter();
+  const { refetch } = authClient.useSession();
 
   const [state, formAction, pending] = useActionState(
-    forgotPasswordAction,
+    VerificationEmailAction,
     initialState
   );
 
@@ -37,19 +40,19 @@ export function ForgotPasswordForm() {
     if (state?.message) {
       if (state.success) {
         toast.success(state.message);
+        router.push("/");
       } else {
         toast.error(state.message);
       }
     }
-  }, [router, state]);
+  }, [refetch, router, state]);
 
   return (
     <Card className="z-50 rounded-md rounded-t-none min-w-lg">
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Forgot Password</CardTitle>
+        <CardTitle className="text-lg md:text-xl">Verfication Email</CardTitle>
         <CardDescription className="text-xs md:text-sm">
-          Enter your email address and we&apos;ll send you a link to reset your
-          password
+          Enter your email address and we&apos;ll send you your verification email
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -65,18 +68,19 @@ export function ForgotPasswordForm() {
               className={state.errors?.email ? "border-red-500" : ""}
               required
             />
-            {state.errors?.email && (
-              <p className="text-red-500 text-sm">{state.errors?.email[0]}</p>
+            {state?.errors?.email && (
+              <p className="text-red-500 text-sm">{state?.errors?.email[0]}</p>
             )}
           </div>
           <Button type="submit" className="w-full" disabled={pending}>
             {pending ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
-              <p>Send Reset Instructions</p>
+              <p>Send Verification Email</p>
             )}
           </Button>
         </form>
+
         <div className="mt-4">
           <Link href="/sign-in" className="w-full">
             <Button variant="outline" className="w-full bg-transparent">

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
@@ -29,7 +30,11 @@ function ResetPasswordContent() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            Please request a new password reset link.
+            Please request a new password reset{" "}
+            <Link href="/forgot-password" className="text-white underline">
+              link
+            </Link>
+            .
           </p>
         </CardContent>
       </Card>
@@ -41,7 +46,7 @@ function ResetPasswordContent() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <ResetPasswordContent />
     </Suspense>
   );
