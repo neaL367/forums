@@ -31,7 +31,7 @@ export async function signUpAction(prevState: SignUpFormState, formData: FormDat
     await auth.api.signUpEmail({
       body: {
         name: username,
-        username: username,
+        username,
         displayUsername: username,
         email,
         password
