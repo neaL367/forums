@@ -7,17 +7,16 @@ import { Mail } from "lucide-react";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-import { User } from "@/models/user";
 import { auth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
-import { getAllUsers, getUserByUsername } from "@/services/user";
+import { getUserByUsername } from "@/services/user";
 
-export async function generateStaticParams() {
-  const users: User[] = await getAllUsers();
-  return users.map((u) => ({
-    slug: u.username,
-  }));
-}
+// export async function generateStaticParams() {
+//   const users: User[] = await getAllUsers();
+//   return users.map((u) => ({
+//     slug: u.username,
+//   }));
+// }
 
 export default async function ProfilePage({
   params,
