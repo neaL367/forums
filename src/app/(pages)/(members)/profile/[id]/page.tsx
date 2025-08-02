@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
@@ -17,7 +18,8 @@ export async function generateMetadata({
   const { id } = await params;
   if (!id) return { title: "Profile Not Found" };
 
-  const user: Pick<UserProfile, "displayUsername"> = await getUserProfileById(id);
+  const user: Pick<UserProfile, "displayUsername"> =
+    await getUserProfileById(id);
   if (!user) return { title: "Profile Not Found" };
 
   return {
@@ -30,12 +32,21 @@ export default async function ProfilePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await verifySession();
+  
   const { id } = await params;
   if (!id) return notFound();
 
-  await verifySession();
+  const getCachedUserProfile = unstable_cache(
+    async (id) => getUserProfileById(id),
+    [id],
+    {
+      tags: ["profile"],
+      revalidate: 60,
+    }
+  );
 
-  const user = await getUserProfileById(id);
+  const user = await getCachedUserProfile(id);
   if (!user) return notFound();
 
   return (

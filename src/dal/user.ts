@@ -1,11 +1,9 @@
 import "server-only"
 
-import { unstable_cache } from 'next/cache'
 import { sql } from '@/lib/dal'
 import type { User, UserProfile } from '@/types/user'
 
-export const getAllUsersProfile = unstable_cache(
-  async (): Promise<Pick<User, "id">[]> => {
+export const getAllUsersProfile = (async (): Promise<Pick<User, "id">[]> => {
     try {
       const rows = await sql`SELECT id FROM public.user;`
       return rows as Pick<User, "id">[]
@@ -13,13 +11,10 @@ export const getAllUsersProfile = unstable_cache(
       console.error("Error fetching all users (public):", error)
       throw new Error("Failed to fetch users")
     }
-  },
-  ["profile"],
-  { tags: ["profile"] }
+  }
 )
 
-export const getUserProfileById = unstable_cache(
-  async (id: string): Promise<UserProfile> => {
+export const getUserProfileById = (async (id: string): Promise<UserProfile> => {
     try {
       const rows = await sql`
         SELECT id, displayUsername, image, role, bio, website, location,
@@ -36,7 +31,6 @@ export const getUserProfileById = unstable_cache(
       console.error(`Error fetching user profile by ID (${id}):`, error)
       throw new Error("Failed to fetch user")
     }
-  },
-  ["profile"],
-  { tags: ["profile"] }
+  }
 )
+
