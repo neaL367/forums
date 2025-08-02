@@ -1,7 +1,7 @@
 "use server"
 
 import { APIError } from "better-auth/api"
-import { revalidatePath } from "next/cache"
+import { revalidateTag } from "next/cache"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { UsernameSchema } from "@/schemas/account-settings"
@@ -53,8 +53,7 @@ export async function UsernameSettingsAction(
       headers: await headers(),
     })
 
-    revalidatePath("/profile")
-    // revalidatePath("/account-settings")
+    revalidateTag("profile")
 
     return {
       success: true,
