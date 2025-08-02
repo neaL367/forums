@@ -1,9 +1,12 @@
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+
 import { getUserProfileById } from "@/dal/user";
+import { verifySession } from "@/lib/dal";
 import type { UserProfile } from "@/types/user";
 
 export async function generateMetadata({
@@ -29,6 +32,8 @@ export default async function ProfilePage({
 }) {
   const { id } = await params;
   if (!id) return notFound();
+
+  await verifySession();
 
   const user = await getUserProfileById(id);
   if (!user) return notFound();
