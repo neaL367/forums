@@ -4,6 +4,7 @@ import nodemailer from "nodemailer"
 import { ResetPasswordEmail } from "@/components/email/reset-password"
 import { UsernameReminderEmail } from "@/components/email/username-reminder"
 import { VerificationEmail } from "@/components/email/verification"
+import { ChangeEmailVerification } from "@/components/email/change-email"
 
 
 export type EmailOptions = {
@@ -96,6 +97,18 @@ export async function sendUsernameReminderEmail(email: string, username: string,
   return sendEmail({
     to: email,
     subject: "👤 Your Username Reminder",
+    html,
+    text,
+  })
+}
+
+export async function sendChangeEmailVerification(email: string, url: string, name?: string) {
+  const html = await render(ChangeEmailVerification({ name, url }))
+  const text = await render(ChangeEmailVerification({ name, url }), { plainText: true })
+
+  return sendEmail({
+    to: email,
+    subject: "🔒 Please Confirm Your Email Address",
     html,
     text,
   })

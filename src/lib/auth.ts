@@ -4,7 +4,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { PrismaClient } from "@prisma/client";
 
-import { sendResetPasswordEmail, sendVerificationEmail } from "@/lib/email";
+import { sendChangeEmailVerification, sendResetPasswordEmail, sendVerificationEmail } from "@/lib/email";
 
 const prisma = new PrismaClient();
 
@@ -35,6 +35,12 @@ export const auth = betterAuth({
                 input: false
             }
         },
+        changeEmail: {
+            enabled: true,
+            sendChangeEmailVerification: async ({ user, url }) => {
+                await sendChangeEmailVerification(user.email, url, user.name)
+            }
+        }
     },
     advanced: {
         database: {

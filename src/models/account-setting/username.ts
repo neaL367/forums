@@ -1,12 +1,12 @@
-export type UsernameFormData = {
+export type ChangeUsernameFormData = {
   displayUsername: string
 }
 
-export type UsernameFormState = {
+export type ChangeUsernameFormState = {
   success?: boolean
   message?: string
   errors?: {
-     [K in keyof UsernameFormData]?: string[]
+     [K in keyof ChangeUsernameFormData]?: string[]
   }
-  inputs?: Partial<UsernameFormData>
+  inputs?: Partial<ChangeUsernameFormData>
 }

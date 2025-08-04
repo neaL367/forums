@@ -1,13 +1,40 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useActionState, useEffect } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
 import { authClient } from "@/lib/auth-client";
+import { EmailSettingsAction } from "@/actions/account-settings/email";
+import type { ChangeEmailFormState } from "@/models/account-setting/email";
+
+const initialState: ChangeEmailFormState = {
+  success: false,
+  message: "",
+};
 
 export default function EmailSettingsPage() {
-  const { data: session } = authClient.useSession();
+  const router = useRouter();
+  const { data: session, refetch } = authClient.useSession();
+
+  const [state, action, pending] = useActionState(EmailSettingsAction, initialState);
+
+  useEffect(() => {
+    if (state?.message) {
+      if (state.success) {
+        toast.success(state.message);
+        router.push("/account-settings");
+        refetch();
+      } else {
+        toast.error(state.message);
+      }
+    }
+  }, [state, refetch, router]);
 
   return (
     <Card>
@@ -18,13 +45,11 @@ export default function EmailSettingsPage() {
         </p>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4">
+        <form action={action} className="space-y-4">
           <input type="hidden" name="userId" value={session?.user.id ?? ""} />
 
           <div>
-            <label className="text-sm font-medium text-muted-foreground">
-              Current Email
-            </label>
+            <label className="text-sm font-medium text-muted-foreground">Current Email</label>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-sm">{session?.user.email}</span>
               {session?.user.emailVerified ? (
@@ -46,44 +71,26 @@ export default function EmailSettingsPage() {
           </div>
 
           <div>
-            <label
-              htmlFor="newEmail"
-              className="text-sm font-medium text-muted-foreground"
-            >
+            <label htmlFor="newEmail" className="text-sm font-medium text-muted-foreground">
               New Email Address
             </label>
             <Input
               id="newEmail"
               name="newEmail"
               type="email"
-              className="mt-1"
-              required
               placeholder="Enter your new email address"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              A verification email will be sent to this address
-            </p>
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-muted-foreground"
-            >
-              Confirm Password
-            </label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
               className="mt-1"
               required
-              placeholder="Enter your password to confirm"
+              disabled={pending}
+              defaultValue={state.inputs?.newEmail ?? ""}
             />
+            {state.errors?.newEmail && (
+              <p className="text-xs text-red-500 mt-1">{state.errors.newEmail[0]}</p>
+            )}
           </div>
 
-          <Button type="submit" className="flex-1">
-            Update Email
+          <Button type="submit" className="flex-1" disabled={pending}>
+            {pending ? "Updating..." : "Update Email"}
           </Button>
         </form>
       </CardContent>

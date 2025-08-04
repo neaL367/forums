@@ -4,20 +4,21 @@ import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
-import { UsernameSchema } from "@/schemas/account-settings"
+import { ChangeUsernameSchema } from "@/schemas/account-settings"
 import { getUserProfileById } from "@/dal/user"
 
-import type { UsernameFormData, UsernameFormState } from "@/models/account-setting/username"
+import type { ChangeUsernameFormData, ChangeUsernameFormState } from "@/models/account-setting/username"
+import { verifySession } from "@/lib/dal"
 
 export async function UsernameSettingsAction(
-  prevState: UsernameFormState,
+  prevState: ChangeUsernameFormState,
   formData: FormData,
-): Promise<UsernameFormState> {
-  const rawData: UsernameFormData = {
+): Promise<ChangeUsernameFormState> {
+  const rawData: ChangeUsernameFormData = {
     displayUsername: formData.get("displayUsername") as string,
   }
 
-  const validated = UsernameSchema.safeParse(rawData)
+  const validated = ChangeUsernameSchema.safeParse(rawData)
 
   if (!validated.success) {
     return {
@@ -30,9 +31,7 @@ export async function UsernameSettingsAction(
   const { displayUsername } = validated.data
 
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    })
+    const session = await verifySession();
 
     const user = await getUserProfileById(session?.user.id ?? "")
 

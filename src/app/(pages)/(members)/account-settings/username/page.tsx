@@ -9,9 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 import { UsernameSettingsAction } from "@/actions/account-settings/username";
-import type { UsernameFormState } from "@/models/account-setting/username";
+import type { ChangeUsernameFormState } from "@/models/account-setting/username";
 
-const initialState: UsernameFormState = {
+const initialState: ChangeUsernameFormState = {
   success: false,
   message: "",
 };
