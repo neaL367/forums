@@ -17,8 +17,8 @@ export const getAllUsersProfile = (async (): Promise<Pick<User, "id">[]> => {
 export const getUserProfileById = (async (id: string): Promise<UserProfile> => {
     try {
       const rows = await sql`
-        SELECT id, displayUsername, image, role, bio, website, location,
-               createdAt, updatedAt, joinDate, lastActive, postCount, reputation
+        SELECT id, "displayUsername", image, role, bio, website, location,
+               "createdAt", "updatedAt", "joinDate", "lastActive", "postCount", reputation
         FROM public.user WHERE id = ${id}
         LIMIT 1;
       `
