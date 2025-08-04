@@ -13,7 +13,7 @@ export async function EmailSettingsAction(
   formData: FormData,
 ): Promise<ChangeEmailFormState> {
   const rawData: ChangeEmailFormData = {
-    newEmail: formData.get("email") as string,
+    newEmail: formData.get("newEmail") as string,
   }
 
   const validated = ChangeEmailSchema.safeParse(rawData)
