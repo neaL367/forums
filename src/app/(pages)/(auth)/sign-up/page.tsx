@@ -1,12 +1,10 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { SignUpForm } from "@/components/form/auth/sign-up";
+import { verifySession } from "@/lib/dal";
 
 export default async function SignUpPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await verifySession();
+
 
   if (session) {
     redirect("/");

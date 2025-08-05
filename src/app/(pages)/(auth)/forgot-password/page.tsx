@@ -1,13 +1,10 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { ForgotPasswordForm } from "@/components/form/auth/forgot-password";
+import { verifySession } from "@/lib/dal";
 
 export default async function ForgotPasswordPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
+  const session = await verifySession();
+  
   if (session) {
     redirect("/");
   }

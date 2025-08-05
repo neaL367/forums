@@ -1,12 +1,9 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { VerificationEmailForm } from "@/components/form/auth/verification-email";
+import { verifySession } from "@/lib/dal";
 
 export default async function VerificationEmailPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await verifySession();
 
   if (session && session.user.emailVerified) {
     redirect("/");

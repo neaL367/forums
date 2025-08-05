@@ -1,12 +1,9 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { ForgotUsernameForm } from "@/components/form/auth/forgot-username";
+import { verifySession } from "@/lib/dal";
 
 export default async function ForgotUsernamePage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await verifySession();
 
   if (session) {
     redirect("/");
