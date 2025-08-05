@@ -58,5 +58,6 @@ export async function forgotUsernameAction(prevState: ForgotUsernameFormState, f
       message: "An unexpected error occurred. Please try again.",
       inputs: rawData,
     }
+    // throw err
   }
 }

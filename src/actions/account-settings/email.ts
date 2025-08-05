@@ -42,7 +42,7 @@ export async function EmailSettingsAction(
 
     return {
       success: true,
-      message: "A verification email will be sent to this address.",
+      message: "A verification email will be sent to your current email address. Once verified, a confirmation will be sent to your new email address.",
       inputs: {},
     }
   } catch (err) {
