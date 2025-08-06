@@ -3,7 +3,7 @@
 import { APIError } from "better-auth/api"
 import { headers } from "next/headers"
 
-import { signUpSchema } from "@/schemas/auth"
+import { signUpSchema } from "@/schemas/auth/sign.up"
 import { auth } from "@/lib/auth"
 
 import type { SignUpFormData, SignUpFormState } from "@/models/auth/sign-up"

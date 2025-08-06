@@ -4,8 +4,8 @@ export default function MembersLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-center min-h-[calc(100dvh-6rem)]">
-      {children}
+    <div className="flex flex-col items-center justify-center w-full">
+      <div className="w-full max-w-7xl mx-auto">{children}</div>
     </div>
   );
 }

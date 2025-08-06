@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
-import { UsernameSettingsAction } from "@/actions/account-settings/username";
-import type { ChangeUsernameFormState } from "@/models/account-setting/username";
+import { ChangeUsernameAction } from "@/actions/account-settings/change-username";
+import type { ChangeUsernameFormState } from "@/models/account-setting/change-username";
 
 const initialState: ChangeUsernameFormState = {
   success: false,
@@ -20,7 +20,7 @@ export default function UsernameSettingsPage() {
   const router = useRouter();
   
   const { data: session, refetch } = authClient.useSession();
-  const [state, action, pending] = useActionState(UsernameSettingsAction, initialState)
+  const [state, action, pending] = useActionState(ChangeUsernameAction, initialState)
 
    useEffect(() => {
       if (state?.message) {

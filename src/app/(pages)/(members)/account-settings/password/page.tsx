@@ -8,8 +8,8 @@ import { authClient } from "@/lib/auth-client";
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ChangePasswordAction } from "@/actions/account-settings/password";
-import { ChangePasswordFormState } from "@/models/account-setting/password";
+import { ChangePasswordAction } from "@/actions/account-settings/change-password";
+import { ChangePasswordFormState } from "@/models/account-setting/change-password";
 
 const initialState: ChangePasswordFormState = {
   success: false,

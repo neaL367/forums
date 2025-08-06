@@ -3,7 +3,7 @@
 import { APIError } from "better-auth/api"
 import { headers } from "next/headers"
 
-import { forgotPasswordSchema } from "@/schemas/auth"
+import { forgotPasswordSchema } from "@/schemas/auth/forgot-password"
 import { auth } from "@/lib/auth"
 
 import type { ForgotPasswordFormData, ForgotPasswordFormState } from "@/models/auth/forgot-password"

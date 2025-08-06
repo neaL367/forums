@@ -10,8 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 import { authClient } from "@/lib/auth-client";
-import { EmailSettingsAction } from "@/actions/account-settings/email";
-import type { ChangeEmailFormState } from "@/models/account-setting/email";
+import { ChangeEmailAction } from "@/actions/account-settings/change-email";
+import type { ChangeEmailFormState } from "@/models/account-setting/change-email";
 
 const initialState: ChangeEmailFormState = {
   success: false,
@@ -22,7 +22,7 @@ export default function EmailSettingsPage() {
   const router = useRouter();
   const { data: session, refetch } = authClient.useSession();
 
-  const [state, action, pending] = useActionState(EmailSettingsAction, initialState);
+  const [state, action, pending] = useActionState(ChangeEmailAction , initialState);
 
   useEffect(() => {
     if (state?.message) {

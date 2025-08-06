@@ -3,7 +3,7 @@
 import { APIError } from "better-auth/api"
 
 import { sendUsernameReminderEmail } from "@/lib/email"
-import { forgotUsernameSchema } from "@/schemas/auth"
+import { forgotUsernameSchema } from "@/schemas/auth/forgot-username"
 import { forgotUsername } from "@/dal/auth"
 
 import type { ForgotUsernameFormData, ForgotUsernameFormState } from "@/models/auth/forgot-username"

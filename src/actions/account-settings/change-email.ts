@@ -4,11 +4,11 @@ import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
-import { ChangeEmailFormData, ChangeEmailFormState } from "@/models/account-setting/email"
-import { ChangeEmailSchema } from "@/schemas/account-settings"
+import { ChangeEmailSchema } from "@/schemas/account-settings/change-email"
+import type { ChangeEmailFormData, ChangeEmailFormState } from "@/models/account-setting/change-email"
 
 
-export async function EmailSettingsAction(
+export async function ChangeEmailAction(
   prevState: ChangeEmailFormState,
   formData: FormData,
 ): Promise<ChangeEmailFormState> {

@@ -7,7 +7,7 @@ export default async function SignInPage() {
 
   if (session) {
     redirect("/");
+  } else {
+    return <SignInForm />;
   }
-
-  return <SignInForm />;
 }

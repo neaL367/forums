@@ -7,7 +7,7 @@ export default async function VerificationEmailPage() {
 
   if (session && session.user.emailVerified) {
     redirect("/");
+  } else {
+    return <VerificationEmailForm />;
   }
-
-  return <VerificationEmailForm />;
 }

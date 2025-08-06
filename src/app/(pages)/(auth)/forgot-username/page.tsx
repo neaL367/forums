@@ -7,7 +7,7 @@ export default async function ForgotUsernamePage() {
 
   if (session) {
     redirect("/");
+  } else {
+    return <ForgotUsernameForm />;
   }
-
-  return <ForgotUsernameForm />;
 }

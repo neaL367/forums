@@ -3,14 +3,15 @@
 import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache"
 import { headers } from "next/headers"
+
 import { auth } from "@/lib/auth"
-import { ChangeUsernameSchema } from "@/schemas/account-settings"
-import { getUserProfileById } from "@/dal/user"
-
-import type { ChangeUsernameFormData, ChangeUsernameFormState } from "@/models/account-setting/username"
 import { verifySession } from "@/lib/dal"
+import { getUserProfileById } from "@/dal/user"
+import { ChangeUsernameSchema } from "@/schemas/account-settings/change-username"
 
-export async function UsernameSettingsAction(
+import type { ChangeUsernameFormData, ChangeUsernameFormState } from "@/models/account-setting/change-username"
+
+export async function ChangeUsernameAction(
   prevState: ChangeUsernameFormState,
   formData: FormData,
 ): Promise<ChangeUsernameFormState> {

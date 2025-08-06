@@ -16,7 +16,7 @@ export default function Layout({
   password: React.ReactNode;
 }) {
   return (
-    <div className="max-w-6xl min-h-[calc(100dvh)] my-10 mx-auto p-6">
+    <div className="max-w-7xl min-h-[calc(100dvh)] my-10 mx-auto p-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-white mb-2">
           Account Settings
