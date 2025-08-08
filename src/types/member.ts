@@ -1,6 +1,6 @@
 export type Roles = "MEMBERS" | "ADMINISTRATOR" | "MODERATOR" | "OWNER" | "STAFF" | "GUEST";
 
-export type User = {
+export type Member = {
     createdAt: Date;
     updatedAt: Date;
     joinDate: Date;
@@ -25,7 +25,7 @@ export type User = {
     banExpiresAt: Date | null;
 };
 
-export type UserProfile = {
+export type MemberProfile = {
     createdAt: Date;
     updatedAt: Date;
     joinDate: Date;

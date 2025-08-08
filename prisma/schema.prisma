@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
   // output = "../src/app/generated/prisma"
 }
 
@@ -23,7 +23,7 @@ enum Role {
   GUEST
 }
 
-model User {
+model Member {
   id            String    @id @default(uuid())
   name          String
   email         String
@@ -51,7 +51,7 @@ model User {
 
   @@unique([email])
   @@unique([name])
-  @@map("user")
+  @@map("member")
 }
 
 model Session {
@@ -62,8 +62,8 @@ model Session {
   updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  memberId  String
+  member    Member    @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
   @@unique([token])
   @@map("session")
@@ -73,8 +73,8 @@ model Account {
   id                    String    @id @default(uuid())
   accountId             String
   providerId            String
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  memberId              String
+  member                Member     @relation(fields: [memberId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?

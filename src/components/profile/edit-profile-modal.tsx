@@ -1,11 +1,9 @@
 'use client'
 
+import { toast } from 'sonner'
 import { useState, useEffect } from 'react'
 import { useActionState } from 'react'
-import { toast } from 'sonner'
-import { updateProfileAction } from '@/actions/profile/update-profile'
-import type { UserProfile } from '@/types/user'
-import type { UpdateProfileFormState } from '@/models/profile/update-profile'
+
 import {
   Dialog, DialogTrigger, DialogContent,
   DialogHeader, DialogTitle, DialogDescription,
@@ -17,12 +15,16 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { authClient } from '@/lib/auth-client'
 
+import { updateProfileAction } from '@/actions/profile/update-profile'
+import type { MemberProfile } from '@/types/member'
+import type { UpdateProfileFormState } from '@/models/profile/update-profile'
+
 const initialState: UpdateProfileFormState = {
   success: false,
   message: '',
 }
 
-export function EditProfileModal({ user }: { user: UserProfile }) {
+export function EditProfileModal({ member }: { member: MemberProfile }) {
   const [open, setOpen] = useState(false)
   const { refetch } = authClient.useSession();
   
@@ -34,8 +36,8 @@ export function EditProfileModal({ user }: { user: UserProfile }) {
   useEffect(() => {
     if (state.success) {
       toast.success(state.message ?? 'Saved successfully')
-      refetch()
       setOpen(false)
+      refetch()
     } 
   }, [state.success, state.resetKey, state.message, refetch]) 
 
@@ -58,8 +60,8 @@ export function EditProfileModal({ user }: { user: UserProfile }) {
               name="image"
               defaultValue={
                 !state.success
-                  ? state.inputs?.image ?? user.image ?? ''
-                  : user.image ?? ''
+                  ? state.inputs?.image ?? member.image ?? ''
+                  : member.image ?? ''
               }
             />
             {state.errors?.image && (
@@ -76,8 +78,8 @@ export function EditProfileModal({ user }: { user: UserProfile }) {
               maxLength={500}
               defaultValue={
                 !state.success
-                  ? state.inputs?.bio ?? user.bio ?? ''
-                  : user.bio ?? ''
+                  ? state.inputs?.bio ?? member.bio ?? ''
+                  : member.bio ?? ''
               }
             />
             {state.errors?.bio && (
@@ -93,8 +95,8 @@ export function EditProfileModal({ user }: { user: UserProfile }) {
               maxLength={100}
               defaultValue={
                 !state.success
-                  ? state.inputs?.location ?? user.location ?? ''
-                  : user.location ?? ''
+                  ? state.inputs?.location ?? member.location ?? ''
+                  : member.location ?? ''
               }
             />
             {state.errors?.location && (
@@ -112,8 +114,8 @@ export function EditProfileModal({ user }: { user: UserProfile }) {
               type="url"
               defaultValue={
                 !state.success
-                  ? state.inputs?.website ?? user.website ?? ''
-                  : user.website ?? ''
+                  ? state.inputs?.website ?? member.website ?? ''
+                  : member.website ?? ''
               }
             />
             {state.errors?.website && (

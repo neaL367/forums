@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { verifySession } from "@/lib/dal";
 
 export default async function AccountOverviewPage() {
-  const session = await verifySession()
+  const session = await verifySession();
 
   return (
     <div className="space-y-6">
@@ -61,12 +61,14 @@ export default async function AccountOverviewPage() {
                         Verified
                       </Badge>
                     ) : (
-                      <Badge
-                        variant="secondary"
-                        className="bg-red-500 text-white dark:bg-red-600 text-xs"
-                      >
-                        Not Verified
-                      </Badge>
+                      <Link href="/verification-email">
+                        <Badge
+                          variant="secondary"
+                          className="bg-red-500 text-white dark:bg-red-600 text-xs"
+                        >
+                          Not Verified
+                        </Badge>
+                      </Link>
                     )}
                   </h3>
                   <div className="flex items-center gap-2 mt-1">

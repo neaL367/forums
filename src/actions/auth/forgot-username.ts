@@ -7,7 +7,7 @@ import { forgotUsernameSchema } from "@/schemas/auth/forgot-username"
 import { forgotUsername } from "@/dal/auth"
 
 import type { ForgotUsernameFormData, ForgotUsernameFormState } from "@/models/auth/forgot-username"
-import type { User } from "@/types/user"
+import type { Member } from "@/types/member"
 
 
 export async function forgotUsernameAction(prevState: ForgotUsernameFormState, formData: FormData,): Promise<ForgotUsernameFormState> {
@@ -28,9 +28,9 @@ export async function forgotUsernameAction(prevState: ForgotUsernameFormState, f
   const { email } = validated.data
 
   try {
-    const user: User = await forgotUsername(email)
+    const member : Member = await forgotUsername(email)
 
-    if (!user) {
+    if (!member) {
       return {
         success: false,
         message: "Your email address is not associated with any account.",
@@ -38,7 +38,7 @@ export async function forgotUsernameAction(prevState: ForgotUsernameFormState, f
       }
     }
 
-    await sendUsernameReminderEmail(user.email, user.username, user.name)
+    await sendUsernameReminderEmail(member.email, member.username, member.name)
 
     return {
       success: true,

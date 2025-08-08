@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useActionState, useEffect } from "react";
@@ -22,7 +23,10 @@ export default function EmailSettingsPage() {
   const router = useRouter();
   const { data: session, refetch } = authClient.useSession();
 
-  const [state, action, pending] = useActionState(ChangeEmailAction , initialState);
+  const [state, action, pending] = useActionState(
+    ChangeEmailAction,
+    initialState
+  );
 
   useEffect(() => {
     if (state?.message) {
@@ -49,7 +53,9 @@ export default function EmailSettingsPage() {
           <input type="hidden" name="userId" value={session?.user.id ?? ""} />
 
           <div>
-            <label className="text-sm font-medium text-muted-foreground">Current Email</label>
+            <label className="text-sm font-medium text-muted-foreground">
+              Current Email
+            </label>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-sm">{session?.user.email}</span>
               {session?.user.emailVerified ? (
@@ -60,18 +66,23 @@ export default function EmailSettingsPage() {
                   Verified
                 </Badge>
               ) : (
-                <Badge
-                  variant="secondary"
-                  className="bg-red-500 text-white dark:bg-red-600"
-                >
-                  Not Verified
-                </Badge>
+                <Link href="/verification-email">
+                  <Badge
+                    variant="secondary"
+                    className="bg-red-500 text-white dark:bg-red-600 text-xs"
+                  >
+                    Not Verified
+                  </Badge>
+                </Link>
               )}
             </div>
           </div>
 
           <div>
-            <label htmlFor="newEmail" className="text-sm font-medium text-muted-foreground">
+            <label
+              htmlFor="newEmail"
+              className="text-sm font-medium text-muted-foreground"
+            >
               New Email Address
             </label>
             <Input
@@ -85,7 +96,9 @@ export default function EmailSettingsPage() {
               defaultValue={state.inputs?.newEmail ?? ""}
             />
             {state.errors?.newEmail && (
-              <p className="text-xs text-red-500 mt-1">{state.errors.newEmail[0]}</p>
+              <p className="text-xs text-red-500 mt-1">
+                {state.errors.newEmail[0]}
+              </p>
             )}
           </div>
 
