@@ -20,9 +20,9 @@ export type Member = {
     postCount: number;
     reputation: number;
     
-    isBanned: boolean;
-    banReson: string | null;
-    banExpiresAt: Date | null;
+    banned: boolean;
+    banExpires: Date | null;
+    banReason: string | null;
 };
 
 export type MemberProfile = {

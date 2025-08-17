@@ -1,10 +1,11 @@
 import { betterAuth } from "better-auth";
-import { username } from "better-auth/plugins/username";
+import { admin, username } from "better-auth/plugins"
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { nextCookies } from "better-auth/next-js";
 import { PrismaClient } from "@prisma/client";
+import { nextCookies } from "better-auth/next-js";
 
 import { sendChangeEmailVerification, sendResetPasswordEmail, sendVerificationEmail } from "@/lib/email";
+import { ac, roles } from "@lib/permissions";
 
 const prisma = new PrismaClient();
 
@@ -19,7 +20,6 @@ export const auth = betterAuth({
         sendResetPassword: async ({ user, url }) => {
             await sendResetPasswordEmail(user.email, url, user.name);
         },
-
     },
     emailVerification: {
         sendOnSignUp: true,
@@ -71,5 +71,14 @@ export const auth = betterAuth({
             generateId: false,
         },
     },
-    plugins: [username(), nextCookies()],
+    plugins: [
+        username(),
+        nextCookies(),
+        admin({
+            defaultRole: "MEMBERS",
+            adminRoles: ["ADMINISTRATOR"],
+            ac,
+            roles,
+            impersonationSessionDuration: 60 * 60 * 24, // 1 day
+        }),],
 })

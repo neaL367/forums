@@ -1,0 +1,42 @@
+"use server"
+
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth"
+
+export async function banMemberAction(memberId: string, banReason?: string, banExpiresIn?: number) {
+  try {
+    await auth.api.banUser({
+      body: { userId: memberId, banReason: banReason, banExpiresIn: banExpiresIn },
+      headers: await headers(),
+    });
+
+    return {
+      success: true,
+      message: "Member banned successfully.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "An unexpected error occurred.",
+    };
+  }
+}
+
+export async function unbanMemberAction(memberId: string) {
+  try {
+    await auth.api.unbanUser({
+      body: { userId: memberId },
+      headers: await headers(),
+    });
+
+    return {
+      success: true,
+      message: "Member unbanned successfully.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "An unexpected error occurred.",
+    };
+  }
+}
