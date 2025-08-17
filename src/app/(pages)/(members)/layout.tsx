@@ -5,7 +5,7 @@ export default function MembersLayout({
 }) {
   return (
     <div className="flex flex-col items-center justify-center w-full">
-      <div className="w-full max-w-7xl mx-auto">{children}</div>
+      <div className="w-full max-w-7xl mx-auto p-6 my-10">{children}</div>
     </div>
   );
 }

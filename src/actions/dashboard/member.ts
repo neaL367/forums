@@ -1,5 +1,6 @@
 "use server"
 
+import { APIError } from "better-auth/api"
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
 
@@ -30,7 +31,7 @@ export async function setMemberRoleAction(memberId: string, role: "ADMINISTRATOR
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : "An unexpected error occurred.",
+      message: error instanceof APIError ? error.body?.message || error.message : "An unexpected error occurred.",
     };
   }
 }
@@ -49,7 +50,7 @@ export async function setMemberPasswordAction(memberId: string, newPassword: str
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : "An unexpected error occurred.",
+      message: error instanceof APIError ? error.body?.message || error.message : "An unexpected error occurred.",
     };
   }
 }
@@ -74,7 +75,7 @@ export async function listMembersAction(params: ListMembersParams = {}) {
 
     return {
       success: true,
-      users: res.users,
+      members: res.users,
       total: res.total,
       limit: ('limit' in res ? res.limit : undefined) ?? params.limit,
       offset: ('offset' in res ? res.offset : undefined) ?? params.offset,
@@ -83,8 +84,8 @@ export async function listMembersAction(params: ListMembersParams = {}) {
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
+        error instanceof APIError
+          ? error.body?.message || error.message
           : "An unexpected error occurred while fetching members.",
     };
   }
@@ -104,7 +105,7 @@ export async function removeMemberAction(memberId: string) {
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : "An unexpected error occurred.",
+      message: error instanceof APIError ? error.body?.message || error.message : "An unexpected error occurred.",
     };
   }
 }

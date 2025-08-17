@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ChevronDown, User, Settings, Bell } from "lucide-react"
+import { ChevronDown, User, Settings, Bell, LayoutDashboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -61,6 +61,14 @@ export function UserMenu() {
                 Profile
               </Link>
             </DropdownMenuItem>
+            {session.user.role === "ADMINISTRATOR" && (
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard" className="flex items-center gap-2">
+                  <LayoutDashboard className="h-4 w-4" />
+                  Dashboard
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem asChild>
               <Link href="/account-settings" className="flex items-center gap-2">
                 <Settings className="h-4 w-4" />

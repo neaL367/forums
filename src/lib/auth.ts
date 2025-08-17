@@ -1,5 +1,5 @@
-import { betterAuth } from "better-auth";
-import { admin, username } from "better-auth/plugins"
+import { betterAuth, BetterAuthOptions } from "better-auth";
+import { admin, customSession, username } from "better-auth/plugins"
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
 import { nextCookies } from "better-auth/next-js";
@@ -9,13 +9,12 @@ import { ac, roles } from "@lib/permissions";
 
 const prisma = new PrismaClient();
 
-export const auth = betterAuth({
+const options = {
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
     emailAndPassword: {
         enabled: true,
-        autoSignInAfterSignUp: true,
         requireEmailVerification: false,
         sendResetPassword: async ({ user, url }) => {
             await sendResetPasswordEmail(user.email, url, user.name);
@@ -62,7 +61,7 @@ export const auth = betterAuth({
         // As a workaround, set updateAge to a large value for now.
         updateAge: 60 * 60 * 24 * 7, // 7 days (every 7 days the session expiration is updated)
         cookieCache: {
-            enabled: true,
+            enabled: process.env.NODE_ENV === 'production',
             maxAge: 5 * 60,
         },
     },
@@ -81,4 +80,31 @@ export const auth = betterAuth({
             roles,
             impersonationSessionDuration: 60 * 60 * 24, // 1 day
         }),],
-})
+} satisfies BetterAuthOptions;
+
+export const auth = betterAuth({
+    ...options,
+    plugins: [
+        ...(options.plugins ?? []),
+        customSession(async ({ user, session }) => {
+            return {
+                session: {
+                    expiresAt: session.expiresAt,
+                    token: session.token,
+                    userAgent: session.userAgent,
+                },
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    image: user.image,
+                    createdAt: user.createdAt,
+                    role: user.role,
+                    username: user.username,
+                    displayUsername: user.displayUsername,
+                    emailVerified: user.emailVerified,
+                },
+            };
+        }, options),
+    ],
+});
