@@ -4,10 +4,10 @@ import { APIError } from "better-auth/api"
 
 import { sendUsernameReminderEmail } from "@/lib/email"
 import { forgotUsernameSchema } from "@/schemas/auth/forgot-username"
-import { forgotUsername } from "@/dal/auth"
+import { forgotUsername } from "@/database/auth"
 
 import type { ForgotUsernameFormData, ForgotUsernameFormState } from "@/models/auth/forgot-username"
-import type { Member } from "@/types/member"
+import type { Members } from "@/types/member"
 
 
 export async function forgotUsernameAction(prevState: ForgotUsernameFormState, formData: FormData,): Promise<ForgotUsernameFormState> {
@@ -28,7 +28,7 @@ export async function forgotUsernameAction(prevState: ForgotUsernameFormState, f
   const { email } = validated.data
 
   try {
-    const member : Member = await forgotUsername(email)
+    const member : Members = await forgotUsername(email)
 
     if (!member) {
       return {

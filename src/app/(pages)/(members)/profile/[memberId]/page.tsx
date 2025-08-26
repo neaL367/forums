@@ -2,8 +2,8 @@ import { unstable_cache } from "next/cache"
 import { notFound } from "next/navigation"
 
 import { verifySession } from "@/lib/dal"
-import { getUserProfileById } from "@/dal/user"
-import { Profile } from "@/components/profile/profile"
+import { getUserProfileById } from "@/database/user"
+import { Profile } from "@/components/pages/profile/profile"
 
 import type { MemberProfile } from "@/types/member"
 

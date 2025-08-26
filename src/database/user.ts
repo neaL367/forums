@@ -1,12 +1,12 @@
 import "server-only"
 
 import { sql } from '@/lib/dal'
-import type { Member, MemberProfile } from '@/types/member'
+import type { Members, MemberProfile } from '@/types/member'
 
-export const getAllUsersProfile = (async (): Promise<Pick<Member, "id">[]> => {
+export const getAllUsersProfile = (async (): Promise<Pick<Members, "id">[]> => {
   try {
     const rows = await sql`SELECT id FROM public.member;`
-    return rows as Pick<Member, "id">[]
+    return rows as Pick<Members, "id">[]
   } catch (error) {
     console.error("Error fetching all members (public):", error)
     throw new Error("Failed to fetch members")

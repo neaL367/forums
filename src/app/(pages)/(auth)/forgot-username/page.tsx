@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { ForgotUsernameForm } from "@/components/form/auth/forgot-username";
+import { ForgotUsernameForm } from "@/components/pages/auth/forgot-username";
 import { verifySession } from "@/lib/dal";
 
 export default async function ForgotUsernamePage() {

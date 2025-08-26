@@ -2,7 +2,7 @@
 
 import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache"
-import { getUserProfileById, updateUserProfile } from "@/dal/user"
+import { getUserProfileById, updateUserProfile } from "@/database/user"
 import { verifySession } from "@/lib/dal"
 import { UpdateProfileFormData, UpdateProfileFormState } from "@/models/profile/update-profile"
 import { UpdateProfileSchema } from "@/schemas/profile/update-profile"
@@ -18,7 +18,6 @@ export async function updateProfileAction(
     website: formData.get("website") as string || undefined,
   }
 
-  // Clean up empty strings to undefined
   if (rawData.image === "") rawData.image = undefined
   if (rawData.bio === "") rawData.bio = undefined
   if (rawData.location === "") rawData.location = undefined

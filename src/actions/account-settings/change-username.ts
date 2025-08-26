@@ -6,7 +6,7 @@ import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
 import { verifySession } from "@/lib/dal"
-import { getUserProfileById } from "@/dal/user"
+import { getUserProfileById } from "@/database/user"
 import { ChangeUsernameSchema } from "@/schemas/account-settings/change-username"
 
 import type { ChangeUsernameFormData, ChangeUsernameFormState } from "@/models/account-setting/change-username"

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import { verifySession } from "@/lib/dal"
-import { Stats } from "@/components/dashboard/stats"
+import { Stats } from "@/components/pages/dashboard/stats"
 import { listMembersAction } from "@/actions/dashboard/member"
 
 export default async function DashboardPage() {

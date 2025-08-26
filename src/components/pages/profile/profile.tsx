@@ -2,7 +2,7 @@ import { format } from "date-fns"
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar"
 import { MapPin, Globe, Calendar, Activity, MessageSquare, Trophy, FileText } from "lucide-react"
 
-import { EditProfileModal } from "@/components/profile/edit-profile-modal"
+import { EditProfileModal } from "@/components/pages/profile/edit-profile-modal"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import type { MemberProfile } from "@/types/member"

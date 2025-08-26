@@ -35,7 +35,7 @@ export default function RootLayout({
           <Toaster position="top-center" richColors />
           <div className="w-full flex flex-col">
             <Header />
-            <main className="">{children}</main>
+            <main>{children}</main>
           </div>
         </ThemeProvider>
       </body>
