@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Search from "@/components/header/search";
+import { Search } from "@/components/header/search";
 
 import Members from "@/components/pages/search/members";
 import Forums from "@/components/pages/search/forums";

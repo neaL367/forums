@@ -18,50 +18,65 @@ const initialState: ChangeUsernameFormState = {
 
 export default function UsernameSettingsForm() {
   const router = useRouter();
-  
-  const { data: session, refetch } = authClient.useSession();
-  const [state, action, pending] = useActionState(ChangeUsernameAction, initialState)
 
-   useEffect(() => {
-      if (state?.message) {
-        if (state.success) {
-          toast.success(state.message);
-          
-          router.push("/account-settings");
-          refetch();
-        } else {
-          toast.error(state.message);
-        }
+  const { data: session, refetch } = authClient.useSession();
+  const [state, action, pending] = useActionState(
+    ChangeUsernameAction,
+    initialState
+  );
+
+  useEffect(() => {
+    if (state?.message) {
+      if (state.success) {
+        toast.success(state.message);
+
+        router.push("/account-settings");
+        refetch();
+      } else {
+        toast.error(state.message);
       }
-    }, [refetch, router, state]);
+    }
+  }, [refetch, router, state]);
 
   return (
-    <Card>
+    <Card className="from-primary/5 to-card dark:bg-card bg-gradient-to-t shadow-xs">
       <CardHeader>
         <CardTitle className="text-lg">Change Username</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Update your username. This will change how others see you on the platform.
+          Update your username. This will change how others see you on the
+          platform.
         </p>
       </CardHeader>
       <CardContent>
         <form action={action} className="space-y-4">
           <div>
-            <label htmlFor="displayUsername" className="text-sm font-medium text-muted-foreground">
+            <label
+              htmlFor="displayUsername"
+              className="text-sm font-medium text-muted-foreground"
+            >
               Display Username
             </label>
             <Input
               id="displayUsername"
               name="displayUsername"
-              defaultValue={state.inputs?.displayUsername ?? session?.user.displayUsername ?? ""}
+              defaultValue={
+                state.inputs?.displayUsername ??
+                session?.user.displayUsername ??
+                ""
+              }
               className="mt-1"
               required
               placeholder="Enter your display username"
               disabled={pending}
             />
             {state.errors?.displayUsername && (
-              <p className="text-xs text-red-500 mt-1">{state.errors.displayUsername[0]}</p>
+              <p className="text-xs text-red-500 mt-1">
+                {state.errors.displayUsername[0]}
+              </p>
             )}
-            <p className="text-xs text-muted-foreground mt-1">This is how your name will appear to other users</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              This is how your name will appear to other users
+            </p>
           </div>
 
           <Button type="submit" className="flex-1" disabled={pending}>

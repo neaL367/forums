@@ -18,7 +18,7 @@ export default function AccountSettingsSidebar() {
   const pathname = usePathname();
 
   return (
-    <Card>
+    <Card className="from-primary/5 to-card dark:bg-card bg-gradient-to-t shadow-xs">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <Settings className="w-5 h-5" />

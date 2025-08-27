@@ -29,7 +29,7 @@ export function UserMenu() {
       {/* User Avatar Dropdown or Loading/Sign In */}
       {isPending ? (
         <div className="flex items-center gap-2 h-8 px-2">
-          <div className="h-6 w-6 rounded-full bg-zinc-700 animate-pulse"></div>
+          <div className="hidden lg:block h-6 w-6 rounded-full bg-zinc-700 animate-pulse"></div>
           <div className="h-4 w-16 bg-zinc-700 rounded animate-pulse"></div>
         </div>
       ) : session?.user ? (
@@ -40,7 +40,7 @@ export function UserMenu() {
               className="flex items-center gap-2 h-8 px-2 text-white hover:bg-zinc-800"
               disabled={isPending}
             >
-              <Avatar>
+              <Avatar className="hidden lg:block">
                 <AvatarImage src={session.user.image || ""} alt={`${session.user.displayUsername}'s avatar`} />
                 <AvatarFallback>{session.user.displayUsername?.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>

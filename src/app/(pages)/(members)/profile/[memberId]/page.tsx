@@ -10,12 +10,12 @@ import type { MemberProfile } from "@/types/member"
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: Promise<{ memberId: string }>
 }) {
-  const { id } = await params
-  if (!id) return { title: "Profile Not Found" }
+  const { memberId } = await params
+  if (!memberId) return { title: "Profile Not Found" }
 
-  const member: Pick<MemberProfile, "displayUsername"> = await getUserProfileById(id)
+  const member: Pick<MemberProfile, "displayUsername"> = await getUserProfileById(memberId)
 
   if (!member) return { title: "Profile Not Found" }
 

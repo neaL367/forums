@@ -41,7 +41,7 @@ export default function EmailSettingsForm() {
   }, [state, refetch, router]);
 
   return (
-    <Card>
+    <Card className="from-primary/5 to-card dark:bg-card bg-gradient-to-t shadow-xs">
       <CardHeader>
         <CardTitle className="text-lg">Change Email</CardTitle>
         <p className="text-sm text-muted-foreground">

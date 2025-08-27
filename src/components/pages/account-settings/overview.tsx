@@ -12,7 +12,7 @@ export default async function AccountOverview() {
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <Card>
+        <Card className="from-primary/5 to-card dark:bg-card bg-gradient-to-t shadow-xs">
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row gap-5 items-center justify-between">
               <div className="flex flex-col sm:flex-row text-center sm:text-start items-center gap-4">
@@ -43,7 +43,7 @@ export default async function AccountOverview() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="from-primary/5 to-card dark:bg-card bg-gradient-to-t shadow-xs">
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row gap-5 items-center justify-between">
               <div className="flex flex-col sm:flex-row text-center sm:text-start items-center gap-4">
@@ -93,7 +93,7 @@ export default async function AccountOverview() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="from-primary/5 to-card dark:bg-card bg-gradient-to-t shadow-xs">
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row gap-5 items-center justify-between">
               <div className="flex flex-col sm:flex-row text-center sm:text-start items-center gap-4">

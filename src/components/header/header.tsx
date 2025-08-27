@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { UserMenu } from "@/components/header/member-menu";
-import SearchBar from "@/components/header/search";
+import { Search } from "@/components/header/search";
 
 export function Header() {
   return (
@@ -17,7 +17,7 @@ export function Header() {
           </div>
         </Link>
         <Suspense fallback={null}>
-          <SearchBar />
+          <Search />
         </Suspense>
 
         <UserMenu />

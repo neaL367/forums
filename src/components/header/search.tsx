@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function Search() {
+export function Search() {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
 
@@ -33,7 +33,7 @@ export default function Search() {
   }, 300)
 
   return (
-    <div className="relative flex items-center gap-2 flex-1 max-w-2xl">
+    <div className="relative hidden lg:flex items-center gap-2 flex-1 max-w-2xl">
       <Input
         type="search"
         placeholder="Search forums, members or topics..."
