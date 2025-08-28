@@ -1,5 +1,5 @@
-import { Suspense } from "react";
-import { Search } from "@/components/header/search";
+// import { Suspense } from "react";
+// import { Search } from "@/components/header/search";
 
 import Members from "@/components/pages/search/members";
 import Forums from "@/components/pages/search/forums";
@@ -19,9 +19,9 @@ export default async function SearchPage(props: {
     <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
       <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:gap-8">
         <h1 className="text-3xl font-bold tracking-tight">Search Results</h1>
-        <Suspense fallback={<div>Loading search bar...</div>}>
+        {/* <Suspense fallback={<div>Loading search bar...</div>}>
           <Search />
-        </Suspense>
+        </Suspense> */}
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3 md:grid-cols-2">

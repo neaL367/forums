@@ -37,7 +37,7 @@ export function Search() {
       <Input
         type="search"
         placeholder="Search forums, members or topics..."
-        className="w-full bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400 pr-10"
+        className="w-full bg-zinc-800  text-white placeholder:text-zinc-400 pr-10"
         onChange={(e) => {
           handleSearch(e.target.value, searchType);
         }}
@@ -57,10 +57,10 @@ export function Search() {
         }}
         defaultValue={searchType}
       >
-        <SelectTrigger className="w-[120px] bg-zinc-800 border-zinc-700 text-white">
+        <SelectTrigger className="w-[120px]   text-white">
           <SelectValue placeholder="Category" />
         </SelectTrigger>
-        <SelectContent className="bg-zinc-800 border-zinc-700 text-white">
+        <SelectContent className=" text-white">
           <SelectItem value="all">All</SelectItem>
           <SelectItem value="members">Members</SelectItem>
           <SelectItem value="forums">Forums</SelectItem>
