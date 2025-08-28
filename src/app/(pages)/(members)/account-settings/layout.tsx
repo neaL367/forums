@@ -1,16 +1,6 @@
 import AccountSettingsSidebar from "@/components/pages/account-settings/sidebar-navigation";
 
-export default function Layout({
-  children,
-  username,
-  email,
-  password,
-}: {
-  children: React.ReactNode;
-  username: React.ReactNode;
-  email: React.ReactNode;
-  password: React.ReactNode;
-}) {
+export default function AccountSettingsLayout(props: LayoutProps<'/account-settings'>) {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-6">
@@ -28,10 +18,10 @@ export default function Layout({
         </div>
         
         <div className="lg:col-span-3 space-y-6">
-          {username}
-          {children}
-          {email}
-          {password}
+          {props.username}
+          {props.children}
+          {props.email}
+          {props.password}
         </div>
       </div>
     </div>
