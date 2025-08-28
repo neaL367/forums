@@ -1,48 +1,47 @@
-import { unstable_cache } from "next/cache"
-import { notFound } from "next/navigation"
+import { unstable_cache } from "next/cache";
+import { notFound } from "next/navigation";
 
-import { verifySession } from "@/lib/dal"
-import { getUserProfileById } from "@/database/user"
-import { Profile } from "@/components/pages/profile/profile"
+import { verifySession } from "@/lib/dal";
+import { getMemberProfileById } from "@/database/members";
+import { ProfileClient } from "@/components/pages/profile/profile-client";
 
-import type { MemberProfile } from "@/types/member"
+import type { MemberProfile } from "@/types/member";
+import type { Metadata } from 'next'
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ memberId: string }>
-}) {
-  const { memberId } = await params
-  if (!memberId) return { title: "Profile Not Found" }
+type Props = {
+  params: Promise<{ memberId: string }>;
+};
 
-  const member: Pick<MemberProfile, "displayUsername"> = await getUserProfileById(memberId)
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { memberId } = await params;
+  if (!memberId) return { title: "Profile Not Found" };
 
-  if (!member) return { title: "Profile Not Found" }
+  const member: Pick<MemberProfile, "displayUsername"> =
+    await getMemberProfileById(memberId);
+
+  if (!member) return { title: "Profile Not Found" };
 
   return {
     title: `${member.displayUsername}'s Profile`,
-  }
+  };
 }
 
-export default async function ProfilePage({
-  params,
-}: {
-  params: Promise<{ memberId: string }>
-}) {
-  const session = await verifySession()
-  const { memberId } = await params
+export default async function ProfilePage({ params }: Props) {
+  const session = await verifySession();
+  const { memberId } = await params;
 
-  if (!memberId) return notFound()
+  if (!memberId) return notFound();
 
-  const getCachedUserProfile = unstable_cache(async (memberId) => getUserProfileById(memberId), [memberId], {
-    tags: ["profile"],
-    revalidate: 60,
-  })
+  const getCachedUserProfile = unstable_cache(
+    async (memberId: string) => getMemberProfileById(memberId),
+    [memberId],
+    { tags: ["profile"], revalidate: 60 }
+  );
 
-  const member = await getCachedUserProfile(memberId)
-  if (!member) return notFound()
+  const member = await getCachedUserProfile(memberId);
+  if (!member) return notFound();
 
-  const isOwnProfile = session?.user?.id === memberId
+  const isOwnProfile = session?.user?.id === memberId;
 
-  return <Profile member={member} isOwnProfile={isOwnProfile} />
+  return <ProfileClient member={member} isOwnProfile={isOwnProfile} />;
 }

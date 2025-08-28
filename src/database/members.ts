@@ -3,7 +3,7 @@ import "server-only"
 import { sql } from '@/lib/dal'
 import type { Members, MemberProfile } from '@/types/member'
 
-export const getAllUsersProfile = (async (): Promise<Pick<Members, "id">[]> => {
+export const getAllMembersProfile = (async (): Promise<Pick<Members, "id">[]> => {
   try {
     const rows = await sql`SELECT id FROM public.member;`
     return rows as Pick<Members, "id">[]
@@ -14,7 +14,7 @@ export const getAllUsersProfile = (async (): Promise<Pick<Members, "id">[]> => {
 }
 )
 
-export const getUserProfileById = (async (id: string): Promise<MemberProfile> => {
+export const getMemberProfileById = (async (id: string): Promise<MemberProfile> => {
   try {
     const rows = await sql`
         SELECT id, "displayUsername", image, role, bio, website, location,
@@ -35,7 +35,7 @@ export const getUserProfileById = (async (id: string): Promise<MemberProfile> =>
 )
 
 
-export async function getUserByUsername(query: string): Promise<MemberProfile[]> {
+export async function getMemberByUsername(query: string): Promise<MemberProfile[]> {
   try {
     // Use ILIKE for case-insensitive partial matching on displayUsername
     const rows = await sql`
@@ -54,7 +54,7 @@ export async function getUserByUsername(query: string): Promise<MemberProfile[]>
 
 
 
-export const updateUserProfile = async (
+export const updateMemberProfile = async (
   id: string,
   updates: {
     image?: string | null;

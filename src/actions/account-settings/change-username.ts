@@ -6,7 +6,7 @@ import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
 import { verifySession } from "@/lib/dal"
-import { getUserProfileById } from "@/database/user"
+import { getMemberProfileById } from "@/database/members"
 import { ChangeUsernameSchema } from "@/schemas/account-settings/change-username"
 
 import type { ChangeUsernameFormData, ChangeUsernameFormState } from "@/models/account-setting/change-username"
@@ -34,7 +34,7 @@ export async function ChangeUsernameAction(
   try {
     const session = await verifySession();
 
-    const user = await getUserProfileById(session?.user.id ?? "")
+    const user = await getMemberProfileById(session?.user.id ?? "")
 
     if (!session || session.user.id !== user.id) {
       return {

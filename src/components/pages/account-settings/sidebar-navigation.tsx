@@ -6,12 +6,13 @@ import { Settings, User, Lock, Mail, ChartBar } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/account-settings", label: "Overview", icon: ChartBar },
-  { href: "/account-settings/username", label: "Username", icon: User },
-  { href: "/account-settings/password", label: "Password", icon: Lock },
-  { href: "/account-settings/email", label: "Email", icon: Mail },
+  { href: "/account-settings" as const, label: "Overview", icon: ChartBar },
+  { href: "/account-settings/username" as const, label: "Username", icon: User },
+  { href: "/account-settings/password" as const, label: "Password", icon: Lock },
+  { href: "/account-settings/email" as const, label: "Email", icon: Mail },
 ];
 
 export default function AccountSettingsSidebar() {
@@ -33,11 +34,12 @@ export default function AccountSettingsSidebar() {
             <Link key={href} href={href}>
               <Button
                 variant={isActive ? "secondary" : "ghost"}
-                className={`w-full justify-start gap-2 ${
+                className={cn(
+                  `w-full justify-start gap-2`,
                   isActive
                     ? "bg-muted text-primary font-medium"
                     : "text-muted-foreground hover:text-primary"
-                }`}
+                )}
               >
                 <Icon className="w-4 h-4" />
                 {label}

@@ -2,10 +2,10 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getUserByUsername } from "@/database/user";
+import { getMemberByUsername } from "@/database/members";
 
 export default async function Members({ query }: { query: string }) {
-  const filteredUsers = await getUserByUsername(query);
+  const filteredUsers = await getMemberByUsername(query);
 
   return (
     <Card>

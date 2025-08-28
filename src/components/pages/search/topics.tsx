@@ -15,7 +15,7 @@ export default async function Topics({ query }: { query: string }) {
           filteredTopics.map((topic) => (
             <Link
               key={topic.id}
-              href={`/topics/${topic.id}`}
+              href={{ pathname: "/topics/[id]", query: { id: topic.id } }}
               className="block hover:bg-muted/50 p-2 rounded-md transition-colors"
             >
               <p className="font-medium">{topic.title}</p>

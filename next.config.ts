@@ -3,6 +3,7 @@ import bundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  typedRoutes: true,
 };
 
 const withBundleAnalyzer = bundleAnalyzer({

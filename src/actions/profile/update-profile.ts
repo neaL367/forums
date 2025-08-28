@@ -2,7 +2,7 @@
 
 import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache"
-import { getUserProfileById, updateUserProfile } from "@/database/user"
+import { getMemberProfileById, updateMemberProfile } from "@/database/members"
 import { verifySession } from "@/lib/dal"
 import { UpdateProfileFormData, UpdateProfileFormState } from "@/models/profile/update-profile"
 import { UpdateProfileSchema } from "@/schemas/profile/update-profile"
@@ -46,9 +46,9 @@ export async function updateProfileAction(
       }
     }
 
-    const user = await getUserProfileById(session.user.id)
+    const member = await getMemberProfileById(session.user.id)
 
-    if (!user || session.user.id !== user.id) {
+    if (!member || session.user.id !== member.id) {
       return {
         success: false,
         message: "Unauthorized: You can only update your own profile.",
@@ -56,7 +56,7 @@ export async function updateProfileAction(
       }
     }
 
-    await updateUserProfile(session.user.id, { image: image, bio: bio, location: location, website: website })
+    await updateMemberProfile(session.user.id, { image: image, bio: bio, location: location, website: website })
 
     revalidateTag("profile")
 
