@@ -16,7 +16,7 @@ export default async function SearchPage(props: {
   const searchType = searchParams?.type || "all";
 
   return (
-    <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
+    <div className="max-w-[1680px] mx-auto px-4 py-8 md:px-6 lg:px-8">
       <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:gap-8">
         <h1 className="text-3xl font-bold tracking-tight">Search Results</h1>
         {/* <Suspense fallback={<div>Loading search bar...</div>}>

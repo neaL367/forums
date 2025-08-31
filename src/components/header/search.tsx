@@ -57,7 +57,7 @@ export function Search() {
         }}
         defaultValue={searchType}
       >
-        <SelectTrigger className="w-[120px]   text-white">
+        <SelectTrigger className="w-[120px] text-white hover:cursor-pointer">
           <SelectValue placeholder="Category" />
         </SelectTrigger>
         <SelectContent className=" text-white">

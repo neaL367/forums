@@ -41,7 +41,7 @@ export default function AccountSettingsSidebar() {
                     : "text-muted-foreground hover:text-primary"
                 )}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-4 h-4 hidden lg:block" />
                 {label}
               </Button>
             </Link>
