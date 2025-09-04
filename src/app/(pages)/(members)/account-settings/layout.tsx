@@ -1,4 +1,4 @@
-import AccountSettingsSidebar from "@/components/pages/account-settings/sidebar-navigation";
+import AccountSettingsSidebar from "@/components/pages/account-settings/shared/sidebar-navigation";
 
 export default function AccountSettingsLayout(props: LayoutProps<'/account-settings'>) {
   return (
@@ -18,10 +18,7 @@ export default function AccountSettingsLayout(props: LayoutProps<'/account-setti
         </div>
         
         <div className="lg:col-span-4 space-y-6">
-          {props.username}
           {props.children}
-          {props.email}
-          {props.password}
         </div>
       </div>
     </div>

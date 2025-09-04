@@ -4,10 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Users,
-  LayoutGrid,
   Settings as SettingsIcon,
   Folder,
-  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -15,28 +13,18 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   {
-    label: "Dashboard",
-    href: "/administrator" as const,
-    icon: LayoutGrid,
-  },
-  {
-    label: "Member Management & Roles",
+    label: "Member & Roles Management",
     href: "/administrator/members" as const,
     icon: Users,
   },
   {
-    label: "Forum & Category Management",
-    href: "/administrator/forums" as const,
+    label: "Forum & topics Management",
+    href: "/administrator/forums-topics" as const,
     icon: Folder,
   },
   {
-    label: "Topics & Moderation",
-    href: "/administrator/topics" as const,
-    icon: MessageSquare,
-  },
-  {
-    label: "Permissions & Settings",
-    href: "/administrator/permissions" as const,
+    label: "Reports & Features",
+    href: "/administrator/reports" as const,
     icon: SettingsIcon,
   },
 ];

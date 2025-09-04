@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache"
 import { getMemberProfileById, updateMemberProfile } from "@/database/members"
 import { verifySession } from "@/lib/dal"
 import { UpdateProfileFormData, UpdateProfileFormState } from "@/models/profile/update-profile"
-import { UpdateProfileSchema } from "@/schemas/profile/update-profile"
+import { UpdateProfileSchema } from "@/zod/profile/update-profile"
 
 export async function updateProfileAction(
   prevState: UpdateProfileFormState,

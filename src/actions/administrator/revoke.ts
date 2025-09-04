@@ -42,3 +42,23 @@ export async function revokeAllSessionsMemberAction(memberId: string) {
     };  
   }
 }
+
+export async function listUserSessionsAction(memberId: string) {
+  try {
+    const data = await auth.api.listUserSessions({
+      body: { userId: memberId },
+      headers: await headers(),
+    });
+
+    return {
+      success: true,
+      sessions: data.sessions,
+      message: "Sessions retrieved successfully.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "An unexpected error occurred.",
+    };
+  }
+}

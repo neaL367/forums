@@ -4,7 +4,7 @@ import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
-import { ChangeEmailSchema } from "@/schemas/account-settings/change-email"
+import { ChangeEmailSchema } from "@/zod/account-settings/change-email"
 import type { ChangeEmailFormData, ChangeEmailFormState } from "@/models/account-setting/change-email"
 
 

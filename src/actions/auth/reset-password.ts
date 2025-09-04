@@ -3,7 +3,7 @@
 import { APIError } from "better-auth/api"
 import { headers } from "next/headers"
 
-import { resetPasswordSchema } from "@/schemas/auth/reset-password"
+import { resetPasswordSchema } from "@/zod/auth/reset-password"
 import { auth } from "@/lib/auth"
 
 import type { ResetPasswordFormData, ResetPasswordFormState } from "@/models/auth/reset-password"

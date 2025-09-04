@@ -7,7 +7,7 @@ import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { verifySession } from "@/lib/dal"
 import { getMemberProfileById } from "@/database/members"
-import { ChangeUsernameSchema } from "@/schemas/account-settings/change-username"
+import { ChangeUsernameSchema } from "@/zod/account-settings/change-username"
 
 import type { ChangeUsernameFormData, ChangeUsernameFormState } from "@/models/account-setting/change-username"
 
@@ -47,8 +47,6 @@ export async function ChangeUsernameAction(
     await auth.api.updateUser({
       body: {
         displayUsername: displayUsername,
-        username: displayUsername,
-        name: displayUsername,
       },
       headers: await headers(),
     })

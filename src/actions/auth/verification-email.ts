@@ -3,7 +3,7 @@
 import { APIError } from "better-auth/api"
 import { headers } from "next/headers"
 
-import { VerificationEmailSchema } from "@/schemas/auth/verification-email"
+import { VerificationEmailSchema } from "@/zod/auth/verification-email"
 import { auth } from "@/lib/auth"
 
 import type { VerificationEmailFormData, VerificationEmailFormState } from "@/models/auth/verification-email"

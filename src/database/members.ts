@@ -3,7 +3,7 @@ import "server-only"
 import { sql } from '@/lib/dal'
 import type { Members, MemberProfile } from '@/types/member'
 
-export const getAllMembersProfile = (async (): Promise<Pick<Members, "id">[]> => {
+export const getAllMembersProfile = async (): Promise<Pick<Members, "id">[]> => {
   try {
     const rows = await sql`SELECT id FROM public.member;`
     return rows as Pick<Members, "id">[]
@@ -12,9 +12,7 @@ export const getAllMembersProfile = (async (): Promise<Pick<Members, "id">[]> =>
     throw new Error("Failed to fetch members")
   }
 }
-)
-
-export const getMemberProfileById = (async (id: string): Promise<MemberProfile> => {
+export const getMemberProfileById = async (id: string): Promise<MemberProfile> => {
   try {
     const rows = await sql`
         SELECT id, "displayUsername", image, role, bio, website, location,
@@ -32,7 +30,7 @@ export const getMemberProfileById = (async (id: string): Promise<MemberProfile> 
     throw new Error("Failed to fetch member")
   }
 }
-)
+
 
 
 export async function getMemberByUsername(query: string): Promise<MemberProfile[]> {
@@ -51,7 +49,6 @@ export async function getMemberByUsername(query: string): Promise<MemberProfile[
     throw new Error("Failed to fetch members");
   }
 }
-
 
 
 export const updateMemberProfile = async (
@@ -76,13 +73,13 @@ export const updateMemberProfile = async (
       RETURNING id, image, role, bio, website, location,
                 "createdAt", "updatedAt", "joinDate", "lastActive", "postCount", reputation
     `;
-    
+
     const user = rows[0] as MemberProfile;
-    
+
     if (!user) {
       throw new Error("Member not found or update failed");
     }
-    
+
     return user;
   } catch (error) {
     console.error(`Error updating member profile by ID (${id}):`, error);

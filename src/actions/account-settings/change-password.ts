@@ -4,7 +4,7 @@ import { APIError } from "better-auth/api"
 import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
-import { ChangePasswordSchema } from "@/schemas/account-settings/change-password"
+import { ChangePasswordSchema } from "@/zod/account-settings/change-password"
 import type { ChangePasswordFormData, ChangePasswordFormState } from "@/models/account-setting/change-password"
 
 

@@ -8,12 +8,8 @@ import { ProfileClient } from "@/components/pages/profile/profile-client";
 import type { MemberProfile } from "@/types/member";
 import type { Metadata } from 'next'
 
-type Props = {
-  params: Promise<{ memberId: string }>;
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { memberId } = await params;
+export async function generateMetadata(props: PageProps<"/profile/[memberId]">): Promise<Metadata> {
+  const { memberId } = await props.params;
   if (!memberId) return { title: "Profile Not Found" };
 
   const member: Pick<MemberProfile, "displayUsername"> =
@@ -26,16 +22,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ProfilePage({ params }: Props) {
+export default async function ProfilePage(props: PageProps<"/profile/[memberId]">) {
   const session = await verifySession();
-  const { memberId } = await params;
+  const { memberId } = await props.params;
 
   if (!memberId) return notFound();
 
   const getCachedUserProfile = unstable_cache(
     async (memberId: string) => getMemberProfileById(memberId),
     [memberId],
-    { tags: ["profile"], revalidate: 60 }
+    { tags: ["profile"], revalidate: 3600 }
   );
 
   const member = await getCachedUserProfile(memberId);

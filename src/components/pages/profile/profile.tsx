@@ -36,13 +36,13 @@ export function Profile({ member, isOwnProfile }: ProfileProps) {
       <Card className="from-primary/5 to-card dark:bg-card bg-gradient-to-t shadow-xs">
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row text-center sm:text-start items-center gap-4">
-            <Avatar className="h-20 w-20">
+            <Avatar className="h-20 w-20 rounded-full">
               <AvatarImage
                 src={member.image || ""}
                 alt={`${member.displayUsername}'s avatar`}
-                className="rounded-full"
+                className="h-full w-full object-cover rounded-full"
               />
-              <AvatarFallback className="h-20 w-20 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-2xl font-bold rounded-full flex items-center justify-center">
+              <AvatarFallback className="h-full w-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-2xl font-bold rounded-full flex items-center justify-center">
                 {member.displayUsername.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>

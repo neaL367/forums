@@ -13,11 +13,27 @@ export const ac = createAccessControl(statement);
 
 export const roles = {
     MEMBERS: ac.newRole({
-        posts: ["create", "read", "update:own", "share"],
+        posts: [],
     }),
 
     ADMINISTRATOR: ac.newRole({
-        posts: ["create", "read", "update", "delete", "update:own", "delete:own"],
+        posts: [],
         ...adminAc.statements,
+    }),
+
+    MODERATOR: ac.newRole({
+        posts: [],
+    }),
+
+    OWNER: ac.newRole({
+        posts: [],
+    }),
+
+    STAFF: ac.newRole({
+        posts: [],
+    }),
+
+   GUEST: ac.newRole({
+        posts: [],
     }),
 };

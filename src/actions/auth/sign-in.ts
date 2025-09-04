@@ -3,7 +3,7 @@
 import { APIError } from "better-auth/api"
 import { headers } from "next/headers"
 
-import { signInSchema } from "@/schemas/auth/sign-in"
+import { signInSchema } from "@/zod/auth/sign-in"
 import { auth } from "@/lib/auth"
 
 import type { SignInFormData, SignInFormState } from "@/models/auth/sign-in"

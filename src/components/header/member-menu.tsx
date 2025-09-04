@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { ChevronDown, User, Settings, Bell, UserStar } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import Link from "next/link";
+import { ChevronDown, User, Settings, Bell, UserStar } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,18 +10,22 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { SignOutButton } from "@/components/header/signout-button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { authClient } from "@/lib/auth-client"
+} from "@/components/ui/dropdown-menu";
+import { SignOutButton } from "@/components/header/signout-button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { authClient } from "@/lib/auth-client";
 
 export function UserMenu() {
-  const { data: session, isPending } = authClient.useSession()
+  const { data: session, isPending } = authClient.useSession();
 
   return (
     <div className="flex items-center gap-3">
       {/* Notification bell */}
-      <Button size="sm" variant="ghost" className="relative h-8 w-8 text-zinc-400 hover:text-white">
+      <Button
+        size="sm"
+        variant="ghost"
+        className="relative h-8 w-8 text-zinc-400 hover:text-white"
+      >
         <Bell className="h-4 w-4" />
         <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
       </Button>
@@ -41,36 +45,55 @@ export function UserMenu() {
               disabled={isPending}
             >
               <Avatar className="hidden lg:block">
-                <AvatarImage src={session.user.image || ""} alt={`${session.user.displayUsername}'s avatar`} />
-                <AvatarFallback>{session.user.displayUsername?.charAt(0).toUpperCase()}</AvatarFallback>
+                <AvatarImage
+                  src={session.user.image || ""}
+                  alt={`${session.user.displayUsername}'s avatar`}
+                  className="h-full w-full object-cover rounded-full"
+                />
+                <AvatarFallback className="h-full w-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-2xl font-bold rounded-full flex items-center justify-center">
+                  {session.user.displayUsername?.charAt(0).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium">{session.user.displayUsername}</span>
-              <ChevronDown className="h-3 w-3 text-zinc-400" />
+              <span className="text-sm font-medium">
+                {session.user.displayUsername}
+              </span>
+              <ChevronDown className="h-3 w-3 text-zinc-400 " />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-52" align="end">
             <DropdownMenuLabel>
               <div className="flex items-center justify-between gap-2">
-                <p className="text-sm font-medium">{session.user.displayUsername}</p>
+                <p className="text-sm font-medium">
+                  {session.user.displayUsername}
+                </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href={`/profile/${session.user.id}`} className="flex items-center gap-2">
+              <Link
+                href={`/profile/${session.user.id}`}
+                className="flex items-center gap-2"
+              >
                 <User className="h-4 w-4" />
                 Profile
               </Link>
             </DropdownMenuItem>
             {session.user.role === "ADMINISTRATOR" && (
               <DropdownMenuItem asChild>
-                <Link href="/administrator" className="flex items-center gap-2">
+                <Link
+                  href="/administrator/members"
+                  className="flex items-center gap-2"
+                >
                   <UserStar className="h-4 w-4" />
                   Administrator
                 </Link>
               </DropdownMenuItem>
             )}
             <DropdownMenuItem asChild>
-              <Link href="/account-settings" className="flex items-center gap-2">
+              <Link
+                href="/account-settings"
+                className="flex items-center gap-2"
+              >
                 <Settings className="h-4 w-4" />
                 Account Settings
               </Link>
@@ -87,5 +110,5 @@ export function UserMenu() {
         </Button>
       )}
     </div>
-  )
+  );
 }

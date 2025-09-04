@@ -1,6 +1,7 @@
 "use server"
 
 import { APIError } from "better-auth/api"
+import { revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
 
@@ -17,7 +18,7 @@ type ListMembersParams = {
   filterOperator?: "eq" | "ne" | "lt" | "lte" | "gt" | "gte";
 };
 
-export async function setMemberRoleAction(memberId: string, role: "ADMINISTRATOR" | "MEMBERS") {
+export async function setMemberRoleAction(memberId: string, role: "MEMBERS" | "ADMINISTRATOR" | "MODERATOR" | "OWNER" | "STAFF" | "GUEST") {
   try {
     await auth.api.setRole({
       body: { userId: memberId, role: role },
@@ -46,6 +47,55 @@ export async function setMemberPasswordAction(memberId: string, newPassword: str
     return {
       success: true,
       message: "Member password updated successfully.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof APIError ? error.body?.message || error.message : "An unexpected error occurred.",
+    };
+  }
+}
+
+
+export async function removeMemberAction(memberId: string) {
+  try {
+    await auth.api.removeUser({
+      body: { userId: memberId },
+      headers: await headers(),
+    });
+
+    return {
+      success: true,
+      message: "Member deleted successfully.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof APIError ? error.body?.message || error.message : "An unexpected error occurred.",
+    };
+  }
+}
+
+export async function updateMemberAction(updates: {
+  email?: string;
+  username?: string;
+  displayUsername?: string;
+  image?: string;
+}) {
+  try {
+    await auth.api.updateUser({
+      body: { 
+        ...updates
+      },
+      headers: await headers(),
+    });
+
+    revalidateTag("profile")
+    revalidateTag("members")
+    
+    return {
+      success: true,
+      message: "Member updated successfully.",
     };
   } catch (error) {
     return {
@@ -87,25 +137,6 @@ export async function listMembersAction(params: ListMembersParams = {}) {
         error instanceof APIError
           ? error.body?.message || error.message
           : "An unexpected error occurred while fetching members.",
-    };
-  }
-}
-
-export async function removeMemberAction(memberId: string) {
-  try {
-    await auth.api.removeUser({
-      body: { userId: memberId },
-      headers: await headers(),
-    });
-
-    return {
-      success: true,
-      message: "Member deleted successfully.",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: error instanceof APIError ? error.body?.message || error.message : "An unexpected error occurred.",
     };
   }
 }

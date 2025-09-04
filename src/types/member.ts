@@ -3,8 +3,6 @@ export type Roles = "MEMBERS" | "ADMINISTRATOR" | "MODERATOR" | "OWNER" | "STAFF
 export type Members = {
     createdAt: Date;
     updatedAt: Date;
-    joinDate: Date;
-    lastActive: Date;
 
     id: string;
     name: string;
