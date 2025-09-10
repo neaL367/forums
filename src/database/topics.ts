@@ -1,3 +1,5 @@
+import "server-only"
+
 import type { Topics } from "@/types/topics";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

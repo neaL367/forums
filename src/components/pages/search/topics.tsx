@@ -19,9 +19,6 @@ export default async function Topics({ query }: { query: string }) {
               className="block hover:bg-muted/50 p-2 rounded-md transition-colors"
             >
               <p className="font-medium">{topic.title}</p>
-              <p className="text-sm text-muted-foreground">
-                By {topic.author} &middot; {topic.replies} replies
-              </p>
             </Link>
           ))
         ) : (

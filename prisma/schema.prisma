@@ -48,7 +48,7 @@ model Member {
 
   banned     Boolean?
   banExpires DateTime?
-  banReason String?
+  banReason  String?
 
   @@unique([email])
   @@unique([name])
@@ -100,4 +100,69 @@ model Verification {
   updatedAt  DateTime? @updatedAt
 
   @@map("verification")
+}
+
+model Category {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  id          String @id @default(uuid())
+  title       String
+  description String
+
+  forums Forum[]
+
+  @@map("category")
+}
+
+model Forum {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  id          String @id @default(uuid())
+  title       String
+  description String
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  parentForumId String?
+  parentForum   Forum?  @relation("ForumToSubForums", fields: [parentForumId], references: [id])
+  subForums     Forum[] @relation("ForumToSubForums")
+
+  topics Topic[]
+
+  @@map("forum")
+}
+
+model Topic {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  id        String   @id @default(uuid())
+  title     String
+
+  forumId   String
+  forum     Forum    @relation(fields: [forumId], references: [id])
+
+  replies Replies[]
+
+  @@map("topic")
+}
+
+model Replies {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  id      String @id @default(uuid())
+  topicId String
+  topic   Topic  @relation(fields: [topicId], references: [id])
+
+  parentReplyId String?
+  parentReply   Replies?  @relation("ReplyToSubReplies", fields: [parentReplyId], references: [id])
+  subReplies    Replies[] @relation("ReplyToSubReplies")
+
+  content   String
+
+  @@map("replies")
 }

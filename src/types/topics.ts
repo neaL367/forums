@@ -1,15 +1,12 @@
+import { Replies } from "@/types/replies";
+
 export type Topics = {
+  createdAt: Date;
+  updatedAt: Date;
+  
   id: string
   title: string
-  category: string
-  author: string
-  replies: number
-  views: number
-  lastReply?: {
-    author: string
-    date: string
-  }
-  isPinned: boolean
-  isLocked: boolean
-  status: "active" | "locked" | "pinned"
+
+  forumId: string;
+  replies?: Replies[];
 }

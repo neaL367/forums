@@ -1,7 +1,7 @@
 import "server-only"
 
 import { sql } from "@/lib/dal";
-import type { Members } from "@/types/member";
+import type { Members } from "@/types/members";
 
 export const forgotUsername = (async (email: string): Promise<Members> => {
   try {

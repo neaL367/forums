@@ -1,4 +1,6 @@
-import type { Forums } from "@/types/forums";
+import "server-only"
+
+import type { Forums } from "@/types/forum";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function getForumsByName(query: string): Promise<Forums[]> {

@@ -90,8 +90,11 @@ export const auth = betterAuth({
             return {
                 session: {
                     expiresAt: session.expiresAt,
+                    createAt: session.createdAt,
+                    userId: session.id,
                     token: session.token,
                     userAgent: session.userAgent,
+                    impersonatedBy: session.impersonatedBy,
                 },
                 user: {
                     id: user.id,

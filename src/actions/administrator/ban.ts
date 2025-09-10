@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
+import { revalidateTag } from "next/cache";
 
 export async function banMemberAction(memberId: string, banReason?: string, banExpiresIn?: number) {
   try {
@@ -9,6 +10,9 @@ export async function banMemberAction(memberId: string, banReason?: string, banE
       body: { userId: memberId, banReason: banReason, banExpiresIn: banExpiresIn },
       headers: await headers(),
     });
+
+    revalidateTag("members")
+
 
     return {
       success: true,
@@ -28,6 +32,9 @@ export async function unbanMemberAction(memberId: string) {
       body: { userId: memberId },
       headers: await headers(),
     });
+
+    revalidateTag("members")
+
 
     return {
       success: true,

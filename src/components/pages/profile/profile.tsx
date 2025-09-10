@@ -13,7 +13,7 @@ import {
 import { EditProfileModal } from "@/components/pages/profile/edit-profile-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { MemberProfile } from "@/types/member";
+import type { MemberProfile } from "@/types/members";
 
 interface ProfileProps {
   member: MemberProfile;

@@ -25,6 +25,8 @@ export async function setMemberRoleAction(memberId: string, role: "MEMBERS" | "A
       headers: await headers(),
     });
 
+    revalidateTag("members")
+
     return {
       success: true,
       message: `Member role set to ${role} successfully.`,
@@ -64,6 +66,8 @@ export async function removeMemberAction(memberId: string) {
       headers: await headers(),
     });
 
+    revalidateTag("members")
+
     return {
       success: true,
       message: "Member deleted successfully.",
@@ -84,7 +88,7 @@ export async function updateMemberAction(updates: {
 }) {
   try {
     await auth.api.updateUser({
-      body: { 
+      body: {
         ...updates
       },
       headers: await headers(),
@@ -92,7 +96,7 @@ export async function updateMemberAction(updates: {
 
     revalidateTag("profile")
     revalidateTag("members")
-    
+
     return {
       success: true,
       message: "Member updated successfully.",

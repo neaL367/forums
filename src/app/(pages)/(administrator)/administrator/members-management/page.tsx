@@ -2,23 +2,26 @@ import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
 import { Suspense } from "react";
 
-import { MembersTableSkeleton } from "@/components/pages/administrator/members/tables/table-skeleton";
-import { MembersTableClient } from "@/components/pages/administrator/members/tables/table-client";
-
-import { Members } from "@/types/member";
+import { Members } from "@/types/members";
 import { auth } from "@/lib/auth";
+import { DataTable } from "@/components/pages/administrator/shared/data-table/data-table";
+import { memberscolumns } from "@/components/pages/administrator/members/data/columns";
+import { filters } from "@/components/pages/administrator/members/data/data";
+import { MembersManagementSkeleton } from "./skeleton";
 
 export default async function MembersPage() {
-   return (
+  return (
     <div className="mx-auto">
-      <Suspense fallback={<MembersTableSkeleton />}>
-        <MembersData />
+      <Suspense
+        fallback={<MembersManagementSkeleton />}
+      >
+        <MembersTable />
       </Suspense>
     </div>
   );
 }
 
-async function MembersData() {
+async function MembersTable() {
   const getCachedMembers = unstable_cache(
     async (headerData: Headers) => {
       try {
@@ -47,5 +50,13 @@ async function MembersData() {
   const response = await getCachedMembers(headerData);
   const members: Members[] = (response?.members ?? []) as Members[];
 
-  return <MembersTableClient data={members} />;
+  return (
+    <DataTable
+      data={members}
+      columns={memberscolumns}
+      searchColumn="username"
+      searchPlaceholder="Search username members..."
+      filters={filters}
+    />
+  );
 }

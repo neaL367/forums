@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 
-import type { MemberProfile } from "@/types/member";
+import type { MemberProfile } from "@/types/members";
 
 const Profile = dynamic(
   () => import("@/components/pages/profile/profile").then(m => m.Profile),

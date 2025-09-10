@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, User, Settings, Bell, UserStar } from "lucide-react";
+import { ChevronDown, User, Settings, Bell, UserStar, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,9 +14,25 @@ import {
 import { SignOutButton } from "@/components/header/signout-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
+import { stopImpersonationAction } from "@/actions/administrator/impersonate";
+import { toast } from "sonner";
 
 export function UserMenu() {
   const { data: session, isPending } = authClient.useSession();
+
+  const handleStopImpersonation = async () => {
+    try {
+      const result = await stopImpersonationAction();
+      if (result.success) {
+        toast.success(result.message);
+        window.location.reload();
+      } else {
+        toast.error(result.message);
+      }
+    } catch {
+      toast.error("An unexpected error occurred");
+    }
+  };
 
   return (
     <div className="flex items-center gap-3">
@@ -81,7 +97,7 @@ export function UserMenu() {
             {session.user.role === "ADMINISTRATOR" && (
               <DropdownMenuItem asChild>
                 <Link
-                  href="/administrator/members"
+                  href="/administrator/members-management"
                   className="flex items-center gap-2"
                 >
                   <UserStar className="h-4 w-4" />
@@ -99,6 +115,16 @@ export function UserMenu() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+
+            {session?.session?.impersonatedBy && (
+              <DropdownMenuItem 
+                onClick={handleStopImpersonation}
+                className="flex items-center gap-2 cursor-pointer text-orange-600 hover:text-orange-700"
+              >
+                <UserX className="h-4 w-4" />
+                Stop Impersonation
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
               <SignOutButton />
             </DropdownMenuItem>

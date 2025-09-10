@@ -14,12 +14,12 @@ import { cn } from "@/lib/utils";
 const navItems = [
   {
     label: "Member & Roles Management",
-    href: "/administrator/members" as const,
+    href: "/administrator/members-management" as const,
     icon: Users,
   },
   {
-    label: "Forum & topics Management",
-    href: "/administrator/forums-topics" as const,
+    label: "Forums Management",
+    href: "/administrator/forums-management" as const,
     icon: Folder,
   },
   {

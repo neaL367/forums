@@ -16,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { authClient } from '@/lib/auth-client'
 
 import { updateProfileAction } from '@/actions/profile/update-profile'
-import type { MemberProfile } from '@/types/member'
+import type { MemberProfile } from '@/types/members'
 import type { UpdateProfileFormState } from '@/models/profile/update-profile'
 
 const initialState: UpdateProfileFormState = {

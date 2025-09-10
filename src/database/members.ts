@@ -1,7 +1,7 @@
 import "server-only"
 
 import { sql } from '@/lib/dal'
-import type { Members, MemberProfile } from '@/types/member'
+import type { Members, MemberProfile } from '@/types/members'
 
 export const getAllMembersProfile = async (): Promise<Pick<Members, "id">[]> => {
   try {
@@ -12,10 +12,10 @@ export const getAllMembersProfile = async (): Promise<Pick<Members, "id">[]> => 
     throw new Error("Failed to fetch members")
   }
 }
+
 export const getMemberProfileById = async (id: string): Promise<MemberProfile> => {
   try {
-    const rows = await sql`
-        SELECT id, "displayUsername", image, role, bio, website, location,
+    const rows = await sql`SELECT id, "displayUsername", image, role, bio, website, location,
                "createdAt", "updatedAt", "joinDate", "lastActive", "postCount", reputation
         FROM public.member WHERE id = ${id}
         LIMIT 1;
