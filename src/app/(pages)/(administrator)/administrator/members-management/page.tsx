@@ -50,7 +50,7 @@ async function MembersTable() {
       }
     },
     ["members-list"],
-    { tags: ["members"], revalidate: 60 }
+    { tags: ["members"], revalidate: 300 }
   );
 
   const headerData = await headers();

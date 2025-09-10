@@ -60,10 +60,10 @@ const options = {
         // BUG: Prob a bug with updateAge method. It throws an error - Argument `where` of type SessionWhereUniqueInput needs at least one of `id` arguments. 
         // As a workaround, set updateAge to a large value for now.
         updateAge: 60 * 60 * 24 * 7, // 7 days (every 7 days the session expiration is updated)
-        cookieCache: {
-            enabled: process.env.NODE_ENV === 'production',
-            maxAge: 5 * 60,
-        },
+        // cookieCache: {
+        //     enabled: process.env.NODE_ENV === 'production',
+        //     maxAge: 5 * 60,
+        // },
     },
     advanced: {
         database: {
@@ -79,7 +79,9 @@ const options = {
             ac,
             roles,
             impersonationSessionDuration: 60 * 60 * 24, // 1 day
-        }),],
+        }),
+    ],
+        
 } satisfies BetterAuthOptions;
 
 export const auth = betterAuth({
@@ -106,7 +108,6 @@ export const auth = betterAuth({
                     username: user.username,
                     displayUsername: user.displayUsername,
                     emailVerified: user.emailVerified,
-                    banned: user.banned,
                 },
             };
         }, options),

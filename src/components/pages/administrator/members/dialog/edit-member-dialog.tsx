@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 
 import { Members } from "@/types/members";
 import { updateMemberAction } from "@/actions/administrator/member";
+import { authClient } from "@/lib/auth-client";
 
 interface EditMemberDialogProps {
   member: Members;
@@ -26,6 +27,8 @@ interface EditMemberDialogProps {
 }
 
 export function EditMemberDialog({ member, open, onOpenChange }: EditMemberDialogProps) {
+  const { refetch } = authClient.useSession();
+
   const [loading, setLoading] = useState(false);
   const [editForm, setEditForm] = useState({
     username: member.username || "",
@@ -45,6 +48,7 @@ export function EditMemberDialog({ member, open, onOpenChange }: EditMemberDialo
         image: editForm.image,
       });
       toast.success("Member updated successfully");
+      refetch();
       onOpenChange(false);
     } catch {
       toast.error("Failed to update member");

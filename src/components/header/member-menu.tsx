@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { toast } from "sonner";
 import { ChevronDown, User, Settings, Bell, UserStar, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,9 +16,8 @@ import { SignOutButton } from "@/components/header/signout-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import { stopImpersonationAction } from "@/actions/administrator/impersonate";
-import { toast } from "sonner";
 
-export function UserMenu() {
+export function MemberMenu() {
   const { data: session, isPending } = authClient.useSession();
 
   const handleStopImpersonation = async () => {

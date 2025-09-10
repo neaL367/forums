@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCallback, useMemo, useState } from "react";
 import { MoreHorizontal, Loader2 } from "lucide-react";
@@ -52,8 +53,9 @@ type AlertType =
   | null;
 
 export function MemberRowActions({ row }: MemberRowActionsProps) {
+  const router = useRouter();
   const member = row.original;
-  const { data: session } = authClient.useSession();
+  const { data: session, refetch } = authClient.useSession();
   const currentUserId = session?.user?.id;
 
   const [dialogType, setDialogType] = useState<DialogType>(null);
@@ -115,13 +117,17 @@ export function MemberRowActions({ row }: MemberRowActionsProps) {
       try {
         await setMemberRoleAction(member.id, newRole as Roles);
         toast.success(`Role updated to ${newRole}`);
+        refetch();
+        if (member.id === currentUserId && newRole === "MEMBERS") {
+          router.push("/");
+        }
       } catch {
         toast.error("Failed to update role");
       } finally {
         setLoading(false);
       }
     },
-    [member.id]
+    [member.id, currentUserId, refetch, router]
   );
 
   return (
@@ -183,9 +189,8 @@ export function MemberRowActions({ row }: MemberRowActionsProps) {
                   </DropdownMenuSub>
                 ) : (
                   <DropdownMenuItem
-                    className={`cursor-pointer ${
-                      isDestructive ? "text-destructive focus:text-destructive" : ""
-                    }`}
+                    className={`cursor-pointer ${isDestructive ? "text-destructive focus:text-destructive" : ""
+                      }`}
                     disabled={isSelfDestructive}
                     onClick={() => handleAction(displayLabel)}
                     aria-label={displayLabel}

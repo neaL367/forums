@@ -28,16 +28,16 @@ export default async function ProfilePage(props: PageProps<"/profile/[memberId]"
 
   if (!memberId) return notFound();
 
+  const isOwnProfile = session?.user?.id === memberId;
+
   const getCachedUserProfile = unstable_cache(
     async (memberId: string) => getMemberProfileById(memberId),
     [memberId],
-    { tags: ["profile"], revalidate: 60 }
+    { tags: ["profile"], revalidate: isOwnProfile ? 0 : 300 }
   );
 
   const member = await getCachedUserProfile(memberId);
   if (!member) return notFound();
-
-  const isOwnProfile = session?.user?.id === memberId;
 
   return <ProfileClient member={member} isOwnProfile={isOwnProfile} />;
 }
