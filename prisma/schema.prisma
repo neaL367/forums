@@ -46,7 +46,7 @@ model Member {
   postCount       Int       @default(0)
   reputation      Int       @default(0)
 
-  banned     Boolean?
+  banned     Boolean? @default(false)
   banExpires DateTime?
   banReason  String?
 

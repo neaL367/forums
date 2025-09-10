@@ -106,6 +106,7 @@ export const auth = betterAuth({
                     username: user.username,
                     displayUsername: user.displayUsername,
                     emailVerified: user.emailVerified,
+                    banned: user.banned,
                 },
             };
         }, options),
