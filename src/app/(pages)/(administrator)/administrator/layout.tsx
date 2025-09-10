@@ -8,7 +8,8 @@ export default async function AdministratorLayout(
 ) {
   const session = await verifySession();
 
-  if (!session || session.user.role !== "ADMINISTRATOR") redirect("/");
+  if (!session) redirect("/");
+  if (session.user.role !== "ADMINISTRATOR") redirect("/");
   return (
     <div className="">
       <div className="mb-6">
