@@ -25,6 +25,7 @@ export async function setMemberRoleAction(memberId: string, role: "MEMBERS" | "A
       headers: await headers(),
     });
 
+    revalidateTag("profile")
     revalidateTag("members")
 
     return {
