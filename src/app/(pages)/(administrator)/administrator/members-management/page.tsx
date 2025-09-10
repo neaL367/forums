@@ -1,5 +1,6 @@
 import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { Members } from "@/types/members";
@@ -8,8 +9,14 @@ import { DataTable } from "@/components/pages/administrator/shared/data-table/da
 import { memberscolumns } from "@/components/pages/administrator/members/data/columns";
 import { filters } from "@/components/pages/administrator/members/data/data";
 import { MembersManagementSkeleton } from "./skeleton";
+import { verifySession } from "@/lib/dal";
 
 export default async function MembersPage() {
+  const session = await verifySession();
+
+  if (!session) redirect("/");
+  if (session.user.role !== "ADMINISTRATOR") redirect("/");
+
   return (
     <div className="mx-auto">
       <Suspense
@@ -43,7 +50,7 @@ async function MembersTable() {
       }
     },
     ["members-list"],
-    { tags: ["members"], revalidate: 3600 }
+    { tags: ["members"], revalidate: 60 }
   );
 
   const headerData = await headers();

@@ -31,7 +31,7 @@ export default async function ProfilePage(props: PageProps<"/profile/[memberId]"
   const getCachedUserProfile = unstable_cache(
     async (memberId: string) => getMemberProfileById(memberId),
     [memberId],
-    { tags: ["profile"], revalidate: 3600 }
+    { tags: ["profile"], revalidate: 60 }
   );
 
   const member = await getCachedUserProfile(memberId);
