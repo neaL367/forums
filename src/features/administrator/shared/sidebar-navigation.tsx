@@ -6,6 +6,10 @@ import {
   Users,
   Settings as SettingsIcon,
   Folder,
+  Folders,
+  MessageSquare,
+  MessageCircleMore,
+  MessageSquareWarning,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -17,15 +21,30 @@ const navItems = [
     href: "/administrator/members-management" as const,
     icon: Users,
   },
+   {
+    label: "Categories Management",
+    href: "/administrator/categories-management" as const,
+    icon: Folders,
+  },
   {
     label: "Forums Management",
     href: "/administrator/forums-management" as const,
     icon: Folder,
   },
+   {
+    label: "Topics Management",
+    href: "/administrator/topics-management" as const,
+    icon: MessageSquare,
+  },
+   {
+    label: "Replies Management",
+    href: "/administrator/replies-management" as const,
+    icon: MessageCircleMore,
+  },
   {
     label: "Reports & Features",
     href: "/administrator/reports" as const,
-    icon: SettingsIcon,
+    icon: MessageSquareWarning,
   },
 ];
 
