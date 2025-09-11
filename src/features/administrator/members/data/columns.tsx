@@ -7,7 +7,7 @@ import { Members } from "@/types/members";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "../../shared/data-table/data-table-column-header";
-import { MemberRowActions } from "../member-row-actions";
+import { MemberRowActions } from "../members-row-actions";
 
 export const memberscolumns: ColumnDef<Members>[] = [
   {

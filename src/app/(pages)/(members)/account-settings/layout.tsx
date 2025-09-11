@@ -1,4 +1,4 @@
-import AccountSettingsSidebar from "@/components/pages/account-settings/shared/sidebar-navigation";
+import AccountSettingsSidebar from "@/features/account-settings/shared/sidebar-navigation";
 
 export default function AccountSettingsLayout(props: LayoutProps<'/account-settings'>) {
   return (

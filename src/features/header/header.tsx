@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
 
-import { MemberMenu } from "@/components/header/member-menu";
-import { Search } from "@/components/header/search";
+import { MemberMenu } from "@/features/header/member-menu";
+import { Search } from "@/features/header/search";
 
 export async function Header() {
   return (

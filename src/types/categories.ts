@@ -5,7 +5,7 @@ export type Categories = {
   updatedAt: Date;
     
   id: string
-  name: string
+  title: string
   description: string
   
   forums: Forums[]

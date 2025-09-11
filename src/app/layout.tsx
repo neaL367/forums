@@ -1,13 +1,13 @@
 import "./globals.css";
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { Header } from "@/components/header/header";
+import { Header } from "@/features/header/header";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.className} antialiased min-h-screen bg-background text-foreground `}
+        className={`${inter.className} antialiased min-h-screen bg-background text-foreground `}
       >
         <ThemeProvider
           attribute="class"

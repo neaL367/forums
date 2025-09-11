@@ -3,13 +3,13 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { Members } from "@/types/members";
-import { auth } from "@/lib/auth";
-import { DataTable } from "@/components/pages/administrator/shared/data-table/data-table";
-import { memberscolumns } from "@/components/pages/administrator/members/data/columns";
-import { filters } from "@/components/pages/administrator/members/data/data";
+import { MembersTableWrapper } from "@/features/administrator/members/members-table-wrapper";
+import { memberscolumns } from "@/features/administrator/members/data/columns";
 import { MembersManagementSkeleton } from "./skeleton";
+
 import { verifySession } from "@/lib/dal";
+import { auth } from "@/lib/auth";
+import type { Members } from "@/types/members";
 
 export default async function MembersPage() {
   const session = await verifySession();
@@ -19,9 +19,7 @@ export default async function MembersPage() {
 
   return (
     <div className="mx-auto">
-      <Suspense
-        fallback={<MembersManagementSkeleton />}
-      >
+      <Suspense fallback={<MembersManagementSkeleton />}>
         <MembersTable />
       </Suspense>
     </div>
@@ -57,13 +55,5 @@ async function MembersTable() {
   const response = await getCachedMembers(headerData);
   const members: Members[] = (response?.members ?? []) as Members[];
 
-  return (
-    <DataTable
-      data={members}
-      columns={memberscolumns}
-      searchColumn="username"
-      searchPlaceholder="Search username members..."
-      filters={filters}
-    />
-  );
+  return <MembersTableWrapper data={members} columns={memberscolumns} />;
 }

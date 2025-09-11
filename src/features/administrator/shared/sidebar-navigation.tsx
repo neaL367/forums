@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   {
-    label: "Member & Roles Management",
+    label: "Members Management",
     href: "/administrator/members-management" as const,
     icon: Users,
   },

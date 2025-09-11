@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCallback, useMemo, useState } from "react";
 import { MoreHorizontal, Loader2 } from "lucide-react";
@@ -53,7 +52,6 @@ type AlertType =
   | null;
 
 export function MemberRowActions({ row }: MemberRowActionsProps) {
-  const router = useRouter();
   const member = row.original;
   const { data: session, refetch } = authClient.useSession();
   const currentUserId = session?.user?.id;
@@ -118,16 +116,14 @@ export function MemberRowActions({ row }: MemberRowActionsProps) {
         await setMemberRoleAction(member.id, newRole as Roles);
         toast.success(`Role updated to ${newRole}`);
         refetch();
-        if (member.id === currentUserId && newRole === "MEMBERS") {
-          router.push("/");
-        }
+        
       } catch {
         toast.error("Failed to update role");
       } finally {
         setLoading(false);
       }
     },
-    [member.id, currentUserId, refetch, router]
+    [member.id, refetch]
   );
 
   return (

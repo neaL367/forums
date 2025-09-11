@@ -2,19 +2,9 @@
 
 import {
   ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
   flexRender,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
 
 import {
   Table,
@@ -26,58 +16,18 @@ import {
 } from "@/components/ui/table";
 
 import { DataTablePagination } from "./data-table-pagination";
-import { DataTableToolbar, ToolbarFilter } from "./data-table-toolbar";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  searchColumn?: string;
-  searchPlaceholder?: string;
-  filters?: ToolbarFilter[];
+interface DataTableProps<TData> {
+  table: ReturnType<typeof useReactTable<TData>>;
+  columns: ColumnDef<TData>[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData>({
   columns,
-  data,
-  searchColumn,
-  searchPlaceholder,
-  filters,
-}: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = useState({});
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  const table = useReactTable({
-    data,
-    columns,
-    state: {
-      sorting,
-      columnVisibility,
-      rowSelection,
-      columnFilters,
-    },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-  });
-
+  table,
+}: DataTableProps<TData>) {
   return (
     <div className="space-y-4">
-      <DataTableToolbar
-        table={table}
-        searchColumn={searchColumn}
-        searchPlaceholder={searchPlaceholder}
-        filters={filters}
-      />
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>

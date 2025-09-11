@@ -11,7 +11,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { ResetPasswordForm } from "@/components/pages/auth/reset-password";
+import { ResetPasswordForm } from "@/features/auth/reset-password";
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams();

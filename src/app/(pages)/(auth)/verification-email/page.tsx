@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { VerificationEmailForm } from "@/components/pages/auth/verification-email";
+import { VerificationEmailForm } from "@/features/auth/verification-email";
 import { verifySession } from "@/lib/dal";
 
 export default async function VerificationEmailPage() {

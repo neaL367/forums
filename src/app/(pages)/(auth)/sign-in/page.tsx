@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { SignInForm } from "@/components/pages/auth/sign-in";
+import { SignInForm } from "@/features/auth/sign-in";
 import { verifySession } from "@/lib/dal";
 
 export default async function SignInPage() {

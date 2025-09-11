@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { verifySession } from "@/lib/dal";
-import AdministratorSidebar from "@/components/pages/administrator/shared/sidebar-navigation";
+import AdministratorSidebar from "@/features/administrator/shared/sidebar-navigation";
 
 export default async function AdministratorLayout(
   props: LayoutProps<"/administrator">

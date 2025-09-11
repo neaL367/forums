@@ -1,4 +1,4 @@
-import PasswordSettingsForm from "@/components/pages/account-settings/password";
+import PasswordSettingsForm from "@/features/account-settings/password";
 
 export default function PasswordSettingsPage() {
   return <PasswordSettingsForm />;

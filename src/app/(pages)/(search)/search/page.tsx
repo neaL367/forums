@@ -1,9 +1,9 @@
 // import { Suspense } from "react";
 // import { Search } from "@/components/header/search";
 
-import Members from "@/components/pages/search/members";
-import Forums from "@/components/pages/search/forums";
-import Topics from "@/components/pages/search/topics";
+import Members from "@/features/search/members";
+import Forums from "@/features/search/forums";
+import Topics from "@/features/search/topics";
 
 export default async function SearchPage(props: {
   searchParams?: Promise<{
