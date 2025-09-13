@@ -5,8 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  // output = "../src/app/generated/prisma"
+  provider      = "prisma-client-js"
+  // output        = "../src/app/generated/prisma"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -46,7 +47,7 @@ model Member {
   postCount       Int       @default(0)
   reputation      Int       @default(0)
 
-  banned     Boolean? @default(false)
+  banned     Boolean?  @default(false)
   banExpires DateTime?
   banReason  String?
 
@@ -139,11 +140,11 @@ model Topic {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  id        String   @id @default(uuid())
-  title     String
+  id    String @id @default(uuid())
+  title String
 
-  forumId   String
-  forum     Forum    @relation(fields: [forumId], references: [id])
+  forumId String
+  forum   Forum  @relation(fields: [forumId], references: [id])
 
   replies Replies[]
 
@@ -162,7 +163,7 @@ model Replies {
   parentReply   Replies?  @relation("ReplyToSubReplies", fields: [parentReplyId], references: [id])
   subReplies    Replies[] @relation("ReplyToSubReplies")
 
-  content   String
+  content String
 
   @@map("replies")
 }
