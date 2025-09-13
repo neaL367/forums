@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache"
 import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
-import { verifySession } from "@/lib/dal"
+import { getServerSession } from "@/lib/dal"
 import { getMemberProfileById } from "@/database/members"
 import { ChangeUsernameSchema } from "@/zod/account-settings/change-username"
 
@@ -32,7 +32,7 @@ export async function ChangeUsernameAction(
   const { displayUsername } = validated.data
 
   try {
-    const session = await verifySession();
+    const session = await getServerSession();
 
     const user = await getMemberProfileById(session?.user.id ?? "")
 

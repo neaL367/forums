@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 
-import { verifySession } from "@/lib/dal";
+import { getServerSession } from "@/lib/dal";
 import { getMemberProfileById } from "@/database/members";
 import { ProfileClient } from "@/features/profile/profile-client";
 
@@ -23,7 +23,7 @@ export async function generateMetadata(props: PageProps<"/profile/[memberId]">):
 }
 
 export default async function ProfilePage(props: PageProps<"/profile/[memberId]">) {
-  const session = await verifySession();
+  const session = await getServerSession();
   const { memberId } = await props.params;
 
   if (!memberId) return notFound();

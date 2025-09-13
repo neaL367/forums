@@ -4,10 +4,10 @@ import { User, Mail, Lock, Edit, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { verifySession } from "@/lib/dal";
+import { getServerSession } from "@/lib/dal";
 
 export default async function AccountOverview() {
-  const session = await verifySession();
+  const session = await getServerSession();
 
   return (
     <div className="space-y-6">

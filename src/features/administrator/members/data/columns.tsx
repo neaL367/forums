@@ -9,7 +9,7 @@ import { Members } from "@/types/members";
 import { DataTableColumnHeader } from "../../shared/data-table/data-table-column-header";
 import { MemberRowActions } from "../members-row-actions";
 
-export const memberscolumns: ColumnDef<Members>[] = [
+export const membersColumns: ColumnDef<Members>[] = [
   // {
   //   id: "select",
   //   header: ({ table }) => (

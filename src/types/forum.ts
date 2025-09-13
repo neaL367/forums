@@ -8,8 +8,8 @@ export type Forums = {
   title: string
   description: string
   categoryId: string;
-  parentForumsId?: string;
+  parentForumsId?: string | undefined;
   
-  topics?: Topics[];
-  subForums?: Forums[];
+  topics?: Topics[] | undefined;
+  subForums?: Forums[] | undefined;
 }

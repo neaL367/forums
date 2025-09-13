@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import {
   Users,
   Settings as SettingsIcon,
-  Folder,
   Folders,
+  MessagesSquare,
+  MessageSquareMore,
   MessageSquare,
-  MessageCircleMore,
   MessageSquareWarning,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,17 +29,17 @@ const navItems = [
   {
     label: "Forums Management",
     href: "/administrator/forums-management" as const,
-    icon: Folder,
+    icon: MessageSquare,
   },
    {
     label: "Topics Management",
     href: "/administrator/topics-management" as const,
-    icon: MessageSquare,
+    icon: MessagesSquare,
   },
    {
     label: "Replies Management",
     href: "/administrator/replies-management" as const,
-    icon: MessageCircleMore,
+    icon: MessageSquareMore,
   },
   {
     label: "Reports & Features",

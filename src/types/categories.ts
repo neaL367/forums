@@ -8,5 +8,5 @@ export type Categories = {
   title: string
   description: string
   
-  forums: Forums[]
+  forums?: Forums[] | undefined;
 }

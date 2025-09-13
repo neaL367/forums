@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 
-import { verifySession } from "@/lib/dal";
+import { getServerSession } from "@/lib/dal";
 import AdministratorSidebar from "@/features/administrator/shared/sidebar-navigation";
 
 export default async function AdministratorLayout(
   props: LayoutProps<"/administrator">
 ) {
-  const session = await verifySession();
+  const session = await getServerSession();
 
   if (!session) redirect("/");
   if (session.user.role !== "ADMINISTRATOR") redirect("/");

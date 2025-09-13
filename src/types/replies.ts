@@ -5,7 +5,7 @@ export type Replies = {
   id: string;
   topicId: string;
   
-  parentRepliesId?: string;
+  parentRepliesId?: string | undefined;
     
   content: string;
 }

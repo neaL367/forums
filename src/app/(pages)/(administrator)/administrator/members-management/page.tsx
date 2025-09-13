@@ -4,15 +4,15 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { MembersTableWrapper } from "@/features/administrator/members/members-table-wrapper";
-import { memberscolumns } from "@/features/administrator/members/data/columns";
+import { membersColumns } from "@/features/administrator/members/data/columns";
 import { MembersManagementSkeleton } from "./skeleton";
 
-import { verifySession } from "@/lib/dal";
+import { getServerSession } from "@/lib/dal";
 import { auth } from "@/lib/auth";
 import type { Members } from "@/types/members";
 
 export default async function MembersPage() {
-  const session = await verifySession();
+  const session = await getServerSession();
 
   if (!session) redirect("/");
   if (session.user.role !== "ADMINISTRATOR") redirect("/");
@@ -55,5 +55,5 @@ async function MembersTable() {
   const response = await getCachedMembers(headerData);
   const members: Members[] = (response?.members ?? []) as Members[];
 
-  return <MembersTableWrapper data={members} columns={memberscolumns} />;
+  return <MembersTableWrapper data={members} columns={membersColumns} />;
 }

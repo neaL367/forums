@@ -7,7 +7,6 @@ import { authClient } from "@/lib/auth-client";
 
 export function SignOutButton() {
   const router = useRouter();
-  const { refetch } = authClient.useSession();
   const handleSignOut = async () => {
     await authClient.signOut({
       fetchOptions: {
@@ -16,17 +15,14 @@ export function SignOutButton() {
         },
         onSuccess: () => {
           router.push("/");
-          refetch();
+          router.refresh();
         },
       },
     });
   };
 
   return (
-    <div
-      onClick={handleSignOut}
-      className="flex items-center w-full gap-2 hover:bg-zinc-800"
-    >
+    <div onClick={handleSignOut} className="flex w-full gap-2 ">
       <LogOut className="h-4 w-4" />
       <span className="">Sign Out</span>
     </div>

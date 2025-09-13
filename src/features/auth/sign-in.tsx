@@ -41,6 +41,7 @@ export function SignInForm() {
         toast.success(state.message);
 
         router.push("/");
+        router.refresh();
         refetch();
       } else {
         toast.error(state.message);

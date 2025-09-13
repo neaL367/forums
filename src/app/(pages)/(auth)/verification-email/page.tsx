@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { VerificationEmailForm } from "@/features/auth/verification-email";
-import { verifySession } from "@/lib/dal";
+import { getServerSession } from "@/lib/dal";
 
 export default async function VerificationEmailPage() {
-  const session = await verifySession();
+  const session = await getServerSession();
 
   if (session && session.user.emailVerified) {
     redirect("/");

@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { ForgotPasswordForm } from "@/features/auth/forgot-password";
-import { verifySession } from "@/lib/dal";
+import { getServerSession } from "@/lib/dal";
 
 export default async function ForgotPasswordPage() {
-  const session = await verifySession();
+  const session = await getServerSession();
 
   if (session) {
     redirect("/");

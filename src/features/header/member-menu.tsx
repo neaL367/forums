@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { toast } from "sonner";
-import { ChevronDown, User, Settings, Bell, UserStar, UserX } from "lucide-react";
+import {
+  ChevronDown,
+  User,
+  Settings,
+  Bell,
+  UserStar,
+  UserX,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,11 +21,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignOutButton } from "@/features/header/signout-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { authClient } from "@/lib/auth-client";
 import { stopImpersonationAction } from "@/actions/administrator/impersonate";
+import { Member, Session } from "@/lib/auth";
+import { useState } from "react";
 
-export function MemberMenu() {
-  const { data: session, isPending } = authClient.useSession();
+interface MemberMenuProps {
+  member?: Member;
+  session?: Session | null;
+}
+
+export function MemberMenu({ member, session }: MemberMenuProps) {
+  const [open, setOpen] = useState(false);
 
   const handleStopImpersonation = async () => {
     try {
@@ -46,55 +59,51 @@ export function MemberMenu() {
         <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
       </Button>
 
-      {/* User Avatar Dropdown or Loading/Sign In */}
-      {isPending ? (
-        <div className="flex items-center gap-2 h-8 px-2">
-          <div className="hidden lg:block h-6 w-6 rounded-full bg-zinc-700 animate-pulse"></div>
-          <div className="h-4 w-16 bg-zinc-700 rounded animate-pulse"></div>
-        </div>
-      ) : session?.user ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+      {/* User Avatar Dropdown or Sign In */}
+      {member ? (
+        <DropdownMenu open={open} onOpenChange={setOpen}>
+          <DropdownMenuTrigger asChild className="">
             <Button
               variant="ghost"
-              className="flex items-center gap-2 h-8 px-2 text-white hover:bg-zinc-800"
-              disabled={isPending}
+              className="flex items-center gap-2 h-8 px-2 text-white hover:bg-black dark:hover:bg-black"
             >
               <Avatar className="hidden lg:block">
                 <AvatarImage
-                  src={session.user.image || ""}
-                  alt={`${session.user.displayUsername}'s avatar`}
+                  src={member.image || ""}
+                  alt={`${member.displayUsername}'s avatar`}
                   className="h-full w-full object-cover rounded-full"
                 />
                 <AvatarFallback className="h-full w-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-2xl font-bold rounded-full flex items-center justify-center">
-                  {session.user.displayUsername?.charAt(0).toUpperCase()}
+                  {member.displayUsername?.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <span className="text-sm font-medium">
-                {session.user.displayUsername}
+                {member.displayUsername}
               </span>
-              <ChevronDown className="h-3 w-3 text-zinc-400 " />
+              <ChevronDown
+                className={`h-3 w-3 text-zinc-400 transition-transform duration-200 ${
+                  open ? "rotate-180" : ""
+                }`}
+              />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-52" align="end">
             <DropdownMenuLabel>
               <div className="flex items-center justify-between gap-2">
-                <p className="text-sm font-medium">
-                  {session.user.displayUsername}
-                </p>
+                <p className="text-sm font-medium">{member.displayUsername}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link
-                href={`/profile/${session.user.id}`}
+                href={`/profile/${member.id}`}
                 className="flex items-center gap-2"
               >
                 <User className="h-4 w-4" />
                 Profile
               </Link>
             </DropdownMenuItem>
-            {session.user.role === "ADMINISTRATOR" && (
+            {member.role === "ADMINISTRATOR" && (
               <DropdownMenuItem asChild>
                 <Link
                   href="/administrator/members-management"
@@ -116,8 +125,8 @@ export function MemberMenu() {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
 
-            {session?.session?.impersonatedBy && (
-              <DropdownMenuItem 
+            {session?.session.impersonatedBy && (
+              <DropdownMenuItem
                 onClick={handleStopImpersonation}
                 className="flex items-center gap-2 cursor-pointer text-orange-600 hover:text-orange-700"
               >
@@ -131,8 +140,8 @@ export function MemberMenu() {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <Button variant="outline" asChild disabled={isPending}>
-          <Link href="/sign-in">{isPending ? "Loading..." : "Sign In"}</Link>
+        <Button variant="outline" asChild>
+          <Link href="/sign-in">Sign In</Link>
         </Button>
       )}
     </div>

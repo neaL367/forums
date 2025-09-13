@@ -81,7 +81,7 @@ const options = {
             impersonationSessionDuration: 60 * 60 * 24, // 1 day
         }),
     ],
-        
+
 } satisfies BetterAuthOptions;
 
 export const auth = betterAuth({
@@ -91,25 +91,15 @@ export const auth = betterAuth({
         customSession(async ({ user, session }) => {
             return {
                 session: {
-                    expiresAt: session.expiresAt,
-                    createAt: session.createdAt,
-                    userId: session.id,
-                    token: session.token,
-                    userAgent: session.userAgent,
-                    impersonatedBy: session.impersonatedBy,
+                    ...session
                 },
                 user: {
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    image: user.image,
-                    createdAt: user.createdAt,
-                    role: user.role,
-                    username: user.username,
-                    displayUsername: user.displayUsername,
-                    emailVerified: user.emailVerified,
+                    ...user
                 },
             };
         }, options),
     ],
 });
+
+export type Session = typeof auth.$Infer.Session;
+export type Member = typeof auth.$Infer.Session.user;

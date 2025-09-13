@@ -3,8 +3,12 @@ import { Suspense } from "react";
 
 import { MemberMenu } from "@/features/header/member-menu";
 import { Search } from "@/features/header/search";
+import { getServerSession } from "@/lib/dal";
 
 export async function Header() {
+  const session = await getServerSession();
+  const member = session?.user;
+
   return (
     <header className="z-10 sticky top-0 w-full border-b bg-background">
       <div className="flex items-center justify-between gap-4 px-8 h-20">
@@ -20,7 +24,7 @@ export async function Header() {
           <Search />
         </Suspense>
 
-        <MemberMenu />
+        <MemberMenu member={member} session={session} />
       </div>
     </header>
   );
