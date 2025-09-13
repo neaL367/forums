@@ -1,7 +1,12 @@
 on:
   push:
     branches: [ dev ]
-
+  workflow_call:
+    inputs:
+      buildPath:
+        type: string
+        default: .next
+            
 jobs:
   lint:
     name: NextJS Lint
@@ -41,3 +46,9 @@ jobs:
       
       - name: Build
         run: npm run build
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: ${{ inputs.buildPath }}
