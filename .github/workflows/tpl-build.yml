@@ -1,17 +1,13 @@
 on:
   push:
     branches: [ dev ]
-  workflow_call:
-    inputs:
-      buildPath:
-        type: string
-        default: .next
+
             
 jobs:
   lint:
     name: NextJS Lint
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v5
@@ -51,8 +47,3 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Upload build
-        uses: actions/upload-artifact@v4
-        with:
-          name: next-build
-          path: ${{ inputs.buildPath }}
