@@ -2,7 +2,7 @@ name: Deploy Preview
 
 on:
   push:
-    branches-ignore:
+    branches:
       - main
       - dev
 
