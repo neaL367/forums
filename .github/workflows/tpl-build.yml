@@ -21,7 +21,6 @@ jobs:
           node-version: 22
           cache: 'npm'
           cache-dependency-path: ./package-lock.json
-
       - name: Install dependencies
         run: npm install
       - name: Lint Check
@@ -31,6 +30,13 @@ jobs:
     name: NextJS Build
     needs: [lint]
     runs-on: ubuntu-latest
+    env:
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      EMAIL_USER: ${{ secrets.EMAIL_USER }}
+      EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+      ANALYZE: ${{ secrets.ANALYZE }}
 
     steps:
       - name: Checkout the source code
@@ -43,10 +49,8 @@ jobs:
           cache-dependency-path: ./package-lock.json
       - name: Install dependencies
         run: npm install
-      
       - name: Build
         run: npm run build
-
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
