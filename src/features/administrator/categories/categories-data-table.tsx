@@ -1,7 +1,21 @@
 "use client";
 
-import React from "react";
-import { ColumnDef, flexRender, useReactTable } from "@tanstack/react-table";
+import * as React from "react";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 import {
   Table,
@@ -11,17 +25,51 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DataTablePagination } from "@/features/administrator/shared/data-table/data-table-pagination";
+import type { Categories } from "@/types/categories";
 
-import { DataTablePagination } from "./data-table-pagination";
-
-interface DataTableProps<TData> {
-  table: ReturnType<typeof useReactTable<TData>>;
-  columns: ColumnDef<TData>[];
+interface DataTableProps {
+  columns: ColumnDef<Categories>[];
+  data: Categories[];
 }
 
-export function DataTable<TData>({ columns, table }: DataTableProps<TData>) {
+export function CategoriesDataTable({ columns, data }: DataTableProps) {
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+      columnVisibility,
+      rowSelection,
+      columnFilters,
+    },
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+
+    getSubRows: (row) => row.forums,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+  });
+
   return (
     <div className="space-y-4">
+      {/* <DataTableToolbar table={table} /> */}
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>

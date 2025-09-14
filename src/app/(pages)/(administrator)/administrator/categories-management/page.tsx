@@ -1,5 +1,5 @@
+import { CategoriesDataTable } from "@/features/administrator/categories/categories-data-table-client";
 import { categoriesColumns } from "@/features/administrator/categories/data/columns";
-import { CategoriesTableWrapper } from "@/features/administrator/categories/categories-table-wrapper";
 import type { Categories } from "@/types/categories";
 
 const mockCategories: Categories[] = [
@@ -159,6 +159,6 @@ export default async function CategoriesPage() {
 
 async function CategoriesTable() {
   return (
-    <CategoriesTableWrapper data={mockCategories} columns={categoriesColumns} />
+    <CategoriesDataTable columns={categoriesColumns} data={mockCategories} />
   );
 }

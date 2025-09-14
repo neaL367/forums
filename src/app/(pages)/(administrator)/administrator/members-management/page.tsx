@@ -3,9 +3,9 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { MembersTableWrapper } from "@/features/administrator/members/members-table-wrapper";
 import { membersColumns } from "@/features/administrator/members/data/columns";
-import { MembersManagementSkeleton } from "./skeleton";
+import { MembersDataTable } from "@/features/administrator/members/members-data-table-client";
+import { MembersDataTableSkeleton } from "@/features/administrator/members/members-data-table-skeleton";
 
 import { getServerSession } from "@/lib/dal";
 import { auth } from "@/lib/auth";
@@ -19,7 +19,7 @@ export default async function MembersPage() {
 
   return (
     <div className="mx-auto">
-      <Suspense fallback={<MembersManagementSkeleton />}>
+      <Suspense fallback={<MembersDataTableSkeleton />}>
         <MembersTable />
       </Suspense>
     </div>
@@ -55,5 +55,5 @@ async function MembersTable() {
   const response = await getCachedMembers(headerData);
   const members: Members[] = (response?.members ?? []) as Members[];
 
-  return <MembersTableWrapper data={members} columns={membersColumns} />;
+  return <MembersDataTable data={members} columns={membersColumns} />;
 }
