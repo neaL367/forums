@@ -13,70 +13,113 @@ export const membersColumns: ColumnDef<Members>[] = [
   // {
   //   id: "select",
   //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //       className="translate-y-[2px]"
-  //     />
+  //     <div className="px-4">
+  //       <Checkbox
+  //         checked={
+  //           table.getIsAllPageRowsSelected() ||
+  //           (table.getIsSomePageRowsSelected() && "indeterminate")
+  //         }
+  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //         aria-label="Select all"
+  //         className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+  //       />
+  //     </div>
   //   ),
   //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //       className="translate-y-[2px]"
-  //     />
+  //     <div className="px-4">
+  //       <Checkbox
+  //         checked={row.getIsSelected()}
+  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //         aria-label="Select row"
+  //         className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+  //       />
+  //     </div>
   //   ),
   //   enableSorting: false,
   //   enableHiding: false,
+  //   size: 60,
   // },
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" />
+      <div className="px-4">
+        <DataTableColumnHeader column={column} title="Created At" />
+      </div>
     ),
     cell: ({ row }) => {
       const date = row.original.createdAt;
-      return <div>{format(new Date(date), "MMM dd, yyyy")}</div>;
+      return (
+        <div className="px-4 py-2">
+          <span className="text-sm font-medium">
+            {format(new Date(date), "MMM dd, yyyy")}
+          </span>
+        </div>
+      );
     },
+    size: 120,
   },
   {
     accessorKey: "updatedAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
+      <div className="px-4">
+        <DataTableColumnHeader column={column} title="Updated At" />
+      </div>
     ),
     cell: ({ row }) => {
       const date = row.original.updatedAt;
-      return <div>{format(new Date(date), "MMM dd, yyyy")}</div>;
+      return (
+        <div className="px-4 py-2">
+          <span className="text-sm font-medium">
+            {format(new Date(date), "MMM dd, yyyy")}
+          </span>
+        </div>
+      );
     },
+    size: 120,
   },
   {
     accessorKey: "id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID" />
+      <div className="px-4">
+        <DataTableColumnHeader column={column} title="ID" />
+      </div>
     ),
-    cell: ({ row }) => <div>{row.original.id}</div>,
+    cell: ({ row }) => (
+      <div className="px-4 py-2">
+        <span className="text-sm font-mono text-muted-foreground">
+          {row.original.id}
+        </span>
+      </div>
+    ),
     enableSorting: false,
     enableHiding: false,
+    size: 200,
   },
   {
     accessorKey: "username",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Username" />
+      <div className="px-4">
+        <DataTableColumnHeader column={column} title="Username" />
+      </div>
     ),
     cell: ({ row }) => {
-      return <div>{row.original.username}</div>;
+      return (
+        <div className="px-4 py-2">
+          <span className="text-sm font-semibold">
+            {row.original.username}
+          </span>
+        </div>
+      );
     },
     enableHiding: false,
+    size: 120,
   },
   {
     accessorKey: "role",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Role" />
+      <div className="px-4">
+        <DataTableColumnHeader column={column} title="Role" />
+      </div>
     ),
     cell: ({ row }) => {
       const role = row.original.role;
@@ -86,61 +129,97 @@ export const membersColumns: ColumnDef<Members>[] = [
           : role === "MODERATOR"
             ? "secondary"
             : "outline";
-      return <Badge variant={variant}>{role}</Badge>;
+      return (
+        <div className="px-4 py-2">
+          <Badge variant={variant} className="text-xs font-medium">
+            {role}
+          </Badge>
+        </div>
+      );
     },
+    size: 100,
   },
   {
     accessorKey: "emailVerified",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email Verified" />
+      <div className="px-4">
+        <DataTableColumnHeader column={column} title="Email Verified" />
+      </div>
     ),
     cell: ({ row }) => {
       const isVerified = row.original.emailVerified;
       return (
-        <Badge variant={isVerified ? "default" : "secondary"}>
-          {isVerified ? "Verified" : "Not Verified"}
-        </Badge>
+        <div className="px-4 py-2">
+          <Badge 
+            variant={isVerified ? "default" : "secondary"}
+            className="text-xs font-medium"
+          >
+            {isVerified ? "Verified" : "Not Verified"}
+          </Badge>
+        </div>
       );
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
+    size: 120,
   },
   {
     accessorKey: "banned",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ban" />
+      <div className="px-4">
+        <DataTableColumnHeader column={column} title="Ban Status" />
+      </div>
     ),
     cell: ({ row }) => {
       const isBanned = row.original.banned;
       return (
-        <Badge variant={isBanned ? "destructive" : "default"}>
-          {isBanned ? "Banned" : "Not Banned"}
-        </Badge>
+        <div className="px-4 py-2">
+          <Badge 
+            variant={isBanned ? "destructive" : "outline"}
+            className="text-xs font-medium"
+          >
+            {isBanned ? "Banned" : "Not Banned"}
+          </Badge>
+        </div>
       );
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
+    size: 100,
   },
   {
     accessorKey: "banExpires",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ban Expires" />
+      <div className="px-4">
+        <DataTableColumnHeader column={column} title="Ban Expires" />
+      </div>
     ),
     cell: ({ row }) => {
       const banExpires = row.original.banExpires;
       return (
-        <div>
-          {banExpires ? format(new Date(banExpires), "MMM dd, yyyy") : "N/A"}
+        <div className="px-4 py-2">
+          <span className="text-sm text-muted-foreground">
+            {banExpires ? format(new Date(banExpires), "MMM dd, yyyy") : "N/A"}
+          </span>
         </div>
       );
     },
+    size: 120,
   },
   {
     id: "actions",
     cell: ({ row }) => (
-      <MemberRowActions row={row} />
+      <div className="px-4 py-2 flex items-center justify-center">
+        <MemberRowActions row={row} />
+      </div>
     ),
+    header: () => (
+      <div className="px-4 flex items-center justify-center">
+        <span className="text-sm font-medium">Actions</span>
+      </div>
+    ),
+    size: 80,
   },
 ];

@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronRight, ChevronDown, Circle } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "@/features/administrator/shared/data-table/data-table-column-header";
@@ -14,72 +14,30 @@ export const categoriesColumns: ColumnDef<Categories>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <div className="flex items-center gap-2 px-2">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-          className=""
-        />
-        {/* <button
-          onClick={table.getToggleAllRowsExpandedHandler()}
-          className="p-1 hover:bg-muted rounded transition-colors"
-          aria-label={table.getIsAllRowsExpanded() ? "Collapse all" : "Expand all"}
-        >
-          {table.getIsAllRowsExpanded() ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-        </button> */}
+      <div className="flex items-center justify-start w-full min-w-[80px]">
+        <div className="flex items-center gap-3">
+              <div className="w-5 h-5" />
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+            className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+          />
+        </div>
       </div>
     ),
     cell: ({ row }) => (
-      <div className="px-2 gap-2 flex items-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          indeterminate={row.getIsSomeSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="translate-y-[2px]"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID" />
-    ),
-    cell: ({ row }) => (
-      <div
-        className={`px-2 ${row.depth > 0 ? "text-sm text-muted-foreground" : "text-base font-medium"}`}
-      >
-        {row.original.id}
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "title",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
-    ),
-    cell: ({ row, getValue }) => {
-      const isSubRow = row.depth > 0;
-      return (
-        <div className="px-2">
-          <div className="flex items-center gap-2">
+      <div className="flex items-center justify-start w-full min-w-[80px] py-2">
+        <div className="flex items-center gap-2">
+          {/* Expand/Collapse Button */}
+          <div className="w-6 h-6 flex items-center justify-center">
             {row.getCanExpand() ? (
               <button
                 onClick={row.getToggleExpandedHandler()}
-                className="p-1 hover:bg-muted rounded transition-colors"
+                className="p-1 hover:bg-muted rounded transition-colors flex items-center justify-center"
                 aria-label={row.getIsExpanded() ? "Collapse" : "Expand"}
               >
                 {row.getIsExpanded() ? (
@@ -89,14 +47,73 @@ export const categoriesColumns: ColumnDef<Categories>[] = [
                 )}
               </button>
             ) : (
-              <Circle className="h-2 w-2 fill-current ring-2 ring-white text-background rounded-full" />
+              <div className="w-6 h-6" />
             )}
+          </div>
+          
+          {/* Checkbox */}
+          <div className="flex items-center justify-center">
+            <Checkbox
+              checked={row.getIsSelected()}
+              indeterminate={row.getIsSomeSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+              className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+            />
+          </div>
+        </div>
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+    size: 80,
+  },
+  {
+    accessorKey: "id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="ID" />
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center min-h-[40px]">
+        <span
+          className={`${
+            row.depth > 0 
+              ? "text-sm text-muted-foreground ml-4" 
+              : "text-base font-medium"
+          }`}
+        >
+          {row.original.id}
+        </span>
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+    size: 80,
+  },
+  {
+    accessorKey: "title",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Title" />
+    ),
+    cell: ({ row, getValue }) => {
+      const isSubRow = row.depth > 0;
+      return (
+        <div className="flex items-center min-h-[40px]">
+          <div className={`flex items-center gap-2 ${isSubRow ? "ml-4" : ""}`}>
             <span
-              className={`${isSubRow ? "text-sm text-muted-foreground" : "text-base font-medium"}`}
+              className={`${
+                isSubRow 
+                  ? "text-sm text-muted-foreground" 
+                  : "text-base font-medium"
+              }`}
             >
               {getValue() as string}
             </span>
-            {isSubRow && <Badge variant="secondary">Forum</Badge>}
+            {isSubRow && (
+              <Badge variant="secondary" className="text-xs">
+                Forum
+              </Badge>
+            )}
           </div>
         </div>
       );
@@ -109,10 +126,16 @@ export const categoriesColumns: ColumnDef<Categories>[] = [
       <DataTableColumnHeader column={column} title="Description" />
     ),
     cell: ({ row, getValue }) => (
-      <div
-        className={`px-2 ${row.depth > 0 ? "text-sm text-muted-foreground" : "text-base"}`}
-      >
-        {getValue() as string}
+      <div className="flex items-center min-h-[40px]">
+        <span
+          className={`${
+            row.depth > 0 
+              ? "text-sm text-muted-foreground ml-4" 
+              : "text-base"
+          }`}
+        >
+          {getValue() as string}
+        </span>
       </div>
     ),
   },
@@ -124,10 +147,16 @@ export const categoriesColumns: ColumnDef<Categories>[] = [
     cell: ({ row, getValue }) => {
       const date = getValue() as string;
       return (
-        <div
-          className={`px-2 ${row.depth > 0 ? "text-sm text-muted-foreground" : "text-base"}`}
-        >
-          {format(new Date(date), "MMM dd, yyyy")}
+        <div className="flex items-center min-h-[40px]">
+          <span
+            className={`${
+              row.depth > 0 
+                ? "text-sm text-muted-foreground ml-4" 
+                : "text-base"
+            }`}
+          >
+            {format(new Date(date), "MMM dd, yyyy")}
+          </span>
         </div>
       );
     },
@@ -140,10 +169,16 @@ export const categoriesColumns: ColumnDef<Categories>[] = [
     cell: ({ row, getValue }) => {
       const date = getValue() as string;
       return (
-        <div
-          className={`px-2 ${row.depth > 0 ? "text-sm text-muted-foreground" : "text-base"}`}
-        >
-          {format(new Date(date), "MMM dd, yyyy")}
+        <div className="flex items-center min-h-[40px]">
+          <span
+            className={`${
+              row.depth > 0 
+                ? "text-sm text-muted-foreground ml-4" 
+                : "text-base"
+            }`}
+          >
+            {format(new Date(date), "MMM dd, yyyy")}
+          </span>
         </div>
       );
     },
@@ -151,10 +186,15 @@ export const categoriesColumns: ColumnDef<Categories>[] = [
   {
     id: "actions",
     cell: ({ row }) => (
-      <div className="px-2">
+      <div className="flex items-center justify-center min-h-[40px]">
         <CategoriesRowActions row={row} />
       </div>
     ),
-    header: () => <span className="px-2">Actions</span>,
+    header: () => (
+      <div className="flex items-center justify-center">
+        <span>Actions</span>
+      </div>
+    ),
+    size: 100,
   },
 ];

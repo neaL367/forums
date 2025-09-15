@@ -122,7 +122,7 @@ export function CategoriesDataTable({ columns, data }: DataTableProps) {
                         data-state={subRow.getIsSelected() && "selected"}
                         className={`${
                           index === row.subRows.length - 1
-                            ? "border-b-2 border-b-zinc-500"
+                            ? "border-b-2 border-b-zinc-700"
                             : ""
                         }`}
                       >
