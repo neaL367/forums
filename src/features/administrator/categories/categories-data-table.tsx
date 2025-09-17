@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/table";
 import { DataTablePagination } from "@/features/administrator/shared/data-table/data-table-pagination";
 import type { Categories } from "@/types/categories";
+import { CategoriesToolbar } from "./catergories-toolbar";
 
 interface DataTableProps {
   columns: ColumnDef<Categories>[];
@@ -69,7 +70,7 @@ export function CategoriesDataTable({ columns, data }: DataTableProps) {
 
   return (
     <div className="space-y-4">
-      {/* <DataTableToolbar table={table} /> */}
+      <CategoriesToolbar table={table} />
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
