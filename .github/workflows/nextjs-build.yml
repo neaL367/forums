@@ -5,11 +5,8 @@ on:
 
 jobs:
   build:
-    name: Next.js Lint and Build
+    name: Next.js Lint
     runs-on: ubuntu-latest
-    env:
-      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - name: Checkout the source code
@@ -26,5 +23,11 @@ jobs:
       - name: Lint Check
         run: bun run lint
 
-      - name: Build Nextjs
-        run: bun run build
+      - name: Install Vercel CLI
+        run: bun add -g vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
