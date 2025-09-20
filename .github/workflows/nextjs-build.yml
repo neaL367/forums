@@ -7,6 +7,9 @@ jobs:
   build:
     name: Next.js Lint and Build
     runs-on: ubuntu-latest
+    env:
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v4
