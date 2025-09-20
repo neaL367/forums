@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - name: Checkout the source code
