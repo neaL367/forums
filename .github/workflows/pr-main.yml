@@ -1,0 +1,11 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  call-build-workflow:
+    name: Run Next.js Lint and Build
+    uses: ./.github/workflows/nextjs-build.yml
