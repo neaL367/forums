@@ -6,8 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Members } from "@/types/members";
 
 // import { Checkbox } from "@/components/ui/checkbox";
-import { DataTableColumnHeader } from "../../shared/data-table/data-table-column-header";
-import { MemberRowActions } from "../members-row-actions";
+import { DataTableColumnHeader } from "@/features/administrator/shared/data-table/data-table-column-header";
+import { MemberRowActions } from "@/features/administrator/members/members-row-actions";
 
 export const membersColumns: ColumnDef<Members>[] = [
   // {
@@ -39,44 +39,6 @@ export const membersColumns: ColumnDef<Members>[] = [
   //   enableHiding: false,
   //   size: 60,
   // },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <div className="px-4">
-        <DataTableColumnHeader column={column} title="Created At" />
-      </div>
-    ),
-    cell: ({ row }) => {
-      const date = row.original.createdAt;
-      return (
-        <div className="px-4 py-2">
-          <span className="text-sm font-medium">
-            {format(new Date(date), "MMM dd, yyyy")}
-          </span>
-        </div>
-      );
-    },
-    size: 120,
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <div className="px-4">
-        <DataTableColumnHeader column={column} title="Updated At" />
-      </div>
-    ),
-    cell: ({ row }) => {
-      const date = row.original.updatedAt;
-      return (
-        <div className="px-4 py-2">
-          <span className="text-sm font-medium">
-            {format(new Date(date), "MMM dd, yyyy")}
-          </span>
-        </div>
-      );
-    },
-    size: 120,
-  },
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -202,6 +164,44 @@ export const membersColumns: ColumnDef<Members>[] = [
         <div className="px-4 py-2">
           <span className="text-sm text-muted-foreground">
             {banExpires ? format(new Date(banExpires), "MMM dd, yyyy") : "N/A"}
+          </span>
+        </div>
+      );
+    },
+    size: 120,
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <div className="px-4">
+        <DataTableColumnHeader column={column} title="Created At" />
+      </div>
+    ),
+    cell: ({ row }) => {
+      const date = row.original.createdAt;
+      return (
+        <div className="px-4 py-2">
+          <span className="text-sm font-medium">
+            {format(new Date(date), "MMM dd, yyyy")}
+          </span>
+        </div>
+      );
+    },
+    size: 120,
+  },
+  {
+    accessorKey: "updatedAt",
+    header: ({ column }) => (
+      <div className="px-4">
+        <DataTableColumnHeader column={column} title="Updated At" />
+      </div>
+    ),
+    cell: ({ row }) => {
+      const date = row.original.updatedAt;
+      return (
+        <div className="px-4 py-2">
+          <span className="text-sm font-medium">
+            {format(new Date(date), "MMM dd, yyyy")}
           </span>
         </div>
       );

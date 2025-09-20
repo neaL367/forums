@@ -7,7 +7,7 @@ import type { Members } from "@/types/members";
 export const MembersDataTable = dynamic<{
   columns: ColumnDef<Members>[];
   data: Members[];
-}>(() => import("./members-data-table").then((mod) => mod.MembersDataTable), {
+}>(() => import("@features/administrator/members/members-data-table").then((mod) => mod.MembersDataTable), {
   ssr: false,
   // loading: () => <p>Loading table...</p>,
 });

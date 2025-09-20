@@ -38,8 +38,6 @@ export function EditMemberDialog({ member, open, onOpenChange }: EditMemberDialo
 
 
   const handleEditMember = async () => {
-
-
     setLoading(true);
     try {
       await updateMemberAction({

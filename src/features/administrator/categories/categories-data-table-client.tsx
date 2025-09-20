@@ -9,7 +9,7 @@ export const CategoriesDataTable = dynamic<{
   data: Categories[];
 }>(
   () =>
-    import("./categories-data-table").then((mod) => mod.CategoriesDataTable),
+    import("@features/administrator/categories/categories-data-table").then((mod) => mod.CategoriesDataTable),
   {
     ssr: false,
     // loading: () => <p>Loading table...</p>,

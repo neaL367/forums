@@ -10,7 +10,7 @@ import {
   FileText,
 } from "lucide-react";
 
-import { EditProfileModal } from "@/features/profile/edit-profile-modal";
+import { EditProfileDialog } from "@/features/profile/edit-profile-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { MemberProfile } from "@/types/members";
@@ -29,7 +29,7 @@ export function Profile({ member, isOwnProfile }: ProfileProps) {
           <h1 className="text-3xl font-bold text-white mb-2">Profile</h1>
           <p className="text-zinc-300">View profile information</p>
         </div>
-        {isOwnProfile && <EditProfileModal member={member} />}
+        {isOwnProfile && <EditProfileDialog member={member} />}
       </div>
 
       {/* Basic Info Card */}

@@ -25,16 +25,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTablePagination } from "@/features/administrator/shared/data-table/data-table-pagination";
+import { DataTablePagination } from "@features/administrator/shared/data-table/data-table-pagination";
+import { CategoriesToolbar } from "@features/administrator/categories/catergories-toolbar";
 import type { Categories } from "@/types/categories";
-import { CategoriesToolbar } from "./catergories-toolbar";
 
 interface DataTableProps {
-  columns: ColumnDef<Categories>[];
-  data: Categories[];
+  data?: Categories[];
+  columns?: ColumnDef<Categories>[];
 }
 
-export function CategoriesDataTable({ columns, data }: DataTableProps) {
+export function CategoriesDataTable({
+  columns = [],
+  data = [],
+}: DataTableProps) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});

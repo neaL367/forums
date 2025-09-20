@@ -23,14 +23,14 @@ import {
 import { Members, Roles } from "@/types/members";
 import { authClient } from "@/lib/auth-client";
 
-import { actions } from "./data/data";
+import { actions } from "@/features/administrator/members/data/data";
 import { setMemberRoleAction } from "@/actions/administrator/member";
 
-import { BanMemberDialog } from "./dialog/ban-member-dialog";
-import { SetPasswordDialog } from "./dialog/set-password-dialog";
-import { EditMemberDialog } from "./dialog/edit-member-dialog";
-import { SessionManagementDialog } from "./dialog/sessions-manage-dialog";
-import { ConfirmationDialogs } from "./dialog/confirmation-alert-dialog";
+import { BanMemberDialog } from "@/features/administrator/members/dialogs/ban-member-dialog";
+import { SetPasswordDialog } from "@/features/administrator/members/dialogs/set-password-dialog";
+import { EditMemberDialog } from "@/features/administrator/members/dialogs/edit-member-dialog";
+import { SessionManagementDialog } from "@/features/administrator/members/dialogs/sessions-manage-dialog";
+import { ConfirmationDialogs } from "@/features/administrator/members/dialogs/confirmation-alert-dialog";
 
 
 interface MemberRowActionsProps {

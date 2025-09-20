@@ -24,7 +24,7 @@ const initialState: UpdateProfileFormState = {
   message: '',
 }
 
-export function EditProfileModal({ member }: { member: MemberProfile }) {
+export function EditProfileDialog({ member }: { member: MemberProfile }) {
   const [open, setOpen] = useState(false)
   const { refetch } = authClient.useSession();
   

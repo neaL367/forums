@@ -27,15 +27,15 @@ import {
 } from "@/components/ui/table";
 
 import { DataTablePagination } from "@/features/administrator/shared/data-table/data-table-pagination";
-import { MembersToolbar } from "./members-toolbar";
+import { MembersToolbar } from "@/features/administrator/members/members-toolbar";
 import { Members } from "@/types/members";
 
 interface DataTableProps {
-  columns: ColumnDef<Members>[];
-  data: Members[];
+  data?: Members[];
+  columns?: ColumnDef<Members>[];
 }
 
-export function MembersDataTable({ columns, data }: DataTableProps) {
+export function MembersDataTable({ columns = [], data = [] }: DataTableProps) {
   const [rowSelection, setRowSelection] = React.useState<
     Record<string, boolean>
   >({});
