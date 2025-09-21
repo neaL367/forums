@@ -13,7 +13,7 @@ const options = {
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
-    trustedOrigins: [process.env.BETTER_AUTH_URL!],
+    trustedOrigins: ['http://localhost:3000', 'https://forums-neal367-mess-projects.vercel.app'],
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: false,
