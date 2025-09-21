@@ -1,7 +1,5 @@
-// members-data-table.tsx
 "use client";
 
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -16,6 +14,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useState } from "react";
 
 import {
   Table,
@@ -36,15 +35,15 @@ interface DataTableProps {
 }
 
 export function MembersDataTable({ columns = [], data = [] }: DataTableProps) {
-  const [rowSelection, setRowSelection] = React.useState<
+  const [rowSelection, setRowSelection] = useState<
     Record<string, boolean>
   >({});
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     []
   );
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data,

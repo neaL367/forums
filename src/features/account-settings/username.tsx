@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,18 +18,27 @@ const initialState: ChangeUsernameFormState = {
 
 export default function UsernameSettingsForm() {
   const router = useRouter();
-
   const { data: session, refetch } = authClient.useSession();
+  
+  const loadingToastRef = useRef<string | number | null>(null);
+
   const [state, action, pending] = useActionState(
-    ChangeUsernameAction,
+    async (prevState: ChangeUsernameFormState, formData: FormData) => {
+      loadingToastRef.current = toast.loading("Updating your username...");
+      return await ChangeUsernameAction(prevState, formData);
+    },
     initialState
   );
 
   useEffect(() => {
     if (state?.message) {
+      if (loadingToastRef.current) {
+        toast.dismiss(loadingToastRef.current);
+        loadingToastRef.current = null;
+      }
+
       if (state.success) {
         toast.success(state.message);
-
         router.push("/account-settings");
         refetch();
       } else {

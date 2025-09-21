@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { Loader2, ArrowLeft } from "lucide-react";
 
 import {
@@ -30,14 +30,24 @@ const initialState: VerificationEmailFormState = {
 export function VerificationEmailForm() {
   const router = useRouter();
   const { data: session, refetch } = authClient.useSession();
+  
+  const loadingToastRef = useRef<string | number | null>(null);
 
   const [state, formAction, pending] = useActionState(
-    VerificationEmailAction,
+    async (prevState: VerificationEmailFormState, formData: FormData) => {
+      loadingToastRef.current = toast.loading("Sending verification email...");
+      return await VerificationEmailAction(prevState, formData);
+    },
     initialState
   );
 
   useEffect(() => {
     if (state?.message) {
+      if (loadingToastRef.current) {
+        toast.dismiss(loadingToastRef.current);
+        loadingToastRef.current = null;
+      }
+
       if (state.success) {
         toast.success(state.message);
         router.push("/");

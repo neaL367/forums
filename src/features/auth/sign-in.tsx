@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
 import {
   Card,
@@ -30,16 +30,25 @@ export function SignInForm() {
   const router = useRouter();
   const { refetch } = authClient.useSession();
 
+  const loadingToastRef = useRef<string | number | null>(null);
+
   const [state, formAction, pending] = useActionState(
-    signInAction,
+    async (prevState: SignInFormState, formData: FormData) => {
+      loadingToastRef.current = toast.loading("Signing in...");
+      return await signInAction(prevState, formData);
+    },
     initialState
   );
 
   useEffect(() => {
     if (state?.message) {
+      if (loadingToastRef.current) {
+        toast.dismiss(loadingToastRef.current);
+        loadingToastRef.current = null;
+      }
+
       if (state.success) {
         toast.success(state.message);
-
         router.push("/");
         router.refresh();
         refetch();

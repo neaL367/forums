@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 import { authClient } from "@/lib/auth-client";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ChangePasswordAction } from "@/actions/account-settings/change-password";
@@ -19,14 +19,24 @@ const initialState: ChangePasswordFormState = {
 export default function PasswordSettingsForm() {
   const router = useRouter();
   const { data: session, refetch } = authClient.useSession();
+  
+  const loadingToastRef = useRef<string | number | null>(null);
 
   const [state, action, pending] = useActionState(
-    ChangePasswordAction,
+    async (prevState: ChangePasswordFormState, formData: FormData) => {
+      loadingToastRef.current = toast.loading("Updating your password...");
+      return await ChangePasswordAction(prevState, formData);
+    },
     initialState
   );
 
   useEffect(() => {
     if (state?.message) {
+      if (loadingToastRef.current) {
+        toast.dismiss(loadingToastRef.current);
+        loadingToastRef.current = null;
+      }
+
       if (state.success) {
         toast.success(state.message);
         router.push("/account-settings");

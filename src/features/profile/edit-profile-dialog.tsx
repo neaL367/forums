@@ -1,7 +1,7 @@
 'use client'
 
 import { toast } from 'sonner'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useActionState } from 'react'
 
 import {
@@ -28,17 +28,31 @@ export function EditProfileDialog({ member }: { member: MemberProfile }) {
   const [open, setOpen] = useState(false)
   const { refetch } = authClient.useSession();
   
+  const loadingToastRef = useRef<string | number | null>(null);
+  
   const [state, formAction, isPending] = useActionState(
-    updateProfileAction,
+    async (prevState: UpdateProfileFormState, formData: FormData) => {
+      loadingToastRef.current = toast.loading("Updating your profile...");
+      return await updateProfileAction(prevState, formData);
+    },
     initialState
   )
 
   useEffect(() => {
-    if (state.success) {
-      toast.success(state.message ?? 'Saved successfully')
-      setOpen(false)
-      refetch()
-    } 
+    if (state.message) {
+      if (loadingToastRef.current) {
+        toast.dismiss(loadingToastRef.current);
+        loadingToastRef.current = null;
+      }
+
+      if (state.success) {
+        toast.success(state.message ?? 'Profile updated successfully!')
+        setOpen(false)
+        refetch()
+      } else {
+        toast.error(state.message ?? 'Failed to update profile')
+      }
+    }
   }, [state.success, state.resetKey, state.message, refetch]) 
 
   return (

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { Loader2, ArrowLeft } from "lucide-react";
 import {
   Card,
@@ -34,14 +34,24 @@ interface ResetPasswordFormProps {
 export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const router = useRouter();
   const { refetch } = authClient.useSession();
+  
+  const loadingToastRef = useRef<string | number | null>(null);
 
   const [state, formAction, pending] = useActionState(
-    resetPasswordAction,
+    async (prevState: ResetPasswordFormState, formData: FormData) => {
+      loadingToastRef.current = toast.loading("Resetting your password...");
+      return await resetPasswordAction(prevState, formData);
+    },
     initialState
   );
 
   useEffect(() => {
     if (state?.message) {
+      if (loadingToastRef.current) {
+        toast.dismiss(loadingToastRef.current);
+        loadingToastRef.current = null;
+      }
+
       if (state.success) {
         toast.success(state.message);
         router.push("/");

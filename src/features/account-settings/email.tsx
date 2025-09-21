@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,14 +22,24 @@ const initialState: ChangeEmailFormState = {
 export default function EmailSettingsForm() {
   const router = useRouter();
   const { data: session, refetch } = authClient.useSession();
+  
+  const loadingToastRef = useRef<string | number | null>(null);
 
   const [state, action, pending] = useActionState(
-    ChangeEmailAction,
+    async (prevState: ChangeEmailFormState, formData: FormData) => {
+      loadingToastRef.current = toast.loading("Updating your email address...");
+      return await ChangeEmailAction(prevState, formData);
+    },
     initialState
   );
 
   useEffect(() => {
     if (state?.message) {
+      if (loadingToastRef.current) {
+        toast.dismiss(loadingToastRef.current);
+        loadingToastRef.current = null;
+      }
+
       if (state.success) {
         toast.success(state.message);
         router.push("/account-settings");
