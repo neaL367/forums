@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { ChangeEmailSchema } from "@/zod/account-settings/change-email"
-import type { ChangeEmailFormData, ChangeEmailFormState } from "@/models/account-setting/change-email"
+import type { ChangeEmailFormData, ChangeEmailFormState } from "@/formdata/account-setting/change-email"
 
 
 export async function ChangeEmailAction(

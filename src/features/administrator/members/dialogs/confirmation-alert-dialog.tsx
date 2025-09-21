@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { Members } from "@/types/members";
-import { impersonateMemberAction } from "@/actions/administrator/impersonate";
-import { unbanMemberAction } from "@/actions/administrator/ban";
-import { removeMemberAction } from "@/actions/administrator/member";
-import { revokeAllSessionsMemberAction } from "@/actions/administrator/revoke";
+import { impersonateMemberAction } from "@/actions/administrator/members/impersonate";
+import { unbanMemberAction } from "@/actions/administrator/members/ban";
+import { removeMemberAction } from "@/actions/administrator/members/member";
+import { revokeAllSessionsMemberAction } from "@/actions/administrator/members/revoke";
 
 interface ConfirmationDialogsProps {
   member: Members;

@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 
 import { signInAction } from "@/actions/auth/sign-in";
 import { authClient } from "@/lib/auth-client";
-import type { SignInFormState } from "@/models/auth/sign-in";
+import type { SignInFormState } from "@/formdata/auth/sign-in";
 
 const initialState: SignInFormState = {
   success: false,

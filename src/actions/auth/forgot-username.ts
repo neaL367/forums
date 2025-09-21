@@ -6,7 +6,7 @@ import { sendUsernameReminderEmail } from "@/lib/email"
 import { forgotUsernameSchema } from "@/zod/auth/forgot-username"
 import { forgotUsername } from "@/database/auth"
 
-import type { ForgotUsernameFormData, ForgotUsernameFormState } from "@/models/auth/forgot-username"
+import type { ForgotUsernameFormData, ForgotUsernameFormState } from "@/formdata/auth/forgot-username"
 import type { Members } from "@/types/members"
 
 

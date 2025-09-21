@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 
 import { signUpAction } from "@/actions/auth/sign-up";
 import { authClient } from "@/lib/auth-client";
-import type { SignUpFormState } from "@/models/auth/sign-up";
+import type { SignUpFormState } from "@/formdata/auth/sign-up";
 
 const initialState: SignUpFormState = {
   success: false,

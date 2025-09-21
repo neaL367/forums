@@ -6,7 +6,7 @@ import { headers } from "next/headers"
 import { signUpSchema } from "@/zod/auth/sign.up"
 import { auth } from "@/lib/auth"
 
-import type { SignUpFormData, SignUpFormState } from "@/models/auth/sign-up"
+import type { SignUpFormData, SignUpFormState } from "@/formdata/auth/sign-up"
 
 export async function signUpAction(prevState: SignUpFormState, formData: FormData): Promise<SignUpFormState> {
   const rawData: SignUpFormData = {

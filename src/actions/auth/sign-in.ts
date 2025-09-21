@@ -6,7 +6,7 @@ import { headers } from "next/headers"
 import { signInSchema } from "@/zod/auth/sign-in"
 import { auth } from "@/lib/auth"
 
-import type { SignInFormData, SignInFormState } from "@/models/auth/sign-in"
+import type { SignInFormData, SignInFormState } from "@/formdata/auth/sign-in"
 
 export async function signInAction(prevState: SignInFormState, formData: FormData): Promise<SignInFormState> {
   const rawData: SignInFormData = {

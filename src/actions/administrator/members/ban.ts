@@ -1,8 +1,9 @@
 "use server"
 
+import { APIError } from "better-auth/api"
+import { revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
-import { revalidateTag } from "next/cache";
 
 export async function banMemberAction(memberId: string, banReason?: string, banExpiresIn?: number) {
   try {
@@ -21,7 +22,7 @@ export async function banMemberAction(memberId: string, banReason?: string, banE
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : "An unexpected error occurred.",
+      message: error instanceof APIError ? error.body?.message || error.message : "An unexpected error occurred.",
     };
   }
 }
@@ -43,7 +44,7 @@ export async function unbanMemberAction(memberId: string) {
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : "An unexpected error occurred.",
+      message: error instanceof APIError ? error.body?.message || error.message : "An unexpected error occurred.",
     };
   }
 }

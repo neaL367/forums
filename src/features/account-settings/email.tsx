@@ -12,7 +12,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 import { authClient } from "@/lib/auth-client";
 import { ChangeEmailAction } from "@/actions/account-settings/change-email";
-import type { ChangeEmailFormState } from "@/models/account-setting/change-email";
+import type { ChangeEmailFormState } from "@/formdata/account-setting/change-email";
 
 const initialState: ChangeEmailFormState = {
   success: false,

@@ -5,7 +5,7 @@ import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
 import { ChangePasswordSchema } from "@/zod/account-settings/change-password"
-import type { ChangePasswordFormData, ChangePasswordFormState } from "@/models/account-setting/change-password"
+import type { ChangePasswordFormData, ChangePasswordFormState } from "@/formdata/account-setting/change-password"
 
 
 export async function ChangePasswordAction(prevState: ChangePasswordFormState, formData: FormData,): Promise<ChangePasswordFormState> {

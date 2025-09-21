@@ -21,7 +21,7 @@ import { Label } from "@/components/ui/label";
 import { forgotUsernameAction } from "@/actions/auth/forgot-username";
 import { authClient } from "@/lib/auth-client";
 
-import type { ForgotUsernameFormState } from "@/models/auth/forgot-username";
+import type { ForgotUsernameFormState } from "@/formdata/auth/forgot-username";
 
 const initialState: ForgotUsernameFormState = {
   success: false,

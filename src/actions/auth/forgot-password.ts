@@ -6,7 +6,7 @@ import { headers } from "next/headers"
 import { forgotPasswordSchema } from "@/zod/auth/forgot-password"
 import { auth } from "@/lib/auth"
 
-import type { ForgotPasswordFormData, ForgotPasswordFormState } from "@/models/auth/forgot-password"
+import type { ForgotPasswordFormData, ForgotPasswordFormState } from "@/formdata/auth/forgot-password"
 
 export async function forgotPasswordAction(prevState: ForgotPasswordFormState, formData: FormData,): Promise<ForgotPasswordFormState> {
   const rawData: ForgotPasswordFormData = {

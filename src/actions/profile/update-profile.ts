@@ -4,7 +4,7 @@ import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache"
 import { getMemberProfileById, updateMemberProfile } from "@/database/members"
 import { getServerSession } from "@/lib/dal"
-import { UpdateProfileFormData, UpdateProfileFormState } from "@/models/profile/update-profile"
+import { UpdateProfileFormData, UpdateProfileFormState } from "@/formdata/profile/update-profile"
 import { UpdateProfileSchema } from "@/zod/profile/update-profile"
 
 export async function updateProfileAction(
@@ -59,6 +59,7 @@ export async function updateProfileAction(
     await updateMemberProfile(session.user.id, { image: image, bio: bio, location: location, website: website })
 
     revalidateTag("profile")
+    revalidateTag("admin-mgt-members")
 
     return {
       success: true,

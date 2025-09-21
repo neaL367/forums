@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 
 import { VerificationEmailAction } from "@/actions/auth/verification-email";
 import { authClient } from "@/lib/auth-client";
-import type { VerificationEmailFormState } from "@/models/auth/verification-email";
+import type { VerificationEmailFormState } from "@/formdata/auth/verification-email";
 
 const initialState: VerificationEmailFormState = {
   success: false,

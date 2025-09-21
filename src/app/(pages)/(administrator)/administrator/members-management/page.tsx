@@ -47,8 +47,8 @@ async function MembersTable() {
         };
       }
     },
-    ["members-list"],
-    { tags: ["members"], revalidate: 300 }
+    ['id'],
+    { tags: ["admin-mgt-members"], revalidate: 3600 }
   );
 
   const headerData = await headers();

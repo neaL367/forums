@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { toast } from "sonner";
+import { useState } from "react";
 import {
   ChevronDown,
   User,
@@ -21,9 +22,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignOutButton } from "@/features/header/signout-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { stopImpersonationAction } from "@/actions/administrator/impersonate";
+import { stopImpersonationAction } from "@/actions/administrator/members/impersonate";
 import { Member, Session } from "@/lib/auth";
-import { useState } from "react";
 
 interface MemberMenuProps {
   member?: Member;

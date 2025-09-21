@@ -9,7 +9,7 @@ import { getServerSession } from "@/lib/dal"
 import { getMemberProfileById } from "@/database/members"
 import { ChangeUsernameSchema } from "@/zod/account-settings/change-username"
 
-import type { ChangeUsernameFormData, ChangeUsernameFormState } from "@/models/account-setting/change-username"
+import type { ChangeUsernameFormData, ChangeUsernameFormState } from "@/formdata/account-setting/change-username"
 
 export async function ChangeUsernameAction(
   prevState: ChangeUsernameFormState,

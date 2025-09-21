@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 
 import { forgotPasswordAction } from "@/actions/auth/forgot-password";
 
-import type { ForgotPasswordFormState } from "@/models/auth/forgot-password";
+import type { ForgotPasswordFormState } from "@/formdata/auth/forgot-password";
 
 const initialState: ForgotPasswordFormState = {
   success: false,

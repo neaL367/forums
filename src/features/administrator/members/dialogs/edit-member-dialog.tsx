@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { Members } from "@/types/members";
-import { updateMemberAction } from "@/actions/administrator/member";
+import { updateMemberAction } from "@/actions/administrator/members/member";
 import { authClient } from "@/lib/auth-client";
 
 interface EditMemberDialogProps {

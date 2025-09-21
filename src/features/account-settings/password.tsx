@@ -9,7 +9,7 @@ import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ChangePasswordAction } from "@/actions/account-settings/change-password";
-import { ChangePasswordFormState } from "@/models/account-setting/change-password";
+import { ChangePasswordFormState } from "@/formdata/account-setting/change-password";
 
 const initialState: ChangePasswordFormState = {
   success: false,

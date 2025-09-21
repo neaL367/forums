@@ -96,7 +96,7 @@ export async function updateMemberAction(updates: {
     });
 
     revalidateTag("profile")
-    revalidateTag("members")
+    revalidateTag("admin-mgt-members")
 
     return {
       success: true,

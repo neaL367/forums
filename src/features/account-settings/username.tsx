@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 import { ChangeUsernameAction } from "@/actions/account-settings/change-username";
-import type { ChangeUsernameFormState } from "@/models/account-setting/change-username";
+import type { ChangeUsernameFormState } from "@/formdata/account-setting/change-username";
 
 const initialState: ChangeUsernameFormState = {
   success: false,

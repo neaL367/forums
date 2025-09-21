@@ -6,7 +6,7 @@ import { headers } from "next/headers"
 import { resetPasswordSchema } from "@/zod/auth/reset-password"
 import { auth } from "@/lib/auth"
 
-import type { ResetPasswordFormData, ResetPasswordFormState } from "@/models/auth/reset-password"
+import type { ResetPasswordFormData, ResetPasswordFormState } from "@/formdata/auth/reset-password"
 
 export async function resetPasswordAction(prevState: ResetPasswordFormState, formData: FormData,): Promise<ResetPasswordFormState> {
   const rawData: ResetPasswordFormData = {

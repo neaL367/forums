@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table";
 
 import { Members } from "@/types/members";
-import { listUserSessionsAction, revokeMemberSessionAction } from "@/actions/administrator/revoke";
+import { listUserSessionsAction, revokeMemberSessionAction } from "@/actions/administrator/members/revoke";
 
 
 interface SessionManagementDialogProps {

@@ -1,11 +1,12 @@
 "use client";
 
 import { toast } from "sonner";
-import { useCallback, useMemo, useState } from "react";
+import { JSX, useCallback, useMemo, useState } from "react";
 import { MoreHorizontal, Loader2 } from "lucide-react";
 import { Row } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +25,7 @@ import { Members, Roles } from "@/types/members";
 import { authClient } from "@/lib/auth-client";
 
 import { actions } from "@/features/administrator/members/data/data";
-import { setMemberRoleAction } from "@/actions/administrator/member";
+import { setMemberRoleAction } from "@/actions/administrator/members/member";
 
 import { BanMemberDialog } from "@/features/administrator/members/dialogs/ban-member-dialog";
 import { SetPasswordDialog } from "@/features/administrator/members/dialogs/set-password-dialog";
@@ -32,32 +33,16 @@ import { EditMemberDialog } from "@/features/administrator/members/dialogs/edit-
 import { SessionManagementDialog } from "@/features/administrator/members/dialogs/sessions-manage-dialog";
 import { ConfirmationDialogs } from "@/features/administrator/members/dialogs/confirmation-alert-dialog";
 
-
 interface MemberRowActionsProps {
   row: Row<Members>;
 }
-
-type DialogType =
-  | "ban"
-  | "setPassword"
-  | "editMember"
-  | "manageSessions"
-  | null;
-
-type AlertType =
-  | "unban"
-  | "remove"
-  | "impersonate"
-  | "revokeAllSessions"
-  | null;
 
 export function MemberRowActions({ row }: MemberRowActionsProps) {
   const member = row.original;
   const { data: session, refetch } = authClient.useSession();
   const currentUserId = session?.user?.id;
 
-  const [dialogType, setDialogType] = useState<DialogType>(null);
-  const [alertType, setAlertType] = useState<AlertType>(null);
+  const [dialogMenu, setDialogMenu] = useState<string>("none");
   const [loading, setLoading] = useState(false);
 
   const computedActions = useMemo(() => {
@@ -67,12 +52,75 @@ export function MemberRowActions({ row }: MemberRowActionsProps) {
         if (action.label === "Ban/Unban Member") {
           displayLabel = member.banned ? "Unban Member" : "Ban Member";
         }
-        return { ...action, displayLabel } as typeof action & { displayLabel: string };
+        return { ...action, displayLabel } as typeof action & {
+          displayLabel: string;
+        };
       })
-      .filter((action) => !(action.label === "Impersonate" && member.id === currentUserId));
+      .filter(
+        (action) =>
+          !(action.label === "Impersonate" && member.id === currentUserId)
+      );
   }, [member.banned, member.id, currentUserId]);
 
   const isSelf = member.id === currentUserId;
+
+  const handleDialogMenu = (): JSX.Element | null => {
+    switch (dialogMenu) {
+      case "ban":
+        return (
+          <BanMemberDialog
+            member={member}
+            open={true}
+            onOpenChange={(open) => {
+              if (!open) setDialogMenu("none");
+            }}
+          />
+        );
+      case "setPassword":
+        return (
+          <SetPasswordDialog
+            member={member}
+            open={true}
+            onOpenChange={(open) => {
+              if (!open) setDialogMenu("none");
+            }}
+          />
+        );
+      case "editMember":
+        return (
+          <EditMemberDialog
+            member={member}
+            open={true}
+            onOpenChange={(open) => {
+              if (!open) setDialogMenu("none");
+            }}
+          />
+        );
+      case "manageSessions":
+        return (
+          <SessionManagementDialog
+            member={member}
+            open={true}
+            onOpenChange={(open) => {
+              if (!open) setDialogMenu("none");
+            }}
+          />
+        );
+      case "unban":
+      case "remove":
+      case "impersonate":
+      case "revokeAllSessions":
+        return (
+          <ConfirmationDialogs
+            member={member}
+            alertType={dialogMenu}
+            onClose={() => setDialogMenu("none")}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   const handleAction = useCallback(
     (actionLabel: string) => {
@@ -81,28 +129,28 @@ export function MemberRowActions({ row }: MemberRowActionsProps) {
           window.open(`/profile/${member.id}`, "_blank");
           break;
         case "Edit Member":
-          setDialogType("editMember");
+          setDialogMenu("editMember");
           break;
         case "Set Password":
-          setDialogType("setPassword");
+          setDialogMenu("setPassword");
           break;
         case "Impersonate":
-          setAlertType("impersonate");
+          setDialogMenu("impersonate");
           break;
         case "Manage Sessions":
-          setDialogType("manageSessions");
+          setDialogMenu("manageSessions");
           break;
         case "Revoke All Sessions":
-          setAlertType("revokeAllSessions");
+          setDialogMenu("revokeAllSessions");
           break;
         case "Ban Member":
-          setDialogType("ban");
+          setDialogMenu("ban");
           break;
         case "Unban Member":
-          setAlertType("unban");
+          setDialogMenu("unban");
           break;
         case "Remove Member":
-          setAlertType("remove");
+          setDialogMenu("remove");
           break;
       }
     },
@@ -116,7 +164,6 @@ export function MemberRowActions({ row }: MemberRowActionsProps) {
         await setMemberRoleAction(member.id, newRole as Roles);
         toast.success(`Role updated to ${newRole}`);
         refetch();
-        
       } catch {
         toast.error("Failed to update role");
       } finally {
@@ -127,7 +174,7 @@ export function MemberRowActions({ row }: MemberRowActionsProps) {
   );
 
   return (
-    <>
+    <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -149,10 +196,17 @@ export function MemberRowActions({ row }: MemberRowActionsProps) {
               displayLabel.toLowerCase().includes("remove");
 
             const needsSeparator =
-              action.label === "Set Password" || action.label === "Ban/Unban Member";
+              action.label === "Set Password" ||
+              action.label === "Ban/Unban Member";
 
             const isSelfDestructive =
-              isSelf && ["Remove Member", "Ban Member", "Unban Member", "Revoke All Sessions"].includes(displayLabel);
+              isSelf &&
+              [
+                "Remove Member",
+                "Ban Member",
+                "Unban Member",
+                "Revoke All Sessions",
+              ].includes(displayLabel);
 
             return (
               <div key={`${displayLabel}-${idx}`}>
@@ -185,18 +239,22 @@ export function MemberRowActions({ row }: MemberRowActionsProps) {
                   </DropdownMenuSub>
                 ) : (
                   <DropdownMenuItem
-                    className={`cursor-pointer ${isDestructive ? "text-destructive focus:text-destructive" : ""
-                      }`}
+                    className={`cursor-pointer ${
+                      isDestructive
+                        ? "text-destructive focus:text-destructive"
+                        : ""
+                    }`}
                     disabled={isSelfDestructive}
-                    onClick={() => handleAction(displayLabel)}
+                    onSelect={() => handleAction(displayLabel)}
                     aria-label={displayLabel}
                   >
                     <span className="flex-1">{displayLabel}</span>
-                    {"shortcut" in action && (action as { shortcut?: React.ReactNode }).shortcut && (
-                      <DropdownMenuShortcut>
-                        {(action as { shortcut?: React.ReactNode }).shortcut}
-                      </DropdownMenuShortcut>
-                    )}
+                    {"shortcut" in action &&
+                      (action as { shortcut?: React.ReactNode }).shortcut && (
+                        <DropdownMenuShortcut>
+                          {(action as { shortcut?: React.ReactNode }).shortcut}
+                        </DropdownMenuShortcut>
+                      )}
                   </DropdownMenuItem>
                 )}
               </div>
@@ -204,55 +262,7 @@ export function MemberRowActions({ row }: MemberRowActionsProps) {
           })}
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {/* Dialog Components */}
-      {dialogType === "ban" && (
-        <BanMemberDialog
-          member={member}
-          open={true}
-          onOpenChange={(open) => {
-            if (!open) setDialogType(null);
-          }}
-        />
-      )}
-
-      {dialogType === "setPassword" && (
-        <SetPasswordDialog
-          member={member}
-          open={true}
-          onOpenChange={(open) => {
-            if (!open) setDialogType(null);
-          }}
-        />
-      )}
-
-      {dialogType === "editMember" && (
-        <EditMemberDialog
-          member={member}
-          open={true}
-          onOpenChange={(open) => {
-            if (!open) setDialogType(null);
-          }}
-        />
-      )}
-
-      {dialogType === "manageSessions" && (
-        <SessionManagementDialog
-          member={member}
-          open={true}
-          onOpenChange={(open) => {
-            if (!open) setDialogType(null);
-          }}
-        />
-      )}
-
-      {alertType && (
-        <ConfirmationDialogs
-          member={member}
-          alertType={alertType}
-          onClose={() => setAlertType(null)}
-        />
-      )}
-    </>
+      {handleDialogMenu()}
+    </Dialog>
   );
 }

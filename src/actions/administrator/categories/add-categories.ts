@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 import { getServerSession } from "@/lib/dal";
 import { addCategories } from "@/database/categories";
 import { AddCategoriesSchema } from "@/zod/administrator/categories/add-categories";
-import { AddCategoriesFormData, AddCategoriesFormState } from "@/models/administrator/categories/add-categories";
+import { AddCategoriesFormData, AddCategoriesFormState } from "@/formdata/administrator/categories/add-categories";
 
 export async function addCategoriesAction(
   prevState: AddCategoriesFormState,

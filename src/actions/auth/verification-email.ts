@@ -6,7 +6,7 @@ import { headers } from "next/headers"
 import { VerificationEmailSchema } from "@/zod/auth/verification-email"
 import { auth } from "@/lib/auth"
 
-import type { VerificationEmailFormData, VerificationEmailFormState } from "@/models/auth/verification-email"
+import type { VerificationEmailFormData, VerificationEmailFormState } from "@/formdata/auth/verification-email"
 
 export async function VerificationEmailAction(prevState: VerificationEmailFormState, formData: FormData,): Promise<VerificationEmailFormState> {
   const rawData: VerificationEmailFormData = {

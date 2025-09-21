@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { resetPasswordAction } from "@/actions/auth/reset-password";
 
-import type { ResetPasswordFormState } from "@/models/auth/reset-password";
+import type { ResetPasswordFormState } from "@/formdata/auth/reset-password";
 
 const initialState: ResetPasswordFormState = {
   success: false,

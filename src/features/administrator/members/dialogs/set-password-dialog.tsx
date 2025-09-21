@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { Members } from "@/types/members";
-import { setMemberPasswordAction } from "@/actions/administrator/member";
+import { setMemberPasswordAction } from "@/actions/administrator/members/member";
 
 
 interface SetPasswordDialogProps {

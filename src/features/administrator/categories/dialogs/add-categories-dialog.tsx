@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { addCategoriesAction } from "@/actions/administrator/categories/add-categories";
-import { AddCategoriesFormState } from "@/models/administrator/categories/add-categories";
+import { AddCategoriesFormState } from "@/formdata/administrator/categories/add-categories";
 
 const initialState: AddCategoriesFormState = {
   success: false,
