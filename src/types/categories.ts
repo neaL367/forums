@@ -1,4 +1,4 @@
-import { Forums } from "@/types/forum";
+import { Forums } from "@/types/forums";
 
 export type Categories = {
   createdAt: Date;
@@ -8,5 +8,5 @@ export type Categories = {
   title: string
   description: string
   
-  forums?: Forums[] | undefined;
+  forums?: Forums[];
 }

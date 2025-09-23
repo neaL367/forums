@@ -3,14 +3,14 @@
 import dynamic from "next/dynamic";
 import { DataTableSkeleton } from "@features/administrator/shared/data-table/data-table-skeleton";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { Categories } from "@/types/categories";
+import type { Forums } from "@/types/forums";
 
-export const CategoriesDataTable = dynamic<{
-  columns: ColumnDef<Categories>[];
-  data: Categories[];
+export const ForumsDataTable = dynamic<{
+  columns: ColumnDef<Forums>[];
+  data: Forums[];
 }>(
   () =>
-    import("@features/administrator/categories/categories-data-table").then((mod) => mod.CategoriesDataTable),
+    import("@features/administrator/forums/forums-data-table").then((mod) => mod.ForumsDataTable),
   {
     ssr: false,
     loading: () => <DataTableSkeleton />,

@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function MembersDataTableSkeleton() {
+export function DataTableSkeleton() {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">

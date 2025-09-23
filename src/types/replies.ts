@@ -4,8 +4,10 @@ export type Replies = {
 
   id: string;
   topicId: string;
-  
-  parentRepliesId?: string | undefined;
-    
+  topicTitle: string;
+
+  parentReplyId?: string;
+  parentReplyContent: string;
+
   content: string;
 }

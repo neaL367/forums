@@ -8,5 +8,6 @@ export type Topics = {
   title: string
 
   forumId: string;
+  forumTitle: string;
   replies?: Replies[];
 }

@@ -11,7 +11,7 @@ import { ChangeUsernameSchema } from "@/zod/account-settings/change-username"
 
 import type { ChangeUsernameFormData, ChangeUsernameFormState } from "@/formdata/account-setting/change-username"
 
-export async function ChangeUsernameAction(
+export async function changeUsernameAction(
   prevState: ChangeUsernameFormState,
   formData: FormData,
 ): Promise<ChangeUsernameFormState> {

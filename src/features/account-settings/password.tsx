@@ -8,7 +8,7 @@ import { authClient } from "@/lib/auth-client";
 import { useActionState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ChangePasswordAction } from "@/actions/account-settings/change-password";
+import { changePasswordAction } from "@/actions/account-settings/change-password";
 import { ChangePasswordFormState } from "@/formdata/account-setting/change-password";
 
 const initialState: ChangePasswordFormState = {
@@ -25,7 +25,7 @@ export default function PasswordSettingsForm() {
   const [state, action, pending] = useActionState(
     async (prevState: ChangePasswordFormState, formData: FormData) => {
       loadingToastRef.current = toast.loading("Updating your password...");
-      return await ChangePasswordAction(prevState, formData);
+      return await changePasswordAction(prevState, formData);
     },
     initialState
   );

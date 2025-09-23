@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getForumsByName } from "@/database/forums";
+import { getForumsByTitle } from "@/database/forums";
 
 export default async function Forums({ query }: { query: string }) {
-  const filteredForums = await getForumsByName(query);
+  const filteredForums = await getForumsByTitle(query);
 
   return (
     <Card>
@@ -15,7 +15,7 @@ export default async function Forums({ query }: { query: string }) {
           filteredForums.map((forum) => (
             <Link
               key={forum.id}
-              href={{ pathname: "/forums/[id]", query: { id: forum.id } }}
+              href={`/forums/${forum.id}`}
               className="block hover:bg-muted/50 p-2 rounded-md transition-colors"
             >
               <p className="font-medium">{forum.title}</p>

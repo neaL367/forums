@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getTopicsByName } from "@/database/topics";
+import { getTopicsByTitle } from "@/database/topics";
 
 export default async function Topics({ query }: { query: string }) {
-  const filteredTopics = await getTopicsByName(query);
+  const filteredTopics = await getTopicsByTitle(query);
 
   return (
     <Card>
@@ -15,7 +15,7 @@ export default async function Topics({ query }: { query: string }) {
           filteredTopics.map((topic) => (
             <Link
               key={topic.id}
-              href={{ pathname: "/topics/[id]", query: { id: topic.id } }}
+              href={`/topics/${topic.id}`}
               className="block hover:bg-muted/50 p-2 rounded-md transition-colors"
             >
               <p className="font-medium">{topic.title}</p>

@@ -8,7 +8,7 @@ import { auth } from "@/lib/auth"
 
 import type { VerificationEmailFormData, VerificationEmailFormState } from "@/formdata/auth/verification-email"
 
-export async function VerificationEmailAction(prevState: VerificationEmailFormState, formData: FormData,): Promise<VerificationEmailFormState> {
+export async function verificationEmailAction(prevState: VerificationEmailFormState, formData: FormData,): Promise<VerificationEmailFormState> {
   const rawData: VerificationEmailFormData = {
     email: formData.get("email") as string,
   }

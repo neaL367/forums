@@ -8,7 +8,7 @@ import { ChangeEmailSchema } from "@/zod/account-settings/change-email"
 import type { ChangeEmailFormData, ChangeEmailFormState } from "@/formdata/account-setting/change-email"
 
 
-export async function ChangeEmailAction(
+export async function changeEmailAction(
   prevState: ChangeEmailFormState,
   formData: FormData,
 ): Promise<ChangeEmailFormState> {

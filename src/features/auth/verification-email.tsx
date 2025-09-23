@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { VerificationEmailAction } from "@/actions/auth/verification-email";
+import { verificationEmailAction } from "@/actions/auth/verification-email";
 import { authClient } from "@/lib/auth-client";
 import type { VerificationEmailFormState } from "@/formdata/auth/verification-email";
 
@@ -36,7 +36,7 @@ export function VerificationEmailForm() {
   const [state, formAction, pending] = useActionState(
     async (prevState: VerificationEmailFormState, formData: FormData) => {
       loadingToastRef.current = toast.loading("Sending verification email...");
-      return await VerificationEmailAction(prevState, formData);
+      return await verificationEmailAction(prevState, formData);
     },
     initialState
   );

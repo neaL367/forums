@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 import { authClient } from "@/lib/auth-client";
-import { ChangeEmailAction } from "@/actions/account-settings/change-email";
+import { changeEmailAction } from "@/actions/account-settings/change-email";
 import type { ChangeEmailFormState } from "@/formdata/account-setting/change-email";
 
 const initialState: ChangeEmailFormState = {
@@ -28,7 +28,7 @@ export default function EmailSettingsForm() {
   const [state, action, pending] = useActionState(
     async (prevState: ChangeEmailFormState, formData: FormData) => {
       loadingToastRef.current = toast.loading("Updating your email address...");
-      return await ChangeEmailAction(prevState, formData);
+      return await changeEmailAction(prevState, formData);
     },
     initialState
   );

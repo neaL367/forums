@@ -8,7 +8,7 @@ import { ChangePasswordSchema } from "@/zod/account-settings/change-password"
 import type { ChangePasswordFormData, ChangePasswordFormState } from "@/formdata/account-setting/change-password"
 
 
-export async function ChangePasswordAction(prevState: ChangePasswordFormState, formData: FormData,): Promise<ChangePasswordFormState> {
+export async function changePasswordAction(prevState: ChangePasswordFormState, formData: FormData,): Promise<ChangePasswordFormState> {
   const rawData: ChangePasswordFormData = {
     currentPassword: formData.get("currentPassword") as string,
     newPassword: formData.get("newPassword") as string,

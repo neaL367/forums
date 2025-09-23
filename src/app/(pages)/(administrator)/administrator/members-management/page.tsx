@@ -5,13 +5,13 @@ import { Suspense } from "react";
 
 import { membersColumns } from "@/features/administrator/members/data/columns";
 import { MembersDataTable } from "@/features/administrator/members/members-data-table-client";
-import { MembersDataTableSkeleton } from "@/features/administrator/members/members-data-table-skeleton";
+import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
 
 import { getServerSession } from "@/lib/dal";
 import { auth } from "@/lib/auth";
 import type { Members } from "@/types/members";
 
-export default async function MembersPage() {
+export default async function MembersManagementPage() {
   const session = await getServerSession();
 
   if (!session) redirect("/");
@@ -19,7 +19,7 @@ export default async function MembersPage() {
 
   return (
     <div className="mx-auto">
-      <Suspense fallback={<MembersDataTableSkeleton />}>
+      <Suspense fallback={<DataTableSkeleton />}>
         <MembersTable />
       </Suspense>
     </div>

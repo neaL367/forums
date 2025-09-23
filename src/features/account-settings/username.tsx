@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
-import { ChangeUsernameAction } from "@/actions/account-settings/change-username";
+import { changeUsernameAction } from "@/actions/account-settings/change-username";
 import type { ChangeUsernameFormState } from "@/formdata/account-setting/change-username";
 
 const initialState: ChangeUsernameFormState = {
@@ -25,7 +25,7 @@ export default function UsernameSettingsForm() {
   const [state, action, pending] = useActionState(
     async (prevState: ChangeUsernameFormState, formData: FormData) => {
       loadingToastRef.current = toast.loading("Updating your username...");
-      return await ChangeUsernameAction(prevState, formData);
+      return await changeUsernameAction(prevState, formData);
     },
     initialState
   );
