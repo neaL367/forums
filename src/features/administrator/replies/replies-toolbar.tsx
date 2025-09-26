@@ -1,35 +1,35 @@
-"use client";
+// "use client"
 
 import { X, Plus } from "lucide-react";
-import { Table } from "@tanstack/react-table";
+import type { Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "@/features/administrator/shared/data-table/data-table-view-options";
-import { DataTableFacetedFilter } from "@/features/administrator/shared/data-table/data-table-faceted-filter";
-import { filters } from "@/features/administrator/forums/data/data";
-// import { AddForumDialog } from "@/features/administrator/forums/dialogs/add-forum-dialog";
+import { DataTableViewOptions } from "@features/administrator/shared/data-table/data-table-view-options";
+import { DataTableFacetedFilter } from "@features/administrator/shared/data-table/data-table-faceted-filter";
+import { filters } from "@features/administrator/replies/data/data";
 
-interface ForumsToolbarProps<TData> {
+interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export function ForumsToolbar<TData>({ table }: ForumsToolbarProps<TData>) {
+export function RepliesToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 w-full">
+    <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 lg:gap-0 w-full">
       <div className="flex flex-1 flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full">
-        {/* Search Input */}
+        {/* Search */}
         <Input
-          placeholder="Search forums..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          placeholder="Search replies content..."
+          value={(table.getColumn("content")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn("content")?.setFilterValue(event.target.value)
           }
-          className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]"
+          className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[350px]"
         />
 
+        {/* Faceted Filter for Forums */}
         {filters.map((filter) => {
           const column = table.getColumn(filter.columnId);
           return column ? (
@@ -42,7 +42,6 @@ export function ForumsToolbar<TData>({ table }: ForumsToolbarProps<TData>) {
           ) : null;
         })}
 
-        {/* Reset Filters */}
         {isFiltered && (
           <Button
             variant="ghost"
@@ -55,14 +54,13 @@ export function ForumsToolbar<TData>({ table }: ForumsToolbarProps<TData>) {
         )}
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      {/* Right-side controls */}
+      <div className="flex flex-wrap gap-2 mt-2 lg:mt-0">
         <DataTableViewOptions table={table} />
-        {/* <AddForumDialog categoryId={categoryId}> */}
         <Button variant="outline" size="sm">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Forum
+          <Plus className="md:mr-2 h-4 w-4" />
+          <span className="hidden lg:inline">Add Topic</span>
         </Button>
-        {/* </AddForumDialog> */}
       </div>
     </div>
   );

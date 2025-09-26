@@ -10,7 +10,9 @@ export const TopicsDataTable = dynamic<{
   data: Topics[];
 }>(
   () =>
-    import("@features/administrator/topics/topics-data-table").then((mod) => mod.TopicsDataTable),
+    import("@features/administrator/topics/topics-data-table").then(
+      (mod) => mod.TopicsDataTable
+    ),
   {
     ssr: false,
     loading: () => <DataTableSkeleton />,

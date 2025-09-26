@@ -28,7 +28,9 @@ export function MembersToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
       <div className="flex flex-1 flex-col sm:flex-row items-start sm:items-center flex-wrap gap-2 w-full">
         <Input
           placeholder="Search by username..."
-          value={(table.getColumn("username")?.getFilterValue() as string) ?? ""}
+          value={
+            (table.getColumn("username")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
             table.getColumn("username")?.setFilterValue(event.target.value)
           }

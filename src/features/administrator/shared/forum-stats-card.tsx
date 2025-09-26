@@ -6,7 +6,7 @@ interface ForumStatsCardsProps {
     categories: number
     forums: number
     topics: number
-    totalReplies: number
+    replies: number
   }
 }
 
@@ -49,7 +49,7 @@ export function ForumStatsCards({ stats }: ForumStatsCardsProps) {
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats.totalReplies}</div>
+          <div className="text-2xl font-bold">{stats.replies}</div>
           <p className="text-xs text-muted-foreground">Total replies</p>
         </CardContent>
       </Card>

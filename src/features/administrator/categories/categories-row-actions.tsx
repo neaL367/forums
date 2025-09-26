@@ -46,6 +46,11 @@ export function CategoriesRowActions({ row }: CategoriesRowActionsProps) {
     console.log("Category settings:", category.id);
   };
 
+  const handleManagePermissions = () => {
+    // TODO: Implement permissions management
+    console.log("Manage permissions for category:", category.id);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -61,24 +66,29 @@ export function CategoriesRowActions({ row }: CategoriesRowActionsProps) {
       <DropdownMenuContent align="end" className="w-[200px]">
         <DropdownMenuItem onClick={handleViewForums}>
           <Eye className="mr-2 h-4 w-4" />
-          View Forums
+          View Categories
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
+
         <DropdownMenuItem onClick={handleEdit}>
           <Edit className="mr-2 h-4 w-4" />
           Edit Category
         </DropdownMenuItem>
-        
+
         <DropdownMenuItem onClick={handleSettings}>
           <Settings className="mr-2 h-4 w-4" />
-          Settings
+          Category Settings
         </DropdownMenuItem>
-        
+
+        <DropdownMenuItem onClick={handleManagePermissions}>
+          <Eye className="mr-2 h-4 w-4" />
+          Manage Permissions
+        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
-        
-        <DropdownMenuItem 
+
+        <DropdownMenuItem
           onClick={handleDelete}
           className="text-destructive focus:text-destructive"
         >

@@ -1,6 +1,15 @@
 "use client";
 
-import { MoreHorizontal, Edit, Trash2, Eye, Settings, Plus, MessageSquare, Users } from "lucide-react";
+import {
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  Eye,
+  Settings,
+  Plus,
+  MessageSquare,
+  Users,
+} from "lucide-react";
 import { Row } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
@@ -73,7 +82,7 @@ export function ForumsRowActions({ row }: ForumsRowActionsProps) {
         {/* View Actions */}
         <DropdownMenuItem onClick={handleViewTopics}>
           <MessageSquare className="mr-2 h-4 w-4" />
-          View Topics ({forum.topics?.length || 0})
+          View Forums
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -112,7 +121,7 @@ export function ForumsRowActions({ row }: ForumsRowActionsProps) {
         <DropdownMenuSeparator />
 
         {/* Destructive Actions */}
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={handleDelete}
           className="text-destructive focus:text-destructive"
         >

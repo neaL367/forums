@@ -10,7 +10,9 @@ export const ForumsDataTable = dynamic<{
   data: Forums[];
 }>(
   () =>
-    import("@features/administrator/forums/forums-data-table").then((mod) => mod.ForumsDataTable),
+    import("@features/administrator/forums/forums-data-table").then(
+      (mod) => mod.ForumsDataTable
+    ),
   {
     ssr: false,
     loading: () => <DataTableSkeleton />,

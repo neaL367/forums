@@ -13,12 +13,22 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     ignores: [
+      // Build / runtime artifacts
+      ".next/**/*",
+      "out/**/*",
+      "dist/**/*",
+      "next-env.d.ts", 
+
+      // Dependencies
+      "node_modules/**/*",
+
+      // Prisma client + generated code
       "src/app/generated/**/*",
       "**/generated/**/*",
       "**/.prisma/**/*",
       "**/prisma/generated/**/*"
-    ]
-  }
+    ],
+  },
 ];
 
 export default eslintConfig;

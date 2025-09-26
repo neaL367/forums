@@ -1,10 +1,11 @@
 "use client";
 
+import * as React from "react";
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
@@ -14,7 +15,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
 
 import {
   Table,
@@ -24,21 +24,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { DataTablePagination } from "@/features/administrator/shared/data-table/data-table-pagination";
-import { MembersToolbar } from "@/features/administrator/members/members-toolbar";
-import { Members } from "@/types/members";
+import { DataTablePagination } from "@features/administrator/shared/data-table/data-table-pagination";
+import { RepliesToolbar } from "@features/administrator/replies/replies-toolbar";
+import type { Replies } from "@/types/replies";
 
 interface DataTableProps {
-  data?: Members[];
-  columns?: ColumnDef<Members>[];
+  data?: Replies[];
+  columns?: ColumnDef<Replies>[];
 }
 
-export function MembersDataTable({ columns = [], data = [] }: DataTableProps) {
-  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
+export function RepliesDataTable({ columns = [], data = [] }: DataTableProps) {
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
     data,
@@ -65,22 +67,24 @@ export function MembersDataTable({ columns = [], data = [] }: DataTableProps) {
 
   return (
     <div className="space-y-4">
-      <MembersToolbar table={table} />
+      <RepliesToolbar table={table} />
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} colSpan={header.colSpan}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id} colSpan={header.colSpan}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>
@@ -89,7 +93,8 @@ export function MembersDataTable({ columns = [], data = [] }: DataTableProps) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() ? "selected" : undefined}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="group"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

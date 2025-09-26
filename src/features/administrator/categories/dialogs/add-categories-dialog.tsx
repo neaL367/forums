@@ -25,7 +25,11 @@ const initialState: AddCategoriesFormState = {
   message: "",
 };
 
-export function AddCategoriesDialog({ children }: { children: React.ReactNode }) {
+export function AddCategoriesDialog({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
 
   const [state, formAction, isPending] = useActionState(
@@ -60,7 +64,7 @@ export function AddCategoriesDialog({ children }: { children: React.ReactNode })
               id="title"
               name="title"
               placeholder="Enter category title..."
-              defaultValue={!state.success ? state.inputs?.title ?? "" : ""}
+              defaultValue={!state.success ? (state.inputs?.title ?? "") : ""}
             />
             {state.errors?.title && (
               <p className="text-sm text-red-600">{state.errors.title[0]}</p>
@@ -73,7 +77,9 @@ export function AddCategoriesDialog({ children }: { children: React.ReactNode })
               id="description"
               name="description"
               placeholder="Enter category description..."
-              defaultValue={!state.success ? state.inputs?.description ?? "" : ""}
+              defaultValue={
+                !state.success ? (state.inputs?.description ?? "") : ""
+              }
             />
             {state.errors?.description && (
               <p className="text-sm text-red-600">

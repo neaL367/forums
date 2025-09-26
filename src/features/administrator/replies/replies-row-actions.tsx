@@ -7,8 +7,7 @@ import {
   Settings,
   MessageCircle,
   Pin,
-  Lock,
-  Eye,
+  Move,
 } from "lucide-react";
 import type { Row } from "@tanstack/react-table";
 
@@ -21,48 +20,43 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { Topics } from "@/types/topics";
+import type { Replies } from "@/types/replies";
 
-interface TopicsRowActionsProps {
-  row: Row<Topics>;
+interface RepliesRowActionsProps {
+  row: Row<Replies>;
 }
 
-export function TopicsRowActions({ row }: TopicsRowActionsProps) {
-  const topic = row.original;
+export function RepliesRowActions({ row }: RepliesRowActionsProps) {
+  const replies = row.original;
 
   const handleEdit = () => {
-    // TODO: Implement edit topic functionality
-    console.log("Edit topic:", topic.id);
+    // TODO: Implement edit replies functionality
+    console.log("Edit replies:", replies.id);
   };
 
   const handleDelete = () => {
-    // TODO: Implement delete topic functionality
-    console.log("Delete topic:", topic.id);
+    // TODO: Implement delete replies functionality
+    console.log("Delete replies:", replies.id);
   };
 
-  const handleViewTopics = () => {
+  const handleViewReplies = () => {
     // TODO: Implement view replies functionality
-    console.log("View replies for topic:", topic.id);
+    console.log("View replies for replies:", replies.id);
   };
 
   const handlePin = () => {
-    // TODO: Implement pin topic functionality
-    console.log("Pin topic:", topic.id);
+    // TODO: Implement pin replies functionality
+    console.log("Pin replie:", replies.id);
   };
 
-  const handleLock = () => {
-    // TODO: Implement lock topic functionality
-    console.log("Lock topic:", topic.id);
+  const handleMove = () => {
+    // TODO: Implement move replies functionality
+    console.log("Move replie:", replies.id);
   };
 
   const handleSettings = () => {
-    // TODO: Implement topic settings functionality
-    console.log("Topic settings:", topic.id);
-  };
-
-  const handleManagePermissions = () => {
-    // TODO: Implement permissions management
-    console.log("Manage permissions for category:", topic.id);
+    // TODO: Implement replies settings functionality
+    console.log("Replies settings:", replies.id);
   };
 
   return (
@@ -78,38 +72,33 @@ export function TopicsRowActions({ row }: TopicsRowActionsProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[200px]">
-        <DropdownMenuItem onClick={handleViewTopics}>
+        <DropdownMenuItem onClick={handleViewReplies}>
           <MessageCircle className="mr-2 h-4 w-4" />
-          View Topics
+          View Replies
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem onClick={handlePin}>
           <Pin className="mr-2 h-4 w-4" />
-          Pin Topic
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleLock}>
-          <Lock className="mr-2 h-4 w-4" />
-          Lock Topic
+          Pin Reply
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem onClick={handleEdit}>
           <Edit className="mr-2 h-4 w-4" />
-          Edit Topic
+          Edit Reply
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onClick={handleMove}>
+          <Move className="mr-2 h-4 w-4" />
+          Move Reply
         </DropdownMenuItem>
 
         <DropdownMenuItem onClick={handleSettings}>
           <Settings className="mr-2 h-4 w-4" />
-          Topic Settings
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleManagePermissions}>
-          <Eye className="mr-2 h-4 w-4" />
-          Manage Permissions
+          Reply Settings
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

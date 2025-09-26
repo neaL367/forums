@@ -12,7 +12,9 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export function CategoriesToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+export function CategoriesToolbar<TData>({
+  table,
+}: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (

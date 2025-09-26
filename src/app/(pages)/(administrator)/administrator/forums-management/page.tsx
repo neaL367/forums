@@ -18,13 +18,13 @@ export default async function ForumManagementPage() {
     categories: categories.length,
     forums: forums.length,
     topics: topics.length,
-    totalReplies: replies.length,
+    replies: replies.length,
   }
 
   return (
     <div className="mx-auto space-y-6">
       <ForumStatsCards stats={stats} />
-      <ForumManagementTabs categories={categories} forums={forums} topics={topics} stats={stats} />
+      <ForumManagementTabs categories={categories} forums={forums} topics={topics} replies={replies} />
     </div>
   )
 }
