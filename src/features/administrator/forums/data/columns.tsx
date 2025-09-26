@@ -169,6 +169,10 @@ export const forumsColumns: ColumnDef<Forums>[] = [
         </Badge>
       </div>
     ),
+    filterFn: (row, id, value) => {
+      const cellValue = String(row.getValue(id)).toLowerCase();
+      return value.some((v: string) => v.toLowerCase() === cellValue);
+    },
   },
   {
     accessorKey: "parentForumTitle",

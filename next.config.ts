@@ -4,14 +4,6 @@ import bundleAnalyzer from '@next/bundle-analyzer';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   typedRoutes: true,
-  experimental: {
-    optimizePackageImports: [
-      '@tanstack/react-table',
-      'lucide-react',
-      '@radix-ui/react-select',
-      '@radix-ui/react-dropdown-menu'
-    ]
-  }
 };
 
 const withBundleAnalyzer = bundleAnalyzer({

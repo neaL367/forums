@@ -67,9 +67,7 @@ export const membersColumns: ColumnDef<Members>[] = [
     cell: ({ row }) => {
       return (
         <div className="px-4 py-2">
-          <span className="text-sm font-semibold">
-            {row.original.username}
-          </span>
+          <span className="text-sm font-semibold">{row.original.username}</span>
         </div>
       );
     },
@@ -84,13 +82,15 @@ export const membersColumns: ColumnDef<Members>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const role = row.original.role;
+      const role = String(row.getValue("role")).toUpperCase();
+
       const variant =
         role === "ADMINISTRATOR"
           ? "default"
           : role === "MODERATOR"
             ? "secondary"
             : "outline";
+
       return (
         <div className="px-4 py-2">
           <Badge variant={variant} className="text-xs font-medium">
@@ -98,6 +98,9 @@ export const membersColumns: ColumnDef<Members>[] = [
           </Badge>
         </div>
       );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(String(row.getValue(id)).toUpperCase());
     },
     size: 100,
   },
@@ -112,7 +115,7 @@ export const membersColumns: ColumnDef<Members>[] = [
       const isVerified = row.original.emailVerified;
       return (
         <div className="px-4 py-2">
-          <Badge 
+          <Badge
             variant={isVerified ? "default" : "secondary"}
             className="text-xs font-medium"
           >
@@ -122,7 +125,7 @@ export const membersColumns: ColumnDef<Members>[] = [
       );
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+      return value.includes(row.getValue(id));
     },
     size: 120,
   },
@@ -137,7 +140,7 @@ export const membersColumns: ColumnDef<Members>[] = [
       const isBanned = row.original.banned;
       return (
         <div className="px-4 py-2">
-          <Badge 
+          <Badge
             variant={isBanned ? "destructive" : "outline"}
             className="text-xs font-medium"
           >
@@ -147,7 +150,7 @@ export const membersColumns: ColumnDef<Members>[] = [
       );
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+      return value.includes(row.getValue(id));
     },
     size: 100,
   },

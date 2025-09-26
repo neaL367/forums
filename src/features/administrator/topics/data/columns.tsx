@@ -91,6 +91,10 @@ export const topicsColumns: ColumnDef<Topics>[] = [
         {getValue() as string}
       </Badge>
     ),
+    filterFn: (row, id, value) => {
+      const cellValue = String(row.getValue(id)).toLowerCase();
+      return value.some((v: string) => v.toLowerCase() === cellValue);
+    },
   },
   {
     id: "replies",
