@@ -1,73 +1,26 @@
 "use client";
 
 import { format } from "date-fns";
-import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Members } from "@/types/members";
 
-// import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "@/features/administrator/shared/data-table/data-table-column-header";
 import { MemberRowActions } from "@/features/administrator/members/members-row-actions";
 
+import type { ColumnDef } from "@tanstack/react-table";
+import type { Members } from "@/types/members";
+
 export const membersColumns: ColumnDef<Members>[] = [
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <div className="px-4">
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //         className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-  //       />
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="px-4">
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //         className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  //   size: 60,
-  // },
-  {
-    accessorKey: "id",
-    header: ({ column }) => (
-      <div className="px-4">
-        <DataTableColumnHeader column={column} title="ID" />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="px-4 py-2">
-        <span className="text-sm font-mono text-muted-foreground">
-          {row.original.id}
-        </span>
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-    size: 200,
-  },
   {
     accessorKey: "username",
     header: ({ column }) => (
-      <div className="px-4">
+      <div className="">
         <DataTableColumnHeader column={column} title="Username" />
       </div>
     ),
     cell: ({ row }) => {
       return (
-        <div className="px-4 py-2">
-          <span className="text-sm font-semibold">{row.original.username}</span>
+        <div className="">
+          <span className="text-sm">{row.original.username}</span>
         </div>
       );
     },
@@ -77,7 +30,7 @@ export const membersColumns: ColumnDef<Members>[] = [
   {
     accessorKey: "role",
     header: ({ column }) => (
-      <div className="px-4">
+      <div className="">
         <DataTableColumnHeader column={column} title="Role" />
       </div>
     ),
@@ -92,7 +45,7 @@ export const membersColumns: ColumnDef<Members>[] = [
             : "outline";
 
       return (
-        <div className="px-4 py-2">
+        <div className="">
           <Badge variant={variant} className="text-xs font-medium">
             {role}
           </Badge>
@@ -107,14 +60,14 @@ export const membersColumns: ColumnDef<Members>[] = [
   {
     accessorKey: "emailVerified",
     header: ({ column }) => (
-      <div className="px-4">
+      <div className="">
         <DataTableColumnHeader column={column} title="Email Verified" />
       </div>
     ),
     cell: ({ row }) => {
       const isVerified = row.original.emailVerified;
       return (
-        <div className="px-4 py-2">
+        <div className="">
           <Badge
             variant={isVerified ? "default" : "secondary"}
             className="text-xs font-medium"
@@ -132,14 +85,14 @@ export const membersColumns: ColumnDef<Members>[] = [
   {
     accessorKey: "banned",
     header: ({ column }) => (
-      <div className="px-4">
+      <div className="">
         <DataTableColumnHeader column={column} title="Ban Status" />
       </div>
     ),
     cell: ({ row }) => {
       const isBanned = row.original.banned;
       return (
-        <div className="px-4 py-2">
+        <div className="">
           <Badge
             variant={isBanned ? "destructive" : "outline"}
             className="text-xs font-medium"
@@ -157,14 +110,14 @@ export const membersColumns: ColumnDef<Members>[] = [
   {
     accessorKey: "banExpires",
     header: ({ column }) => (
-      <div className="px-4">
+      <div className="">
         <DataTableColumnHeader column={column} title="Ban Expires" />
       </div>
     ),
     cell: ({ row }) => {
       const banExpires = row.original.banExpires;
       return (
-        <div className="px-4 py-2">
+        <div className="">
           <span className="text-sm text-muted-foreground">
             {banExpires ? format(new Date(banExpires), "MMM dd, yyyy") : "N/A"}
           </span>
@@ -176,14 +129,14 @@ export const membersColumns: ColumnDef<Members>[] = [
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
-      <div className="px-4">
+      <div className="">
         <DataTableColumnHeader column={column} title="Created At" />
       </div>
     ),
     cell: ({ row }) => {
       const date = row.original.createdAt;
       return (
-        <div className="px-4 py-2">
+        <div className="">
           <span className="text-sm font-medium">
             {format(new Date(date), "MMM dd, yyyy")}
           </span>
@@ -195,14 +148,14 @@ export const membersColumns: ColumnDef<Members>[] = [
   {
     accessorKey: "updatedAt",
     header: ({ column }) => (
-      <div className="px-4">
+      <div className="">
         <DataTableColumnHeader column={column} title="Updated At" />
       </div>
     ),
     cell: ({ row }) => {
       const date = row.original.updatedAt;
       return (
-        <div className="px-4 py-2">
+        <div className="">
           <span className="text-sm font-medium">
             {format(new Date(date), "MMM dd, yyyy")}
           </span>
@@ -214,12 +167,12 @@ export const membersColumns: ColumnDef<Members>[] = [
   {
     id: "actions",
     cell: ({ row }) => (
-      <div className="px-4 py-2 flex items-center justify-center">
+      <div className=" flex items-center justify-center">
         <MemberRowActions row={row} />
       </div>
     ),
     header: () => (
-      <div className="px-4 flex items-center justify-center">
+      <div className=" flex items-center justify-center">
         <span className="text-sm font-medium">Actions</span>
       </div>
     ),

@@ -92,7 +92,7 @@ export function VerificationEmailForm() {
         </form>
 
         <div className="mt-4">
-          <Link href="/sign-in" className="w-full">
+          <Link href="/auth/sign-in" className="w-full">
             <Button variant="outline" className="w-full bg-transparent">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Sign In

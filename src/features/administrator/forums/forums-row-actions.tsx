@@ -4,11 +4,7 @@ import {
   MoreHorizontal,
   Edit,
   Trash2,
-  Eye,
-  Settings,
-  Plus,
   MessageSquare,
-  Users,
 } from "lucide-react";
 import { Row } from "@tanstack/react-table";
 
@@ -29,7 +25,6 @@ interface ForumsRowActionsProps {
 
 export function ForumsRowActions({ row }: ForumsRowActionsProps) {
   const forum = row.original;
-  const isSubForum = row.depth > 0;
 
   const handleEdit = () => {
     // TODO: Implement edit forum functionality
@@ -44,26 +39,6 @@ export function ForumsRowActions({ row }: ForumsRowActionsProps) {
   const handleViewTopics = () => {
     // TODO: Navigate to topics page for this forum
     console.log("View topics for forum:", forum.id);
-  };
-
-  const handleAddSubForum = () => {
-    // TODO: Implement add sub-forum functionality
-    console.log("Add sub-forum to:", forum.id);
-  };
-
-  const handleAddTopic = () => {
-    // TODO: Implement add topic functionality
-    console.log("Add topic to forum:", forum.id);
-  };
-
-  const handleSettings = () => {
-    // TODO: Implement forum settings functionality
-    console.log("Forum settings:", forum.id);
-  };
-
-  const handleManagePermissions = () => {
-    // TODO: Implement permissions management
-    console.log("Manage permissions for forum:", forum.id);
   };
 
   return (
@@ -84,38 +59,11 @@ export function ForumsRowActions({ row }: ForumsRowActionsProps) {
           <MessageSquare className="mr-2 h-4 w-4" />
           View Forums
         </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
-        {/* Add Actions */}
-        <DropdownMenuItem onClick={handleAddTopic}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Topic
-        </DropdownMenuItem>
-
-        {!isSubForum && (
-          <DropdownMenuItem onClick={handleAddSubForum}>
-            <Users className="mr-2 h-4 w-4" />
-            Add Sub-Forum
-          </DropdownMenuItem>
-        )}
-
-        <DropdownMenuSeparator />
-
+    
         {/* Management Actions */}
         <DropdownMenuItem onClick={handleEdit}>
           <Edit className="mr-2 h-4 w-4" />
           Edit Forum
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleSettings}>
-          <Settings className="mr-2 h-4 w-4" />
-          Forum Settings
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleManagePermissions}>
-          <Eye className="mr-2 h-4 w-4" />
-          Manage Permissions
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

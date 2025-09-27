@@ -1,81 +1,27 @@
 "use client";
 
 import { format } from "date-fns";
-import type { ColumnDef } from "@tanstack/react-table";
-// import { Pin, Lock } from "lucide-react"
-
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
+import { MessageCircle, MessageSquare } from "lucide-react";
 
 import { DataTableColumnHeader } from "@features/administrator/shared/data-table/data-table-column-header";
 import { TopicsRowActions } from "@features/administrator/topics/topics-row-actions";
 
 import type { Topics } from "@/types/topics";
+import type { ColumnDef } from "@tanstack/react-table";
 
 export const topicsColumns: ColumnDef<Topics>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-start w-full min-w-[80px]">
-        <div className="flex items-center gap-3">
-          <div className="w-5 h-5" />
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
-            aria-label="Select all"
-            className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-          />
-        </div>
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-start w-full min-w-[80px] py-2">
-        <div className="flex items-center gap-3">
-          <div className="w-5 h-5" />
-          <Checkbox
-            checked={row.getIsSelected()}
-            indeterminate={row.getIsSomeSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-            className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-          />
-        </div>
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-    size: 60,
-  },
-  {
-    accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID" />
-    ),
-    cell: ({ getValue }) => (
-      <span className="text-sm font-mono text-muted-foreground">
-        {getValue() as string}
-      </span>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-    size: 80,
-  },
+  
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Topic" />
     ),
     cell: ({ getValue }) => {
       return (
-        <div className="flex items-center gap-2 min-h-[40px]">
+        <div className="whitespace-normal break-words text-sm w-[300px]">
           {/* {isPinned && <Pin className="h-3 w-3 text-yellow-500" />}
           {isLocked && <Lock className="h-3 w-3 text-red-500" />} */}
-          <span className="text-base font-medium">{getValue() as string}</span>
+          <span className="text-sm font-medium">{getValue() as string}</span>
         </div>
       );
     },
@@ -87,9 +33,10 @@ export const topicsColumns: ColumnDef<Topics>[] = [
       <DataTableColumnHeader column={column} title="Forum" />
     ),
     cell: ({ getValue }) => (
-      <Badge variant="outline" className="text-xs">
+      <div className="text-xs flex gap-2">
+        <MessageSquare className="h-4 w-4" />
         {getValue() as string}
-      </Badge>
+      </div>
     ),
     filterFn: (row, id, value) => {
       const cellValue = String(row.getValue(id)).toLowerCase();
@@ -104,9 +51,10 @@ export const topicsColumns: ColumnDef<Topics>[] = [
     cell: ({ row }) => {
       const repliesCount = row.original.replies?.length || 0;
       return (
-        <Badge variant="secondary" className="text-xs">
+        <div className="text-xs flex gap-2">
+          <MessageCircle className="h-4 w-4" />
           {repliesCount}
-        </Badge>
+        </div>
       );
     },
   },

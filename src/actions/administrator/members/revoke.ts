@@ -3,9 +3,19 @@
 import { APIError } from "better-auth/api";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
+import { getServerSession } from "@/lib/dal";
 
 export async function revokeMemberSessionAction(sessionToken: string) {
   try {
+    const session = await getServerSession();
+
+    if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
+      return {
+        success: false,
+        message: "Access denied: You must be an administrator to add categories.",
+      };
+    }
+
     await auth.api.revokeUserSession({
       body: { sessionToken: sessionToken },
       headers: await headers(),
@@ -24,23 +34,32 @@ export async function revokeMemberSessionAction(sessionToken: string) {
 }
 
 export async function revokeAllSessionsMemberAction(memberId: string) {
-    try {
-        await auth.api.revokeUserSessions({
-        body: { userId: memberId },
-        headers: await headers(),
-        });
-    
-        return {
-        success: true,
-        message: "All sessions for the member have been revoked successfully.",
-        };
-    
+  try {
+    const session = await getServerSession();
 
-    } catch (error) {
+    if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
+      return {
+        success: false,
+        message: "Access denied: You must be an administrator to add categories.",
+      };
+    }
+
+    await auth.api.revokeUserSessions({
+      body: { userId: memberId },
+      headers: await headers(),
+    });
+
+    return {
+      success: true,
+      message: "All sessions for the member have been revoked successfully.",
+    };
+
+
+  } catch (error) {
     return {
       success: false,
       message: error instanceof APIError ? error.body?.message || error.message : "An unexpected error occurred.",
-    };  
+    };
   }
 }
 

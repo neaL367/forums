@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, Edit, Trash2, Eye, Settings } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, Eye } from "lucide-react";
 import { Row } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
@@ -21,11 +21,6 @@ interface CategoriesRowActionsProps {
 export function CategoriesRowActions({ row }: CategoriesRowActionsProps) {
   const category = row.original;
 
-  // Hide actions for expanded rows (subRows)
-  if (row.depth > 0) {
-    return null;
-  }
-
   const handleEdit = () => {
     // TODO: Implement edit category functionality
     console.log("Edit category:", category.id);
@@ -39,16 +34,6 @@ export function CategoriesRowActions({ row }: CategoriesRowActionsProps) {
   const handleViewForums = () => {
     // TODO: Implement view forums functionality
     console.log("View forums for category:", category.id);
-  };
-
-  const handleSettings = () => {
-    // TODO: Implement category settings functionality
-    console.log("Category settings:", category.id);
-  };
-
-  const handleManagePermissions = () => {
-    // TODO: Implement permissions management
-    console.log("Manage permissions for category:", category.id);
   };
 
   return (
@@ -69,21 +54,9 @@ export function CategoriesRowActions({ row }: CategoriesRowActionsProps) {
           View Categories
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator />
-
         <DropdownMenuItem onClick={handleEdit}>
           <Edit className="mr-2 h-4 w-4" />
           Edit Category
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleSettings}>
-          <Settings className="mr-2 h-4 w-4" />
-          Category Settings
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleManagePermissions}>
-          <Eye className="mr-2 h-4 w-4" />
-          Manage Permissions
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

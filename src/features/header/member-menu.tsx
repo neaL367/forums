@@ -106,7 +106,7 @@ export function MemberMenu({ member, session }: MemberMenuProps) {
             {member.role === "ADMINISTRATOR" && (
               <DropdownMenuItem asChild>
                 <Link
-                  href="/administrator/members-management"
+                  href="/administrator"
                   className="flex items-center gap-2"
                 >
                   <UserStar className="h-4 w-4" />
@@ -141,7 +141,7 @@ export function MemberMenu({ member, session }: MemberMenuProps) {
         </DropdownMenu>
       ) : (
         <Button variant="outline" asChild>
-          <Link href="/sign-in">Sign In</Link>
+          <Link href="/auth/sign-in">Sign In</Link>
         </Button>
       )}
     </div>

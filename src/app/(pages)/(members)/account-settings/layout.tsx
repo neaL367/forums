@@ -6,7 +6,7 @@ export default async function AccountSettingsLayout(
   props: LayoutProps<"/account-settings">
 ) {
   const session = await getServerSession();
-  if (!session) redirect("/sign-in");
+  if (!session) redirect("/auth/sign-in");
   if (!session?.user) return null;
 
   return (

@@ -1,18 +1,43 @@
 import "server-only"
 import { randomUUID } from "crypto";
 
-import { Categories } from "@/types/categories";
 import { sql } from "@/lib/dal";
+import type { Categories } from "@/types/categories";
+import type { Forums } from "@/types/forums";
 
 export const getAllCategories = async (): Promise<Categories[]> => {
   try {
-    const rows = await sql`
-      SELECT id, title, description, "createdAt", "updatedAt"
-      FROM public.category
-      ORDER BY "createdAt" DESC;
+    const categories = await sql`
+      SELECT 
+        c.id,
+        c.title,
+        c.description,
+        c."createdAt",
+        c."updatedAt"
+      FROM public.category c
+      ORDER BY c."createdAt" DESC;
     `;
 
-    return rows as Categories[];
+    const forums = await sql`
+      SELECT 
+        f.id,
+        f.title,
+        f.description,
+        f."categoryId",
+        f."parentForumId",
+        f."createdAt",
+        f."updatedAt"
+      FROM public.forum f;
+    `;
+
+    // Map forums into their categories
+    return (categories as Categories[]).map((cat) => ({
+      ...cat,
+      forum_count: (forums as Forums[]).filter(
+        (f) => f.categoryId === cat.id
+      ).length,
+      forums: (forums as Forums[]).filter((f) => f.categoryId === cat.id),
+    }));
   } catch (error) {
     console.error("Error fetching all categories:", error);
     throw new Error("Failed to fetch categories");

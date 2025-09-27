@@ -6,5 +6,4 @@ export type Reports = {
   status: "open" | "in-progress" | "resolved" | "closed"
   priority: "low" | "medium" | "high"
   createdAt: string
-  assignedTo?: string
 }

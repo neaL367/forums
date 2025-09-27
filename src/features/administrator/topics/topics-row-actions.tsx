@@ -4,11 +4,7 @@ import {
   MoreHorizontal,
   Edit,
   Trash2,
-  Settings,
   MessageCircle,
-  Pin,
-  Lock,
-  Eye,
 } from "lucide-react";
 import type { Row } from "@tanstack/react-table";
 
@@ -45,25 +41,6 @@ export function TopicsRowActions({ row }: TopicsRowActionsProps) {
     console.log("View replies for topic:", topic.id);
   };
 
-  const handlePin = () => {
-    // TODO: Implement pin topic functionality
-    console.log("Pin topic:", topic.id);
-  };
-
-  const handleLock = () => {
-    // TODO: Implement lock topic functionality
-    console.log("Lock topic:", topic.id);
-  };
-
-  const handleSettings = () => {
-    // TODO: Implement topic settings functionality
-    console.log("Topic settings:", topic.id);
-  };
-
-  const handleManagePermissions = () => {
-    // TODO: Implement permissions management
-    console.log("Manage permissions for category:", topic.id);
-  };
 
   return (
     <DropdownMenu>
@@ -83,33 +60,9 @@ export function TopicsRowActions({ row }: TopicsRowActionsProps) {
           View Topics
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem onClick={handlePin}>
-          <Pin className="mr-2 h-4 w-4" />
-          Pin Topic
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleLock}>
-          <Lock className="mr-2 h-4 w-4" />
-          Lock Topic
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
         <DropdownMenuItem onClick={handleEdit}>
           <Edit className="mr-2 h-4 w-4" />
           Edit Topic
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleSettings}>
-          <Settings className="mr-2 h-4 w-4" />
-          Topic Settings
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleManagePermissions}>
-          <Eye className="mr-2 h-4 w-4" />
-          Manage Permissions
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

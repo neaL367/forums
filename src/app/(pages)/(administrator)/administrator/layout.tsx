@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
+import { AdministratorSidebar } from "@/features/administrator/shared/adminstrator-sidebar";
 import { getServerSession } from "@/lib/dal";
-import AdministratorSidebar from "@/features/administrator/shared/sidebar-navigation";
 
 export default async function AdministratorLayout(
   props: LayoutProps<"/administrator">
@@ -11,21 +11,10 @@ export default async function AdministratorLayout(
   if (!session) redirect("/");
   if (session.user.role !== "ADMINISTRATOR") redirect("/");
   return (
-    <div className="">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Administrator</h1>
-        <p className="text-zinc-300">
-          Admin dashboard for managing forum features
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-1">
-          <AdministratorSidebar />
-        </div>
-        <div className="lg:col-span-4 space-y-6">
-          {props.children}
-        </div>
+    <div className="flex h-screen bg-background">
+      <AdministratorSidebar />
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <main className="flex-1 overflow-y-auto p-6">{props.children}</main>
       </div>
     </div>
   );

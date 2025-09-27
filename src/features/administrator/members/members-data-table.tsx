@@ -72,7 +72,7 @@ export function MembersDataTable({ columns = [], data = [] }: DataTableProps) {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} colSpan={header.colSpan}>
+                  <TableHead key={header.id} colSpan={header.colSpan} className="px-6">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -92,7 +92,7 @@ export function MembersDataTable({ columns = [], data = [] }: DataTableProps) {
                   data-state={row.getIsSelected() ? "selected" : undefined}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="px-6">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

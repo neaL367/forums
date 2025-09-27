@@ -1,75 +1,24 @@
 "use client";
 
 import { format } from "date-fns";
-import type { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
+import { FileText } from "lucide-react";
 
 import { DataTableColumnHeader } from "@features/administrator/shared/data-table/data-table-column-header";
 import { RepliesRowActions } from "@features/administrator/replies/replies-row-actions";
 
 import type { Replies } from "@/types/replies";
+import type { ColumnDef } from "@tanstack/react-table";
 
 export const repliesColumns: ColumnDef<Replies>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-start w-full min-w-[80px]">
-        <div className="flex items-center gap-3">
-          <div className="w-5 h-5" />
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
-            aria-label="Select all"
-            className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-          />
-        </div>
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-start w-full min-w-[80px] py-2">
-        <div className="flex items-center gap-3">
-          <div className="w-5 h-5" />
-          <Checkbox
-            checked={row.getIsSelected()}
-            indeterminate={row.getIsSomeSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-            className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-          />
-        </div>
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-    size: 60,
-  },
-  {
-    accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID" />
-    ),
-    cell: ({ getValue }) => (
-      <span className="text-sm font-mono text-muted-foreground">
-        {getValue() as string}
-      </span>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-    size: 80,
-  },
-  {
     accessorKey: "content",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Content" />
+      <DataTableColumnHeader column={column} title="Reply" />
     ),
     cell: ({ getValue }) => (
-      <span className="text-sm">{getValue() as string}</span>
+      <div className="text-sm w-[300px] truncate">
+        {getValue() as string}
+      </div>
     ),
   },
   {
@@ -78,25 +27,15 @@ export const repliesColumns: ColumnDef<Replies>[] = [
       <DataTableColumnHeader column={column} title="Topic" />
     ),
     cell: ({ getValue }) => (
-      <Badge variant="outline" className="text-xs">
+      <div className="text-xs flex gap-2">
+        <FileText className="h-4 w-4" />
         {getValue() as string}
-      </Badge>
+      </div>
     ),
     filterFn: (row, id, value) => {
       const cellValue = String(row.getValue(id)).toLowerCase();
       return value.some((v: string) => v.toLowerCase() === cellValue);
     },
-  },
-  {
-    accessorKey: "parentReplyContent",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Parent Reply" />
-    ),
-    cell: ({ getValue }) => (
-      <span className="text-xs text-muted-foreground italic">
-        {getValue() ? (getValue() as string) : "—"}
-      </span>
-    ),
   },
   {
     accessorKey: "createdAt",

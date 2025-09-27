@@ -61,7 +61,6 @@ export function CategoriesDataTable({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
 
-    getSubRows: (row) => row.forums,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -81,7 +80,11 @@ export function CategoriesDataTable({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
+                    <TableHead
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className="px-6"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -96,55 +99,22 @@ export function CategoriesDataTable({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.flatMap((row) => {
-                const rows: React.ReactNode[] = [];
-
-                if (row.depth === 0) {
-                  rows.push(
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                      className="group"
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  );
-                }
-
-                if (row.getIsExpanded()) {
-                  rows.push(
-                    ...row.subRows.map((subRow, index) => (
-                      <TableRow
-                        key={subRow.id}
-                        data-state={subRow.getIsSelected() && "selected"}
-                        className={`${
-                          index === row.subRows.length - 1
-                            ? "border-b-2 border-b-zinc-700"
-                            : ""
-                        }`}
-                      >
-                        {subRow.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id} className="py-3">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))
-                  );
-                }
-
-                return rows;
-              })
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="group"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="px-6">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
             ) : (
               <TableRow>
                 <TableCell

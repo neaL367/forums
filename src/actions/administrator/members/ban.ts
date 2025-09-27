@@ -4,9 +4,19 @@ import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
+import { getServerSession } from "@/lib/dal";
 
 export async function banMemberAction(memberId: string, banReason?: string, banExpiresIn?: number) {
   try {
+    const session = await getServerSession();
+
+    if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
+      return {
+        success: false,
+        message: "Access denied: You must be an administrator to add categories.",
+      };
+    }
+
     await auth.api.banUser({
       body: { userId: memberId, banReason: banReason, banExpiresIn: banExpiresIn },
       headers: await headers(),
@@ -29,6 +39,15 @@ export async function banMemberAction(memberId: string, banReason?: string, banE
 
 export async function unbanMemberAction(memberId: string) {
   try {
+    const session = await getServerSession();
+
+    if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
+      return {
+        success: false,
+        message: "Access denied: You must be an administrator to add categories.",
+      };
+    }
+    
     await auth.api.unbanUser({
       body: { userId: memberId },
       headers: await headers(),

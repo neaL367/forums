@@ -75,7 +75,7 @@ export function RepliesDataTable({ columns = [], data = [] }: DataTableProps) {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
+                    <TableHead key={header.id} colSpan={header.colSpan} className="px-6">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -97,7 +97,7 @@ export function RepliesDataTable({ columns = [], data = [] }: DataTableProps) {
                   className="group"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="px-6">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

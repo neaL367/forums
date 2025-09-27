@@ -61,7 +61,7 @@ export default async function AccountOverview() {
                         Verified
                       </Badge>
                     ) : (
-                      <Link href="/verification-email">
+                      <Link href="/auth/verification-email">
                         <Badge
                           variant="secondary"
                           className="bg-red-500 text-white dark:bg-red-600 text-xs"

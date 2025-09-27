@@ -30,10 +30,10 @@ export async function addCategoriesAction(
   try {
     const session = await getServerSession();
 
-    if (!session?.user?.id) {
+    if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
         success: false,
-        message: "Unauthorized: Please log in to add categories.",
+        message: "Access denied: You must be an administrator to add categories.",
         inputs: rawData,
       };
     }

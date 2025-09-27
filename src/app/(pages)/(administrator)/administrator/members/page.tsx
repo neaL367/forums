@@ -18,7 +18,12 @@ export default async function MembersManagementPage() {
   if (session.user.role !== "ADMINISTRATOR") redirect("/");
 
   return (
-    <div className="mx-auto">
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">Members Management</h1>
+        <p className="text-muted-foreground mt-2">Manage member role, username, ban and more...</p>
+      </div>
+
       <Suspense fallback={<DataTableSkeleton />}>
         <MembersTable />
       </Suspense>

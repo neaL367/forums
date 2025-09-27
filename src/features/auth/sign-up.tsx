@@ -150,7 +150,7 @@ export function SignUpForm() {
 
         <div className="mt-4 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/sign-in" className="underline text-foreground">
+          <Link href="/auth/sign-in" className="underline text-foreground">
             Sign in
           </Link>
         </div>

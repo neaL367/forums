@@ -31,7 +31,7 @@ function ResetPasswordContent() {
         <CardContent>
           <p className="text-sm text-muted-foreground">
             Please request a new password reset{" "}
-            <Link href="/forgot-password" className="text-white underline">
+            <Link href="/auth/forgot-password" className="text-white underline">
               link
             </Link>
             .

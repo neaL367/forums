@@ -71,7 +71,7 @@ export function SignInForm() {
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="username">Username</Label>
-              <Link href="/forgot-username" className="text-sm underline">
+              <Link href="/auth/forgot-username" className="text-sm underline">
                 Forgot username?
               </Link>
             </div>
@@ -93,7 +93,7 @@ export function SignInForm() {
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <Link href="/forgot-password" className="text-sm underline">
+              <Link href="/auth/forgot-password" className="text-sm underline">
                 Forgot password?
               </Link>
             </div>
@@ -123,7 +123,7 @@ export function SignInForm() {
         </form>
         <div className="mt-4 text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
-          <Link href="/sign-up" className="underline text-foreground">
+          <Link href="/auth/sign-up" className="underline text-foreground">
             Sign up
           </Link>
         </div>

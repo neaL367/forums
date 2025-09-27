@@ -4,10 +4,7 @@ import {
   MoreHorizontal,
   Edit,
   Trash2,
-  Settings,
   MessageCircle,
-  Pin,
-  Move,
 } from "lucide-react";
 import type { Row } from "@tanstack/react-table";
 
@@ -44,21 +41,6 @@ export function RepliesRowActions({ row }: RepliesRowActionsProps) {
     console.log("View replies for replies:", replies.id);
   };
 
-  const handlePin = () => {
-    // TODO: Implement pin replies functionality
-    console.log("Pin replie:", replies.id);
-  };
-
-  const handleMove = () => {
-    // TODO: Implement move replies functionality
-    console.log("Move replie:", replies.id);
-  };
-
-  const handleSettings = () => {
-    // TODO: Implement replies settings functionality
-    console.log("Replies settings:", replies.id);
-  };
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -77,28 +59,9 @@ export function RepliesRowActions({ row }: RepliesRowActionsProps) {
           View Replies
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem onClick={handlePin}>
-          <Pin className="mr-2 h-4 w-4" />
-          Pin Reply
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
         <DropdownMenuItem onClick={handleEdit}>
           <Edit className="mr-2 h-4 w-4" />
           Edit Reply
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleMove}>
-          <Move className="mr-2 h-4 w-4" />
-          Move Reply
-        </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={handleSettings}>
-          <Settings className="mr-2 h-4 w-4" />
-          Reply Settings
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

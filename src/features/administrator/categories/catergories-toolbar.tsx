@@ -45,7 +45,7 @@ export function CategoriesToolbar<TData>({
         <AddCategoriesDialog>
           <Button variant="outline" size="sm">
             <Plus className="md:mr-2 h-4 w-4" />
-            <span className="hidden lg:inline">Add Categories</span>
+            <span className="">Add Categories</span>
           </Button>
         </AddCategoriesDialog>
       </div>
