@@ -3,5 +3,5 @@ export default function PagesLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div>{children}</div>;
+  return <div className="bg-black">{children}</div>;
 }

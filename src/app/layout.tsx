@@ -30,7 +30,7 @@ export default async function RootLayout({
     <SidebarProvider defaultOpen={defaultOpen}>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${geist.className} antialiased min-h-screen bg-background text-foreground `}
+          className={`${geist.className} antialiased min-h-screen bg-black text-foreground `}
         >
           <ThemeProvider
             attribute="class"

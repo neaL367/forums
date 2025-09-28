@@ -1,6 +1,21 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { FolderTree, MessageSquare, FileText, MessageCircle, Bug, Users, TrendingUp } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  FolderTree,
+  MessageSquare,
+  FileText,
+  MessageCircle,
+  Bug,
+  Users,
+  TrendingUp,
+} from "lucide-react";
+import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
 
 const stats = [
   {
@@ -45,7 +60,7 @@ const stats = [
     icon: Users,
     color: "text-cyan-500",
   },
-]
+];
 
 const recentActivity = [
   {
@@ -72,98 +87,141 @@ const recentActivity = [
     time: "3 hours ago",
     status: "info",
   },
-]
+];
 
-export default function AdministratorDashboard() {
+export default function AdministratorOverview() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard Overview</h1>
-        <p className="text-muted-foreground mt-2">Monitor and manage your forum community</p>
-      </div>
+    <>
+      <AdministratorHeader
+        breadcrumbs={[
+          { label: "Administrator", href: "/administrator" },
+          { label: "Overview" },
+        ]}
+      />
+      <div className="flex flex-1 flex-col gap-4 pt-0 pb-12">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">
+              Dashboard Overview
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Monitor and manage your forum community
+            </p>
+          </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {stats.map((stat) => (
-          <Card key={stat.title} className="bg-card border-border">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-card-foreground">{stat.title}</CardTitle>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-card-foreground">{stat.value}</div>
-              <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                <TrendingUp className="h-3 w-3" />
-                {stat.change}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-card-foreground">Recent Activity</CardTitle>
-            <CardDescription>Latest updates across your forum</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-card-foreground">{activity.title}</p>
-                  <p className="text-xs text-muted-foreground">{activity.time}</p>
-                </div>
-                <Badge
-                  variant={
-                    activity.status === "success"
-                      ? "default"
-                      : activity.status === "resolved"
-                        ? "secondary"
-                        : activity.status === "trending"
-                          ? "destructive"
-                          : "outline"
-                  }
-                  className="ml-2"
-                >
-                  {activity.status}
-                </Badge>
-              </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {stats.map((stat) => (
+              <Card key={stat.title} className="bg-card border-border">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-card-foreground">
+                    {stat.title}
+                  </CardTitle>
+                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-card-foreground">
+                    {stat.value}
+                  </div>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                    <TrendingUp className="h-3 w-3" />
+                    {stat.change}
+                  </p>
+                </CardContent>
+              </Card>
             ))}
-          </CardContent>
-        </Card>
+          </div>
 
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-card-foreground">Quick Actions</CardTitle>
-            <CardDescription>Common administrative tasks</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid gap-3">
-              <div className="flex items-center justify-between p-3 bg-accent rounded-lg">
-                <div>
-                  <p className="text-sm font-medium text-accent-foreground">Create New Category</p>
-                  <p className="text-xs text-muted-foreground">Add a new forum category</p>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="text-card-foreground">
+                  Recent Activity
+                </CardTitle>
+                <CardDescription>
+                  Latest updates across your forum
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {recentActivity.map((activity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between"
+                  >
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-card-foreground">
+                        {activity.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {activity.time}
+                      </p>
+                    </div>
+                    <Badge
+                      variant={
+                        activity.status === "success"
+                          ? "default"
+                          : activity.status === "resolved"
+                            ? "secondary"
+                            : activity.status === "trending"
+                              ? "destructive"
+                              : "outline"
+                      }
+                      className="ml-2"
+                    >
+                      {activity.status}
+                    </Badge>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="text-card-foreground">
+                  Quick Actions
+                </CardTitle>
+                <CardDescription>Common administrative tasks</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid gap-3">
+                  <div className="flex items-center justify-between p-3 bg-accent rounded-lg">
+                    <div>
+                      <p className="text-sm font-medium text-accent-foreground">
+                        Create New Category
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Add a new forum category
+                      </p>
+                    </div>
+                    <FolderTree className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-accent rounded-lg">
+                    <div>
+                      <p className="text-sm font-medium text-accent-foreground">
+                        Moderate Reports
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Review pending reports
+                      </p>
+                    </div>
+                    <Bug className="h-5 w-5 text-red-500" />
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-accent rounded-lg">
+                    <div>
+                      <p className="text-sm font-medium text-accent-foreground">
+                        User Management
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Manage user permissions
+                      </p>
+                    </div>
+                    <Users className="h-5 w-5 text-green-500" />
+                  </div>
                 </div>
-                <FolderTree className="h-5 w-5 text-blue-500" />
-              </div>
-              <div className="flex items-center justify-between p-3 bg-accent rounded-lg">
-                <div>
-                  <p className="text-sm font-medium text-accent-foreground">Moderate Reports</p>
-                  <p className="text-xs text-muted-foreground">Review pending reports</p>
-                </div>
-                <Bug className="h-5 w-5 text-red-500" />
-              </div>
-              <div className="flex items-center justify-between p-3 bg-accent rounded-lg">
-                <div>
-                  <p className="text-sm font-medium text-accent-foreground">User Management</p>
-                  <p className="text-xs text-muted-foreground">Manage user permissions</p>
-                </div>
-                <Users className="h-5 w-5 text-green-500" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
-    </div>
-  )
+    </>
+  );
 }

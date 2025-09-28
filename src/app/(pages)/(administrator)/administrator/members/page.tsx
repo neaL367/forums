@@ -3,8 +3,9 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { membersColumns } from "@/features/administrator/members/data/columns";
 import { MembersDataTable } from "@/features/administrator/members/members-data-table-client";
+import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
+import { membersColumns } from "@/features/administrator/members/data/columns";
 import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
 
 import { getServerSession } from "@/lib/dal";
@@ -18,16 +19,28 @@ export default async function MembersManagementPage() {
   if (session.user.role !== "ADMINISTRATOR") redirect("/");
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Members Management</h1>
-        <p className="text-muted-foreground mt-2">Manage member role, username, ban and more...</p>
-      </div>
+    <>
+      <AdministratorHeader
+        breadcrumbs={[
+          { label: "Administrator", href: "/administrator" },
+          { label: "Members" },
+        ]}
+      />
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">
+            Members Management
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Manage member role, username, ban and more...
+          </p>
+        </div>
 
-      <Suspense fallback={<DataTableSkeleton />}>
-        <MembersTable />
-      </Suspense>
-    </div>
+        <Suspense fallback={<DataTableSkeleton />}>
+          <MembersTable />
+        </Suspense>
+      </div>
+    </>
   );
 }
 
@@ -52,7 +65,7 @@ async function MembersTable() {
         };
       }
     },
-    ['id'],
+    ["id"],
     { tags: ["admin-mgt-members"], revalidate: 3600 }
   );
 

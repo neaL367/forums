@@ -10,86 +10,139 @@ import {
   Bug,
   BarChart3,
   User,
+  type LucideIcon,
 } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarTrigger,
-  useSidebar,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
 
-const navigation = [
-  { name: "Overview", href: "/administrator" as const, icon: BarChart3 },
-  { name: "Members", href: "/administrator/members" as const, icon: User },
+const navigation: {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+  items?: { name: string; href: string }[];
+}[] = [
+  {
+    name: "Overview",
+    href: "/administrator",
+    icon: BarChart3,
+  },
+  {
+    name: "Members",
+    href: "/administrator/members",
+    icon: User,
+  },
   {
     name: "Categories",
-    href: "/administrator/categories" as const,
+    href: "/administrator/categories",
     icon: FolderTree,
   },
   {
     name: "Forums",
-    href: "/administrator/forums" as const,
+    href: "/administrator/forums",
     icon: MessageSquare,
   },
-  { name: "Topics", href: "/administrator/topics" as const, icon: FileText },
+  {
+    name: "Topics",
+    href: "/administrator/topics",
+    icon: FileText,
+  },
   {
     name: "Replies",
-    href: "/administrator/replies" as const,
+    href: "/administrator/replies",
     icon: MessageCircle,
   },
-  { name: "Reports", href: "/administrator/reports" as const, icon: Bug },
+  {
+    name: "Reports",
+    href: "/administrator/reports",
+    icon: Bug,
+  },
 ];
 
 export function AdministratorSidebar() {
   const pathname = usePathname();
-  const { state } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border/50">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupContent
-            className={cn(
-              `flex flex-col gap-6`,
-              state === "collapsed" && "items-center duration-1000"
-            )}
-          >
-            <SidebarTrigger />
-            <SidebarMenu
-              className={cn(
-                `flex gap-2`,
-                state === "collapsed" && "items-center duration-1000"
-              )}
-            >
-              {navigation.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <SidebarMenuItem key={item.name}>
-                    <SidebarMenuButton asChild isActive={isActive}>
-                      <Link
-                        href={item.href}
-                        className={cn(`flex items-center gap-2`)}
+          <SidebarGroupLabel>Administration</SidebarGroupLabel>
+          <SidebarMenu>
+            {navigation.map((item) =>
+              item.items ? (
+                <Collapsible
+                  key={item.name}
+                  asChild
+                  defaultOpen={pathname.startsWith(item.href)}
+                  className="group/collapsible"
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === item.href}
+                        tooltip={item.name}
+                        className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:w-full"
                       >
-                        <item.icon className="h-8 w-8" />
-                        {state === "expanded" && (
-                          <span className="text-sm font-medium">
+                        <Link href={{ pathname: item.href }}>
+                          <item.icon className="!size-5 shrink-0" />
+                          <span className="group-data-[collapsible=icon]:hidden">
                             {item.name}
                           </span>
-                        )}
-                      </Link>
-                    </SidebarMenuButton>
+                        </Link>
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {item.items.map((sub) => (
+                          <SidebarMenuSubItem key={sub.name}>
+                            <SidebarMenuSubButton asChild>
+                              <Link href={{ pathname: sub.href }}>
+                                <span>{sub.name}</span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
                   </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
+                </Collapsible>
+              ) : (
+                // Regular single item
+                <SidebarMenuItem key={item.name}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.href}
+                    tooltip={item.name}
+                    size='lg'
+                    className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center"
+                  >
+                    <Link href={{ pathname: item.href }}>
+                      <item.icon className="!size-5 shrink-0" />
+                      <span className="group-data-[collapsible=icon]:hidden">
+                        {item.name}
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            )}
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>

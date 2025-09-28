@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { AdministratorSidebar } from "@/features/administrator/shared/adminstrator-sidebar";
 import { getServerSession } from "@/lib/dal";
+import { SidebarInset } from "@/components/ui/sidebar";
 
 export default async function AdministratorLayout(
   props: LayoutProps<"/administrator">
@@ -11,11 +12,9 @@ export default async function AdministratorLayout(
   if (!session) redirect("/");
   if (session.user.role !== "ADMINISTRATOR") redirect("/");
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-black">
       <AdministratorSidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto p-6">{props.children}</main>
-      </div>
+      <SidebarInset className="px-10 py-6">{props.children}</SidebarInset>
     </div>
   );
 }
