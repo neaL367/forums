@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
@@ -21,8 +21,10 @@ const initialState: SignUpFormState = {
 
 export function SignUpForm() {
   const router = useRouter();
-  const { refetch } = authClient.useSession();
+  const { data: session, refetch } = authClient.useSession();
   
+  // Track if we're waiting for a successful sign-up
+  const [waitingForSession, setWaitingForSession] = useState(false);
   const loadingToastRef = useRef<string | number | null>(null);
 
   const [state, formAction, pending] = useActionState(
@@ -33,6 +35,7 @@ export function SignUpForm() {
     initialState
   );
 
+  // Handle initial form response
   useEffect(() => {
     if (state?.message) {
       if (loadingToastRef.current) {
@@ -41,15 +44,22 @@ export function SignUpForm() {
       }
 
       if (state.success) {
-        toast.success(state.message);
-        router.push("/");
-        router.refresh();
+        setWaitingForSession(true);
         refetch();
       } else {
         toast.error(state.message);
       }
     }
-  }, [refetch, router, state]);
+  }, [refetch, state]);
+
+  useEffect(() => {
+    if (waitingForSession && session) {
+      toast.success(state.message);
+      router.push("/");
+      router.refresh();
+      setWaitingForSession(false);
+    }
+  }, [session, waitingForSession, state.message, router]);
 
   return (
     <Card className="z-50 rounded-md rounded-t-none min-w-lg">
@@ -139,8 +149,8 @@ export function SignUpForm() {
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={pending}>
-            {pending ? (
+          <Button type="submit" className="w-full" disabled={pending || waitingForSession}>
+            {pending || waitingForSession ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
               "Create an account"

@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { LogOut, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { LogOut, Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 export function SignOutButton() {
@@ -26,10 +26,10 @@ export function SignOutButton() {
           },
           onSuccess: () => {
             toast.dismiss(loadingToast);
-            toast.success("Signed out successfully!");
             router.push("/");
             router.refresh();
             setIsLoading(false);
+            toast.success("Signed out successfully!");
           },
         },
       });

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Loader2, ArrowLeft } from "lucide-react";
 import {
   Card,
@@ -19,7 +19,6 @@ import { Label } from "@/components/ui/label";
 
 import { authClient } from "@/lib/auth-client";
 import { resetPasswordAction } from "@/actions/auth/reset-password";
-
 import type { ResetPasswordFormState } from "@/formdata/auth/reset-password";
 
 const initialState: ResetPasswordFormState = {
@@ -28,13 +27,14 @@ const initialState: ResetPasswordFormState = {
 };
 
 interface ResetPasswordFormProps {
-  token: string
+  token: string;
 }
 
 export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const router = useRouter();
-  const { refetch } = authClient.useSession();
-  
+  const { data: session, refetch } = authClient.useSession();
+
+  const [waitingForSession, setWaitingForSession] = useState(false);
   const loadingToastRef = useRef<string | number | null>(null);
 
   const [state, formAction, pending] = useActionState(
@@ -53,13 +53,27 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       }
 
       if (state.success) {
-        toast.success(state.message);
-        router.push("/");
+        setWaitingForSession(true);
+        refetch();
+
+        if (waitingForSession) {
+          toast.success(state.message);
+          router.push("/");
+          setWaitingForSession(false);
+        }
       } else {
         toast.error(state.message);
       }
     }
-  }, [refetch, router, state]);
+  }, [refetch, state, waitingForSession, router]);
+
+  useEffect(() => {
+    if (waitingForSession && session) {
+      toast.success(state.message);
+      router.push("/");
+      setWaitingForSession(false);
+    }
+  }, [session, waitingForSession, state.message, router]);
 
   return (
     <Card className="z-50 rounded-md rounded-t-none min-w-lg">
@@ -109,8 +123,12 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
               </p>
             )}
           </div>
-          <Button type="submit" className="w-full" disabled={pending}>
-            {pending ? (
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={pending || waitingForSession}
+          >
+            {pending || waitingForSession ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
               <p>Reset Password</p>
