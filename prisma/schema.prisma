@@ -103,19 +103,6 @@ model Verification {
   @@map("verification")
 }
 
-model Category {
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  id          String @id @default(uuid())
-  title       String
-  description String
-
-  forums Forum[]
-
-  @@map("category")
-}
-
 model Forum {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -123,9 +110,6 @@ model Forum {
   id          String @id @default(uuid())
   title       String
   description String
-
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
 
   parentForumId String?
   parentForum   Forum?  @relation("ForumToSubForums", fields: [parentForumId], references: [id])

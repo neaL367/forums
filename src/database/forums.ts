@@ -4,24 +4,6 @@ import { sql } from "@/lib/dal";
 import type { Forums } from "@/types/forums";
 import type { Topics } from "@/types/topics";
 
-function flattenForums(forums: Forums[], parentTitle?: string): Forums[] {
-  const result: Forums[] = [];
-
-  forums.forEach((forum) => {
-    result.push({
-      ...forum,
-      parentForumTitle: parentTitle || forum.parentForumTitle || undefined,
-      subForums: [], // don’t keep nested here
-    });
-
-    if (forum.subForums && forum.subForums.length > 0) {
-      result.push(...flattenForums(forum.subForums, forum.title));
-    }
-  });
-
-  return result;
-}
-
 export const getAllForums = async (): Promise<Forums[]> => {
   try {
     const forums = await sql`
@@ -31,15 +13,11 @@ export const getAllForums = async (): Promise<Forums[]> => {
         f.description, 
         f."createdAt", 
         f."updatedAt", 
-        f."categoryId",
         f."parentForumId",
-        c.title AS "categoryTitle",
         pf.title AS "parentForumTitle" 
       FROM public.forum f
-      JOIN public.category c ON f."categoryId" = c.id
-      LEFT JOIN public.forum pf ON f."parentForumId" = pf.id
-      ORDER BY f."createdAt" DESC;
-    `;
+      LEFT JOIN public.forum pf ON f."parentForumId" = pf.id;
+    ` as Array<Pick<Forums, 'id' | 'title' | 'description' | 'createdAt' | 'updatedAt' | 'parentForumId' | 'parentForumTitle'>>;
 
     const topics = await sql`
       SELECT 
@@ -47,41 +25,38 @@ export const getAllForums = async (): Promise<Forums[]> => {
         t.title,
         t."createdAt",
         t."updatedAt",
-        t."forumId"
-      FROM public.topic t;
-    `;
+        t."forumId",
+        f.title AS "forumTitle"
+      FROM public.topic t
+      JOIN public.forum f ON t."forumId" = f.id;
+    ` as Topics[];
 
-    const forumList = forums as Forums[];
-    const topicList = topics as Topics[];
-
-    const forumMap = new Map<string, Forums>();
-    forumList.forEach((f) => {
-      forumMap.set(f.id, {
+    // Build a map of forums
+    const forumMap: Record<string, Forums> = {};
+    forums.forEach((f) => {
+      forumMap[f.id] = {
         ...f,
-        topics: topicList.filter((t) => t.forumId === f.id),
+        topics: topics.filter((t) => t.forumId === f.id),
         subForums: [],
-      });
+      };
     });
 
-    forumMap.forEach((forum) => {
-      if (forum.parentForumId && forumMap.has(forum.parentForumId)) {
-        forumMap.get(forum.parentForumId)!.subForums!.push(forum);
+    // Attach subforums to parents
+    const roots: Forums[] = [];
+    forums.forEach((f) => {
+      if (f.parentForumId) {
+        forumMap[f.parentForumId]?.subForums?.push(forumMap[f.id]);
+      } else {
+        roots.push(forumMap[f.id]);
       }
     });
 
-    // collect root forums
-    const roots = Array.from(forumMap.values()).filter(
-      (f) => !f.parentForumId
-    );
-
-    // flatten all into rows
-    return flattenForums(roots);
+    return roots;
   } catch (error) {
-    console.error("Error fetching all forums:", error);
-    throw new Error("Failed to fetch forums");
+    console.error("Error fetching forums:", error);
+    return [];
   }
 };
-
 
 
 export const getForumsByTitle = async (query: string): Promise<Forums[]> => {

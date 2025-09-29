@@ -6,8 +6,8 @@ import { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@/features/administrator/shared/data-table/data-table-view-options";
-import { DataTableFacetedFilter } from "@/features/administrator/shared/data-table/data-table-faceted-filter";
-import { filters } from "@/features/administrator/forums/data/data";
+// import { DataTableFacetedFilter } from "@/features/administrator/shared/data-table/data-table-faceted-filter";
+// import { filters } from "@/features/administrator/forums/data/data";
 // import { AddForumDialog } from "@/features/administrator/forums/dialogs/add-forum-dialog";
 
 interface ForumsToolbarProps<TData> {
@@ -30,7 +30,7 @@ export function ForumsToolbar<TData>({ table }: ForumsToolbarProps<TData>) {
           className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]"
         />
 
-        {filters.map((filter) => {
+        {/* {filters.map((filter) => {
           const column = table.getColumn(filter.columnId);
           return column ? (
             <DataTableFacetedFilter
@@ -40,7 +40,7 @@ export function ForumsToolbar<TData>({ table }: ForumsToolbarProps<TData>) {
               options={filter.options}
             />
           ) : null;
-        })}
+        })} */}
 
         {/* Reset Filters */}
         {isFiltered && (

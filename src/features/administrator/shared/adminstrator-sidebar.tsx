@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  FolderTree,
   MessageSquare,
   FileText,
   MessageCircle,
@@ -46,11 +45,6 @@ const navigation: {
     name: "Members",
     href: "/administrator/members",
     icon: User,
-  },
-  {
-    name: "Categories",
-    href: "/administrator/categories",
-    icon: FolderTree,
   },
   {
     name: "Forums",
@@ -97,13 +91,10 @@ export function AdministratorSidebar() {
                         asChild
                         isActive={pathname === item.href}
                         tooltip={item.name}
-                        className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:w-full"
                       >
                         <Link href={{ pathname: item.href }}>
-                          <item.icon className="!size-5 shrink-0" />
-                          <span className="group-data-[collapsible=icon]:hidden">
-                            {item.name}
-                          </span>
+                          <item.icon />
+                          <span className="group-data-[collapsible=icon]:hidden">{item.name}</span>
                         </Link>
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
@@ -113,7 +104,7 @@ export function AdministratorSidebar() {
                           <SidebarMenuSubItem key={sub.name}>
                             <SidebarMenuSubButton asChild>
                               <Link href={{ pathname: sub.href }}>
-                                <span>{sub.name}</span>
+                                <span className="group-data-[collapsible=icon]:hidden">{sub.name}</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -129,14 +120,10 @@ export function AdministratorSidebar() {
                     asChild
                     isActive={pathname === item.href}
                     tooltip={item.name}
-                    size='lg'
-                    className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center"
                   >
                     <Link href={{ pathname: item.href }}>
-                      <item.icon className="!size-5 shrink-0" />
-                      <span className="group-data-[collapsible=icon]:hidden">
-                        {item.name}
-                      </span>
+                      <item.icon />
+                      <span className="group-data-[collapsible=icon]:hidden">{item.name}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

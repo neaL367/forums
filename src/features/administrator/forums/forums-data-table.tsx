@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
+  Row,
   SortingState,
   VisibilityState,
   flexRender,
@@ -16,6 +16,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
 
 import {
   Table,
@@ -38,13 +39,11 @@ export function ForumsDataTable({
   columns = [],
   data = [],
 }: ForumsDataTableProps) {
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [expanded, setExpanded] = useState({});
 
   const table = useReactTable({
     data,
@@ -54,13 +53,14 @@ export function ForumsDataTable({
       columnVisibility,
       rowSelection,
       columnFilters,
+      expanded,
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-
+    onExpandedChange: setExpanded,
     getSubRows: (row) => row.subForums,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
@@ -70,6 +70,53 @@ export function ForumsDataTable({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
+
+  useEffect(() => {
+    const searchValue = columnFilters.find((f) => f.id === "title")
+      ?.value as string;
+
+    if (searchValue && searchValue.length > 0) {
+      const newExpanded: Record<string, boolean> = {};
+      const searchLower = searchValue.toLowerCase();
+
+      const checkAndExpandRow = (row: Row<Forums>) => {
+        const forum = row.original;
+
+        // Check if any subforum matches
+        const hasMatchingSubforum = (
+          subForums: Forums[] | undefined
+        ): boolean => {
+          if (!subForums || subForums.length === 0) return false;
+
+          return subForums.some(
+            (sub) =>
+              sub.title.toLowerCase().includes(searchLower) ||
+              (sub.description?.toLowerCase().includes(searchLower) ?? false) ||
+              hasMatchingSubforum(sub.subForums)
+          );
+        };
+
+        if (hasMatchingSubforum(forum.subForums)) {
+          newExpanded[row.id] = true;
+
+          // Also expand all child rows recursively
+          const expandChildren = (parentRow: Row<Forums>) => {
+            const subRows = parentRow.subRows || [];
+            subRows.forEach((subRow) => {
+              newExpanded[subRow.id] = true;
+              expandChildren(subRow);
+            });
+          };
+          expandChildren(row);
+        }
+      };
+
+      table.getRowModel().rows.forEach(checkAndExpandRow);
+      setExpanded(newExpanded);
+    } else {
+      setExpanded({});
+    }
+  }, [columnFilters, table]);
 
   return (
     <div className="space-y-4">
@@ -81,7 +128,11 @@ export function ForumsDataTable({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan} className="px-6">
+                    <TableHead
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className="px-6"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -96,7 +147,7 @@ export function ForumsDataTable({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.flatMap((row) => (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
