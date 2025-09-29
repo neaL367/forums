@@ -71,7 +71,7 @@ jobs:
 
       - name: Build
         # Here’s your main change:
-        run: next build --turbopack
+        run: bun run build --turbopack --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
