@@ -39,7 +39,8 @@ jobs:
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v5
@@ -62,7 +63,7 @@ jobs:
 
       - name: Run Database Migrations
         run: bunx prisma migrate deploy --schema ./prisma/schema.prisma
-        
+
       - name: Install Vercel CLI
         run: bun add -g vercel@latest 
 
