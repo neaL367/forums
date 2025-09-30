@@ -15,11 +15,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Members } from "@/types/members";
+import { Member } from "@/types/member";
 import { banMemberAction } from "@/actions/administrator/members/ban";
 
 interface BanMemberDialogProps {
-  member: Members;
+  member: Member;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }

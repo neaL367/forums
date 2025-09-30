@@ -6,15 +6,15 @@ import { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@/features/administrator/shared/data-table/data-table-view-options";
-// import { DataTableFacetedFilter } from "@/features/administrator/shared/data-table/data-table-faceted-filter";
-// import { filters } from "@/features/administrator/forums/data/data";
-// import { AddForumDialog } from "@/features/administrator/forums/dialogs/add-forum-dialog";
+import { AddForumDialog } from "@/features/administrator/forums/dialogs/add-forum-dialog";
+import type { Forum } from "@/types/forum";
 
 interface ForumsToolbarProps<TData> {
   table: Table<TData>;
+  allForums: Forum[];
 }
 
-export function ForumsToolbar<TData>({ table }: ForumsToolbarProps<TData>) {
+export function ForumsToolbar<TData>({ table, allForums }: ForumsToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
@@ -57,12 +57,12 @@ export function ForumsToolbar<TData>({ table }: ForumsToolbarProps<TData>) {
 
       <div className="flex flex-wrap gap-2">
         <DataTableViewOptions table={table} />
-        {/* <AddForumDialog categoryId={categoryId}> */}
-        <Button variant="outline" size="sm">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Forum
-        </Button>
-        {/* </AddForumDialog> */}
+        <AddForumDialog availableParentForums={allForums}>
+          <Button variant="outline" size="sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Forum
+          </Button>
+        </AddForumDialog>
       </div>
     </div>
   );

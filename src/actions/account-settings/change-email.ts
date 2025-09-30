@@ -3,10 +3,11 @@
 import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache"
 import { headers } from "next/headers"
+
 import { auth } from "@/lib/auth"
 import { ChangeEmailSchema } from "@/zod/account-settings/change-email"
-import type { ChangeEmailFormData, ChangeEmailFormState } from "@/formdata/account-setting/change-email"
 
+import type { ChangeEmailFormData, ChangeEmailFormState } from "@/formdata/account-setting/change-email"
 
 export async function changeEmailAction(
   prevState: ChangeEmailFormState,
@@ -45,11 +46,11 @@ export async function changeEmailAction(
       message: "A verification email will be sent to your current email address. Once verified, a confirmation will be sent to your new email address.",
       inputs: {},
     }
-  } catch (err) {
-    if (err instanceof APIError) {
+  } catch (error) {
+    if (error instanceof APIError) {
       return {
         success: false,
-        message: err.body?.message ?? err.message ?? "An error occurred while updating Email.",
+        message: error.body?.message ?? error.message ?? "An error occurred while updating Email.",
         inputs: rawData,
       }
     }

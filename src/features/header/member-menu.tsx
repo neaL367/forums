@@ -68,14 +68,17 @@ export function MemberMenu({ member, session }: MemberMenuProps) {
               className="flex items-center gap-2 h-8 px-2 text-white hover:bg-black dark:hover:bg-black"
             >
               <Avatar className="hidden lg:block">
-                <AvatarImage
-                  src={member.image || ""}
-                  alt={`${member.displayUsername}'s avatar`}
-                  className="h-full w-full object-cover rounded-full"
-                />
-                <AvatarFallback className="h-full w-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-2xl font-bold rounded-full flex items-center justify-center">
-                  {member.displayUsername?.charAt(0).toUpperCase()}
-                </AvatarFallback>
+                {member.image ? (
+                  <AvatarImage
+                    src={member.image}
+                    alt={`${member.displayUsername}'s avatar`}
+                    className="h-full w-full object-cover rounded-full"
+                  />
+                ) : (
+                  <AvatarFallback className="...">
+                    {member.displayUsername?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                )}
               </Avatar>
               <span className="text-sm font-medium">
                 {member.displayUsername}
@@ -105,10 +108,7 @@ export function MemberMenu({ member, session }: MemberMenuProps) {
             </DropdownMenuItem>
             {member.role === "ADMINISTRATOR" && (
               <DropdownMenuItem asChild>
-                <Link
-                  href="/administrator"
-                  className="flex items-center gap-2"
-                >
+                <Link href="/administrator" className="flex items-center gap-2">
                   <UserStar className="h-4 w-4" />
                   Administrator
                 </Link>

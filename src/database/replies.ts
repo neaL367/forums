@@ -1,9 +1,8 @@
-// src/database/replies.ts
 import "server-only"
 import { sql } from "@/lib/dal"
-import type { Replies } from "@/types/replies"
+import type { Reply } from "@/types/reply"
 
-export const getAllReplies = async (): Promise<Replies[]> => {
+export const getAllReplies = async (): Promise<Reply[]> => {
   try {
     const rows = await sql`
       SELECT
@@ -15,13 +14,13 @@ export const getAllReplies = async (): Promise<Replies[]> => {
         r.content,
         t.title AS "topicTitle",
         pr.content AS "parentReplyContent"
-      FROM public.replies r
+      FROM public.reply r
       LEFT JOIN public.topic t ON r."topicId" = t.id
-      LEFT JOIN public.replies pr ON r."parentReplyId" = pr.id
+      LEFT JOIN public.reply pr ON r."parentReplyId" = pr.id
       ORDER BY r."createdAt" ASC;
     `
 
-    return rows as Replies[]
+    return rows as Reply[]
   } catch (error) {
     console.error("Error fetching all replies:", error)
     throw error

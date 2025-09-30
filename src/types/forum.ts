@@ -1,16 +1,18 @@
-import { Topics } from "@/types/topics";
+import { Topic } from "@/types/topic";
 
-export type Forums = {
+export type Forum = {
   createdAt: Date;
   updatedAt: Date;
 
   id: string
   title: string
   description: string
-  
+
   parentForumId?: string;
   parentForumTitle?: string;
 
-  topics?: Topics[];
-  subForums?: Forums[];
+  topics?: Topic[];
+  subForums?: Forum[];
+
+  depth: number;
 }

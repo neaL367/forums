@@ -1,4 +1,4 @@
-export type Reports = {
+export type Report = {
   id: string
   type: "bug" | "request"
   title: string

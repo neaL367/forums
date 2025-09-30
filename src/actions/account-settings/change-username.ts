@@ -58,11 +58,11 @@ export async function changeUsernameAction(
       message: "Username updated successfully!",
       inputs: {},
     }
-  } catch (err) {
-    if (err instanceof APIError) {
+  } catch (error) {
+    if (error instanceof APIError) {
       return {
         success: false,
-        message: err.body?.message ?? err.message ?? "An error occurred while updating username.",
+        message: error.body?.message ?? error.message ?? "An error occurred while updating username.",
         inputs: rawData,
       }
     }

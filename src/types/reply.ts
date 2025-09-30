@@ -1,4 +1,4 @@
-export type Replies = {
+export type Reply = {
   createdAt: Date;
   updatedAt: Date;
 

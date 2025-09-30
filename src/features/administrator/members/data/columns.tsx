@@ -7,9 +7,9 @@ import { DataTableColumnHeader } from "@/features/administrator/shared/data-tabl
 import { MemberRowActions } from "@/features/administrator/members/members-row-actions";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import type { Members } from "@/types/members";
+import type { Member } from "@/types/member";
 
-export const membersColumns: ColumnDef<Members>[] = [
+export const membersColumns: ColumnDef<Member>[] = [
   {
     accessorKey: "username",
     header: ({ column }) => (

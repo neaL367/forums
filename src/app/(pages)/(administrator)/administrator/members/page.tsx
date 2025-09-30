@@ -10,7 +10,7 @@ import { DataTableSkeleton } from "@/features/administrator/shared/data-table/da
 
 import { getServerSession } from "@/lib/dal";
 import { auth } from "@/lib/auth";
-import type { Members } from "@/types/members";
+import type { Member } from "@/types/member";
 
 export default async function MembersManagementPage() {
   const session = await getServerSession();
@@ -71,7 +71,7 @@ async function MembersTable() {
 
   const headerData = await headers();
   const response = await getCachedMembers(headerData);
-  const members: Members[] = (response?.members ?? []) as Members[];
+  const members: Member[] = (response?.members ?? []) as Member[];
 
   return <MembersDataTable data={members} columns={membersColumns} />;
 }

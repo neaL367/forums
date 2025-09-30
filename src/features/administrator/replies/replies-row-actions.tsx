@@ -17,10 +17,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { Replies } from "@/types/replies";
+import type { Reply } from "@/types/reply";
 
 interface RepliesRowActionsProps {
-  row: Row<Replies>;
+  row: Row<Reply>;
 }
 
 export function RepliesRowActions({ row }: RepliesRowActionsProps) {

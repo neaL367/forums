@@ -5,8 +5,8 @@ import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
 import { ChangePasswordSchema } from "@/zod/account-settings/change-password"
-import type { ChangePasswordFormData, ChangePasswordFormState } from "@/formdata/account-setting/change-password"
 
+import type { ChangePasswordFormData, ChangePasswordFormState } from "@/formdata/account-setting/change-password"
 
 export async function changePasswordAction(prevState: ChangePasswordFormState, formData: FormData,): Promise<ChangePasswordFormState> {
   const rawData: ChangePasswordFormData = {
@@ -42,9 +42,9 @@ export async function changePasswordAction(prevState: ChangePasswordFormState, f
       message: "Your password has been successfully change. You can now sign in with your new password.",
       inputs: {},
     }
-  } catch (err) {
-    if (err instanceof APIError) {
-      const errorMessage = err.body?.message ?? err.message ?? "An error occurred during password change."
+  } catch (error) {
+    if (error instanceof APIError) {
+      const errorMessage = error.body?.message ?? error.message ?? "An error occurred during password change."
 
       if (errorMessage.toLowerCase().includes("token")) {
         return {

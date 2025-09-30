@@ -16,12 +16,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { Members } from "@/types/members";
+import { Member } from "@/types/member";
 import { setMemberPasswordAction } from "@/actions/administrator/members/member";
 
 
 interface SetPasswordDialogProps {
-  member: Members;
+  member: Member;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }

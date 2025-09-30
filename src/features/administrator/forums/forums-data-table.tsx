@@ -28,11 +28,11 @@ import {
 } from "@/components/ui/table";
 import { DataTablePagination } from "@features/administrator/shared/data-table/data-table-pagination";
 import { ForumsToolbar } from "@features/administrator/forums/forums-toolbar";
-import type { Forums } from "@/types/forums";
+import type { Forum } from "@/types/forum";
 
 interface ForumsDataTableProps {
-  data?: Forums[];
-  columns?: ColumnDef<Forums>[];
+  data?: Forum[];
+  columns?: ColumnDef<Forum>[];
 }
 
 export function ForumsDataTable({
@@ -79,12 +79,12 @@ export function ForumsDataTable({
       const newExpanded: Record<string, boolean> = {};
       const searchLower = searchValue.toLowerCase();
 
-      const checkAndExpandRow = (row: Row<Forums>) => {
+      const checkAndExpandRow = (row: Row<Forum>) => {
         const forum = row.original;
 
         // Check if any subforum matches
         const hasMatchingSubforum = (
-          subForums: Forums[] | undefined
+          subForums: Forum[] | undefined
         ): boolean => {
           if (!subForums || subForums.length === 0) return false;
 
@@ -99,8 +99,8 @@ export function ForumsDataTable({
         if (hasMatchingSubforum(forum.subForums)) {
           newExpanded[row.id] = true;
 
-          // Also expand all child rows recursively
-          const expandChildren = (parentRow: Row<Forums>) => {
+          // expand all child rows recursively
+          const expandChildren = (parentRow: Row<Forum>) => {
             const subRows = parentRow.subRows || [];
             subRows.forEach((subRow) => {
               newExpanded[subRow.id] = true;
@@ -120,7 +120,7 @@ export function ForumsDataTable({
 
   return (
     <div className="space-y-4">
-      <ForumsToolbar table={table} />
+      <ForumsToolbar table={table} allForums={data} />
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
@@ -154,7 +154,12 @@ export function ForumsDataTable({
                   className="group hover:bg-muted/50"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-6">
+                    <TableCell
+                      key={cell.id}
+                      className={
+                        cell.column.id === "expander" ? "pl-6" : "px-6"
+                      }
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

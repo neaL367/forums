@@ -3,11 +3,11 @@
 import dynamic from "next/dynamic";
 import { DataTableSkeleton } from "@features/administrator/shared/data-table/data-table-skeleton";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { Forums } from "@/types/forums";
+import type { Forum } from "@/types/forum";
 
 export const ForumsDataTable = dynamic<{
-  columns: ColumnDef<Forums>[];
-  data: Forums[];
+  columns: ColumnDef<Forum>[];
+  data: Forum[];
 }>(
   () =>
     import("@features/administrator/forums/forums-data-table").then(

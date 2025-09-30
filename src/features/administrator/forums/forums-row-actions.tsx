@@ -17,10 +17,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { Forums } from "@/types/forums";
+import type { Forum } from "@/types/forum";
 
 interface ForumsRowActionsProps {
-  row: Row<Forums>;
+  row: Row<Forum>;
 }
 
 export function ForumsRowActions({ row }: ForumsRowActionsProps) {

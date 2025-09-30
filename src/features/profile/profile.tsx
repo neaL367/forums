@@ -13,7 +13,7 @@ import {
 import { EditProfileDialog } from "@/features/profile/edit-profile-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { MemberProfile } from "@/types/members";
+import type { MemberProfile } from "@/types/member";
 
 interface ProfileProps {
   member: MemberProfile;
@@ -37,14 +37,17 @@ export function Profile({ member, isOwnProfile }: ProfileProps) {
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row text-center sm:text-start items-center gap-4">
             <Avatar className="h-20 w-20 rounded-full">
-              <AvatarImage
-                src={member.image || ""}
-                alt={`${member.displayUsername}'s avatar`}
-                className="h-full w-full object-cover rounded-full"
-              />
-              <AvatarFallback className="h-full w-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-2xl font-bold rounded-full flex items-center justify-center">
-                {member.displayUsername.charAt(0).toUpperCase()}
-              </AvatarFallback>
+              {member.image ? (
+                <AvatarImage
+                  src={member.image}
+                  alt={`${member.displayUsername}'s avatar`}
+                  className="h-full w-full object-cover rounded-full"
+                />
+              ) : (
+                <AvatarFallback className="h-full w-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-2xl font-bold rounded-full flex items-center justify-center">
+                  {member.displayUsername.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              )}
             </Avatar>
             <div className="flex-1">
               <h3 className="font-medium text-2xl mb-2">

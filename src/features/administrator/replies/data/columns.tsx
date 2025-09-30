@@ -6,10 +6,10 @@ import { FileText } from "lucide-react";
 import { DataTableColumnHeader } from "@features/administrator/shared/data-table/data-table-column-header";
 import { RepliesRowActions } from "@features/administrator/replies/replies-row-actions";
 
-import type { Replies } from "@/types/replies";
+import type { Reply } from "@/types/reply";
 import type { ColumnDef } from "@tanstack/react-table";
 
-export const repliesColumns: ColumnDef<Replies>[] = [
+export const repliesColumns: ColumnDef<Reply>[] = [
   {
     accessorKey: "content",
     header: ({ column }) => (

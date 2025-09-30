@@ -6,10 +6,10 @@ import { MessageCircle, MessageSquare } from "lucide-react";
 import { DataTableColumnHeader } from "@features/administrator/shared/data-table/data-table-column-header";
 import { TopicsRowActions } from "@features/administrator/topics/topics-row-actions";
 
-import type { Topics } from "@/types/topics";
+import type { Topic } from "@/types/topic";
 import type { ColumnDef } from "@tanstack/react-table";
 
-export const topicsColumns: ColumnDef<Topics>[] = [
+export const topicsColumns: ColumnDef<Topic>[] = [
   
   {
     accessorKey: "title",

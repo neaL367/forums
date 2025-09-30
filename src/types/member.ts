@@ -1,6 +1,6 @@
 export type Roles = "MEMBERS" | "ADMINISTRATOR" | "MODERATOR" | "OWNER" | "STAFF" | "GUEST";
 
-export type Members = {
+export type Member = {
     createdAt: Date;
     updatedAt: Date;
 

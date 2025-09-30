@@ -1,0 +1,16 @@
+model Reply {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  id      String @id @default(dbgenerated("gen_random_uuid()"))
+  topicId String
+  topic   Topic  @relation(fields: [topicId], references: [id])
+
+  parentReplyId String?
+  parentReply   Reply?  @relation("ReplyToSubReplies", fields: [parentReplyId], references: [id])
+  subReplies    Reply[] @relation("ReplyToSubReplies")
+
+  content String
+
+  @@map("reply")
+}

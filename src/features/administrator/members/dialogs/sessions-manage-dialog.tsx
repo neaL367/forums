@@ -23,12 +23,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Members } from "@/types/members";
+import { Member } from "@/types/member";
 import { listUserSessionsAction, revokeMemberSessionAction } from "@/actions/administrator/members/revoke";
 
 
 interface SessionManagementDialogProps {
-  member: Members;
+  member: Member;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }

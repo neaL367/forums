@@ -26,11 +26,11 @@ import {
 } from "@/components/ui/table";
 import { DataTablePagination } from "@features/administrator/shared/data-table/data-table-pagination";
 import { TopicsToolbar } from "@features/administrator/topics/topics-toolbar";
-import type { Topics } from "@/types/topics";
+import type { Topic } from "@/types/topic";
 
 interface DataTableProps {
-  data?: Topics[];
-  columns?: ColumnDef<Topics>[];
+  data?: Topic[];
+  columns?: ColumnDef<Topic>[];
 }
 
 export function TopicsDataTable({ columns = [], data = [] }: DataTableProps) {

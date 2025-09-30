@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Members, Roles } from "@/types/members";
+import { Member, Roles } from "@/types/member";
 import { authClient } from "@/lib/auth-client";
 
 import { actions } from "@/features/administrator/members/data/data";
@@ -34,7 +34,7 @@ import { SessionManagementDialog } from "@/features/administrator/members/dialog
 import { ConfirmationDialogs } from "@/features/administrator/members/dialogs/confirmation-alert-dialog";
 
 interface MemberRowActionsProps {
-  row: Row<Members>;
+  row: Row<Member>;
 }
 
 export function MemberRowActions({ row }: MemberRowActionsProps) {

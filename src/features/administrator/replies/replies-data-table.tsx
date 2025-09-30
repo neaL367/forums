@@ -26,11 +26,11 @@ import {
 } from "@/components/ui/table";
 import { DataTablePagination } from "@features/administrator/shared/data-table/data-table-pagination";
 import { RepliesToolbar } from "@features/administrator/replies/replies-toolbar";
-import type { Replies } from "@/types/replies";
+import type { Reply } from "@/types/reply";
 
 interface DataTableProps {
-  data?: Replies[];
-  columns?: ColumnDef<Replies>[];
+  data?: Reply[];
+  columns?: ColumnDef<Reply>[];
 }
 
 export function RepliesDataTable({ columns = [], data = [] }: DataTableProps) {

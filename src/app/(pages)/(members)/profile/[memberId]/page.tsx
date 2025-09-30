@@ -5,7 +5,7 @@ import { getServerSession } from "@/lib/dal";
 import { getMemberProfileById } from "@/database/members";
 import { ProfileClient } from "@/features/profile/profile-client";
 
-import type { MemberProfile } from "@/types/members";
+import type { MemberProfile } from "@/types/member";
 import type { Metadata } from 'next'
 
 export async function generateMetadata(props: PageProps<"/profile/[memberId]">): Promise<Metadata> {

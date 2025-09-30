@@ -7,7 +7,7 @@ import { forgotUsernameSchema } from "@/zod/auth/forgot-username"
 import { forgotUsername } from "@/database/auth"
 
 import type { ForgotUsernameFormData, ForgotUsernameFormState } from "@/formdata/auth/forgot-username"
-import type { Members } from "@/types/members"
+import type { Member } from "@/types/member"
 
 
 export async function forgotUsernameAction(prevState: ForgotUsernameFormState, formData: FormData,): Promise<ForgotUsernameFormState> {
@@ -28,7 +28,7 @@ export async function forgotUsernameAction(prevState: ForgotUsernameFormState, f
   const { email } = validated.data
 
   try {
-    const member : Members = await forgotUsername(email)
+    const member : Member = await forgotUsername(email)
 
     if (!member) {
       return {

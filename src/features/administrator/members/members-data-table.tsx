@@ -27,11 +27,11 @@ import {
 
 import { DataTablePagination } from "@/features/administrator/shared/data-table/data-table-pagination";
 import { MembersToolbar } from "@/features/administrator/members/members-toolbar";
-import { Members } from "@/types/members";
+import { Member } from "@/types/member";
 
 interface DataTableProps {
-  data?: Members[];
-  columns?: ColumnDef<Members>[];
+  data?: Member[];
+  columns?: ColumnDef<Member>[];
 }
 
 export function MembersDataTable({ columns = [], data = [] }: DataTableProps) {

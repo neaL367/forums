@@ -1,6 +1,6 @@
-import { Replies } from "@/types/replies";
+import { Reply } from "@/types/reply";
 
-export type Topics = {
+export type Topic = {
   createdAt: Date;
   updatedAt: Date;
   
@@ -9,5 +9,5 @@ export type Topics = {
 
   forumId: string;
   forumTitle: string;
-  replies?: Replies[];
+  replies?: Reply[];
 }
