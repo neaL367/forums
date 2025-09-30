@@ -60,9 +60,9 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Generate Prisma Client
-        run: bunx prisma generate --schema ./prisma
-
+      - name: Run Database Migrations
+        run: bunx prisma migrate deploy --schema ./prisma/schema.prisma
+        
       - name: Install Vercel CLI
         run: bun add -g vercel@latest 
 
