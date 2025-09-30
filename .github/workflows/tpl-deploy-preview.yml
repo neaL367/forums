@@ -68,8 +68,6 @@ jobs:
 
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_BUILD_COMMAND: "prisma generate --schema ./prisma/schema.prisma && next build"
 
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
