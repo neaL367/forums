@@ -39,7 +39,6 @@ jobs:
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
       
     steps:
       - name: Checkout the source code
@@ -61,9 +60,6 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Run Database Migrations
-        run: bunx prisma migrate deploy --schema ./prisma/schema.prisma
-
       - name: Install Vercel CLI
         run: bun add -g vercel@latest 
 
@@ -72,6 +68,8 @@ jobs:
 
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_BUILD_COMMAND: "prisma generate --schema ./prisma/schema.prisma && next build"
 
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
