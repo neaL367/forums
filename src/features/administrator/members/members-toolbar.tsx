@@ -1,7 +1,4 @@
-"use client";
-
 import { X } from "lucide-react";
-import { Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +6,9 @@ import { Input } from "@/components/ui/input";
 import { DataTableFacetedFilter } from "@/features/administrator/shared/data-table/data-table-faceted-filter";
 import { DataTableViewOptions } from "@/features/administrator/shared/data-table/data-table-view-options";
 import { filters } from "@/features/administrator/members/data/data";
+
+import type { Member } from "@/types/member";
+import type { Table } from "@tanstack/react-table";
 
 export interface FilterOption {
   label: string;
@@ -20,7 +20,9 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export function MembersToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+export function MembersToolbar<TData extends Member>({
+  table,
+}: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (

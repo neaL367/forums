@@ -98,3 +98,9 @@ export const actions = [
     label: "Remove Member",
   },
 ];
+
+
+export const breadcrumbs = [
+  { label: "Administrator", href: "/administrator" },
+  { label: "Members" },
+];

@@ -37,7 +37,7 @@ interface MemberRowActionsProps {
   row: Row<Member>;
 }
 
-export function MemberRowActions({ row }: MemberRowActionsProps) {
+export function MembersRowActions({ row }: MemberRowActionsProps) {
   const member = row.original;
   const { data: session, refetch } = authClient.useSession();
   const currentUserId = session?.user?.id;

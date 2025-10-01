@@ -1,20 +1,15 @@
 import { Suspense } from "react";
 
-import { RepliesDataTable } from "@/features/administrator/replies/replies-data-table-client";
-import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
-import { repliesColumns } from "@/features/administrator/replies/data/columns";
 import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
+import { RepliesTableClient } from "@/features/administrator/replies/replies-data-table-client";
+import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
+import { breadcrumbs } from "@/features/administrator/replies/data/data";
 import { getAllReplies } from "@/database/replies";
 
 export default async function RepliesPage() {
   return (
     <>
-      <AdministratorHeader
-        breadcrumbs={[
-          { label: "Administrator", href: "/administrator" },
-          { label: "Replies" },
-        ]}
-      />
+      <AdministratorHeader breadcrumbs={breadcrumbs} />
       <div className="space-y-6">
         <h1 className="text-3xl font-bold text-foreground">
           Replies Management
@@ -33,7 +28,7 @@ export default async function RepliesPage() {
 }
 
 async function RepliesTable() {
-  const [replies] = await Promise.all([getAllReplies()]);
+  const replies = await getAllReplies();
 
-  return <RepliesDataTable data={replies} columns={repliesColumns} />;
+  return <RepliesTableClient replies={replies} />;
 }

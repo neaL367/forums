@@ -1,20 +1,23 @@
-"use client";
-
 import { X, Plus } from "lucide-react";
-import { Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import { DataTableViewOptions } from "@/features/administrator/shared/data-table/data-table-view-options";
 import { AddForumDialog } from "@/features/administrator/forums/dialogs/add-forum-dialog";
+
 import type { Forum } from "@/types/forum";
+import type { Table } from "@tanstack/react-table";
 
 interface ForumsToolbarProps<TData> {
   table: Table<TData>;
   allForums: Forum[];
 }
 
-export function ForumsToolbar<TData>({ table, allForums }: ForumsToolbarProps<TData>) {
+export function ForumsToolbar<TData extends Forum>({ 
+  table, 
+  allForums 
+}: ForumsToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (

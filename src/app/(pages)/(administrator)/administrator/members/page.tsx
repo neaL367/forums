@@ -3,10 +3,10 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { MembersDataTable } from "@/features/administrator/members/members-data-table-client";
-import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
-import { membersColumns } from "@/features/administrator/members/data/columns";
 import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
+import { MembersTableClient } from "@/features/administrator/members/members-data-table-client";
+import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
+import { breadcrumbs } from "@/features/administrator/members/data/data";
 
 import { getServerSession } from "@/lib/dal";
 import { auth } from "@/lib/auth";
@@ -20,12 +20,7 @@ export default async function MembersManagementPage() {
 
   return (
     <>
-      <AdministratorHeader
-        breadcrumbs={[
-          { label: "Administrator", href: "/administrator" },
-          { label: "Members" },
-        ]}
-      />
+      <AdministratorHeader breadcrumbs={breadcrumbs} />
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
@@ -73,5 +68,5 @@ async function MembersTable() {
   const response = await getCachedMembers(headerData);
   const members: Member[] = (response?.members ?? []) as Member[];
 
-  return <MembersDataTable data={members} columns={membersColumns} />;
+  return <MembersTableClient members={members} />;
 }

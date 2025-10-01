@@ -1,20 +1,42 @@
 "use client";
 
 import { format } from "date-fns";
+import dynamic from "next/dynamic";
 import { Badge } from "@/components/ui/badge";
 
-import { DataTableColumnHeader } from "@/features/administrator/shared/data-table/data-table-column-header";
-import { MemberRowActions } from "@/features/administrator/members/members-row-actions";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Member } from "@/types/member";
+
+const MembersColumnHeader = dynamic(
+  () =>
+    import("@/features/administrator/members/members-column-header").then(
+      (mod) => ({ default: mod.MembersColumnHeader })
+    ),
+  {
+    loading: () => <Skeleton className="h-8 w-24" />,
+    ssr: false,
+  }
+);
+
+const MembersRowActions = dynamic(
+  () =>
+    import("@/features/administrator/members/members-row-actions").then(
+      (mod) => ({ default: mod.MembersRowActions })
+    ),
+  {
+    loading: () => <Skeleton className="h-8 w-8 rounded" />,
+    ssr: false,
+  }
+);
 
 export const membersColumns: ColumnDef<Member>[] = [
   {
     accessorKey: "username",
     header: ({ column }) => (
       <div className="">
-        <DataTableColumnHeader column={column} title="Username" />
+        <MembersColumnHeader column={column} title="Username" />
       </div>
     ),
     cell: ({ row }) => {
@@ -31,7 +53,7 @@ export const membersColumns: ColumnDef<Member>[] = [
     accessorKey: "role",
     header: ({ column }) => (
       <div className="">
-        <DataTableColumnHeader column={column} title="Role" />
+        <MembersColumnHeader column={column} title="Role" />
       </div>
     ),
     cell: ({ row }) => {
@@ -61,7 +83,7 @@ export const membersColumns: ColumnDef<Member>[] = [
     accessorKey: "emailVerified",
     header: ({ column }) => (
       <div className="">
-        <DataTableColumnHeader column={column} title="Email Verified" />
+        <MembersColumnHeader column={column} title="Email Verified" />
       </div>
     ),
     cell: ({ row }) => {
@@ -86,7 +108,7 @@ export const membersColumns: ColumnDef<Member>[] = [
     accessorKey: "banned",
     header: ({ column }) => (
       <div className="">
-        <DataTableColumnHeader column={column} title="Ban Status" />
+        <MembersColumnHeader column={column} title="Ban Status" />
       </div>
     ),
     cell: ({ row }) => {
@@ -111,7 +133,7 @@ export const membersColumns: ColumnDef<Member>[] = [
     accessorKey: "banExpires",
     header: ({ column }) => (
       <div className="">
-        <DataTableColumnHeader column={column} title="Ban Expires" />
+        <MembersColumnHeader column={column} title="Ban Expires" />
       </div>
     ),
     cell: ({ row }) => {
@@ -130,7 +152,7 @@ export const membersColumns: ColumnDef<Member>[] = [
     accessorKey: "createdAt",
     header: ({ column }) => (
       <div className="">
-        <DataTableColumnHeader column={column} title="Created At" />
+        <MembersColumnHeader column={column} title="Created At" />
       </div>
     ),
     cell: ({ row }) => {
@@ -149,7 +171,7 @@ export const membersColumns: ColumnDef<Member>[] = [
     accessorKey: "updatedAt",
     header: ({ column }) => (
       <div className="">
-        <DataTableColumnHeader column={column} title="Updated At" />
+        <MembersColumnHeader column={column} title="Updated At" />
       </div>
     ),
     cell: ({ row }) => {
@@ -168,7 +190,7 @@ export const membersColumns: ColumnDef<Member>[] = [
     id: "actions",
     cell: ({ row }) => (
       <div className=" flex items-center justify-center">
-        <MemberRowActions row={row} />
+        <MembersRowActions row={row} />
       </div>
     ),
     header: () => (

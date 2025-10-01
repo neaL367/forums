@@ -16,3 +16,8 @@ export const filters = [
     options: forums,
   },
 ];
+
+export const breadcrumbs = [
+  { label: "Administrator", href: "/administrator" },
+  { label: "Topics" },
+];

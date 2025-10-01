@@ -1,20 +1,15 @@
 import { Suspense } from "react";
 
-import { ForumsDataTable } from "@/features/administrator/forums/forums-data-table-client";
-import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
-import { forumsColumns } from "@/features/administrator/forums/data/columns";
 import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
+import { ForumsTableClient } from "@/features/administrator/forums/forums-data-table-client";
+import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
+import { breadcrumbs } from "@/features/administrator/forums/data/data";
 import { getAllForums } from "@/database/forums";
 
 export default async function ForumsPage() {
   return (
     <>
-      <AdministratorHeader
-        breadcrumbs={[
-          { label: "Administrator", href: "/administrator" },
-          { label: "Forums" },
-        ]}
-      />
+      <AdministratorHeader breadcrumbs={breadcrumbs} />
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
@@ -33,7 +28,7 @@ export default async function ForumsPage() {
 }
 
 async function ForumsTable() {
-  const [forums] = await Promise.all([getAllForums()]);
+  const forums = await getAllForums()
 
-  return <ForumsDataTable data={forums} columns={forumsColumns} />;
+  return <ForumsTableClient forums={forums} />;
 }

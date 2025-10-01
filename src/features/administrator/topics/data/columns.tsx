@@ -1,20 +1,41 @@
 "use client";
 
 import { format } from "date-fns";
+import dynamic from "next/dynamic";
 import { MessageCircle, MessageSquare } from "lucide-react";
 
-import { DataTableColumnHeader } from "@features/administrator/shared/data-table/data-table-column-header";
-import { TopicsRowActions } from "@features/administrator/topics/topics-row-actions";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import type { Topic } from "@/types/topic";
 import type { ColumnDef } from "@tanstack/react-table";
 
+const TopicsColumnHeader = dynamic(
+  () =>
+    import("@/features/administrator/topics/topics-column-header").then(
+      (mod) => ({ default: mod.TopicsColumnHeader })
+    ),
+  {
+    loading: () => <Skeleton className="h-8 w-24" />,
+    ssr: false,
+  }
+);
+
+const TopicsRowActions = dynamic(
+  () =>
+    import("@/features/administrator/topics/topics-row-actions").then(
+      (mod) => ({ default: mod.TopicsRowActions })
+    ),
+  {
+    loading: () => <Skeleton className="h-8 w-8 rounded" />,
+    ssr: false,
+  }
+);
+
 export const topicsColumns: ColumnDef<Topic>[] = [
-  
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Topic" />
+      <TopicsColumnHeader column={column} title="Topic" />
     ),
     cell: ({ getValue }) => {
       return (
@@ -30,7 +51,7 @@ export const topicsColumns: ColumnDef<Topic>[] = [
   {
     accessorKey: "forumTitle",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Forum" />
+      <TopicsColumnHeader column={column} title="Forum" />
     ),
     cell: ({ getValue }) => (
       <div className="text-xs flex gap-2">
@@ -46,7 +67,7 @@ export const topicsColumns: ColumnDef<Topic>[] = [
   {
     id: "replies",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Replies" />
+      <TopicsColumnHeader column={column} title="Replies" />
     ),
     cell: ({ row }) => {
       const repliesCount = row.original.replies?.length || 0;
@@ -61,7 +82,7 @@ export const topicsColumns: ColumnDef<Topic>[] = [
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" />
+      <TopicsColumnHeader column={column} title="Created At" />
     ),
     cell: ({ getValue }) => {
       const date = getValue() as string;
@@ -71,7 +92,7 @@ export const topicsColumns: ColumnDef<Topic>[] = [
   {
     accessorKey: "updatedAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
+      <TopicsColumnHeader column={column} title="Updated At" />
     ),
     cell: ({ getValue }) => {
       const date = getValue() as string;
@@ -80,8 +101,16 @@ export const topicsColumns: ColumnDef<Topic>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <TopicsRowActions row={row} />,
-    header: () => <span>Actions</span>,
-    size: 100,
+    cell: ({ row }) => (
+      <div className=" flex items-center justify-center">
+        <TopicsRowActions row={row} />
+      </div>
+    ),
+    header: () => (
+      <div className=" flex items-center justify-center">
+        <span className="text-sm font-medium">Actions</span>
+      </div>
+    ),
+    size: 80,
   },
 ];

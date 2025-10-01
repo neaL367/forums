@@ -1,30 +1,50 @@
 "use client";
 
 import { format } from "date-fns";
+import dynamic from "next/dynamic";
 import { FileText } from "lucide-react";
 
-import { DataTableColumnHeader } from "@features/administrator/shared/data-table/data-table-column-header";
-import { RepliesRowActions } from "@features/administrator/replies/replies-row-actions";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import type { Reply } from "@/types/reply";
 import type { ColumnDef } from "@tanstack/react-table";
+
+const RepliesColumnHeader = dynamic(
+  () =>
+    import("@/features/administrator/replies/replies-column-header").then(
+      (mod) => ({ default: mod.RepliesColumnHeader })
+    ),
+  {
+    loading: () => <Skeleton className="h-8 w-24" />,
+    ssr: false,
+  }
+);
+
+const RepliesRowActions = dynamic(
+  () =>
+    import("@/features/administrator/replies/replies-row-actions").then(
+      (mod) => ({ default: mod.RepliesRowActions })
+    ),
+  {
+    loading: () => <Skeleton className="h-8 w-8 rounded" />,
+    ssr: false,
+  }
+);
 
 export const repliesColumns: ColumnDef<Reply>[] = [
   {
     accessorKey: "content",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Reply" />
+      <RepliesColumnHeader column={column} title="Reply" />
     ),
     cell: ({ getValue }) => (
-      <div className="text-sm w-[300px] truncate">
-        {getValue() as string}
-      </div>
+      <div className="text-sm w-[300px] truncate">{getValue() as string}</div>
     ),
   },
   {
     accessorKey: "topicTitle",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Topic" />
+      <RepliesColumnHeader column={column} title="Topic" />
     ),
     cell: ({ getValue }) => (
       <div className="text-xs flex gap-2">
@@ -40,7 +60,7 @@ export const repliesColumns: ColumnDef<Reply>[] = [
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" />
+      <RepliesColumnHeader column={column} title="Created At" />
     ),
     cell: ({ getValue }) => {
       const date = getValue() as string;
@@ -50,7 +70,7 @@ export const repliesColumns: ColumnDef<Reply>[] = [
   {
     accessorKey: "updatedAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
+      <RepliesColumnHeader column={column} title="Updated At" />
     ),
     cell: ({ getValue }) => {
       const date = getValue() as string;
@@ -59,8 +79,16 @@ export const repliesColumns: ColumnDef<Reply>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <RepliesRowActions row={row} />,
-    header: () => <span>Actions</span>,
-    size: 100,
+    cell: ({ row }) => (
+      <div className=" flex items-center justify-center">
+        <RepliesRowActions row={row} />
+      </div>
+    ),
+    header: () => (
+      <div className=" flex items-center justify-center">
+        <span className="text-sm font-medium">Actions</span>
+      </div>
+    ),
+    size: 80,
   },
 ];

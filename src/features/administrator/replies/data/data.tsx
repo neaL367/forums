@@ -12,3 +12,8 @@ export const filters = [
     options: topics,
   },
 ];
+
+export const breadcrumbs = [
+  { label: "Administrator", href: "/administrator" },
+  { label: "Replies" },
+];
