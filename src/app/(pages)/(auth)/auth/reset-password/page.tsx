@@ -11,7 +11,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { ResetPasswordForm } from "@/features/auth/reset-password";
+import { ResetPasswordFormClient } from "@/features/auth/reset-password-client";
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams();
@@ -41,7 +41,7 @@ function ResetPasswordContent() {
     );
   }
 
-  return <ResetPasswordForm token={token} />;
+  return <ResetPasswordFormClient token={token} />;
 }
 
 export default function ResetPasswordPage() {

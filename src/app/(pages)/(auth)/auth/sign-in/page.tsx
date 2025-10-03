@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { SignInForm } from "@/features/auth/sign-in";
+import { SignInFormClient } from "@/features/auth/sign-in-client";
 import { getServerSession } from "@/lib/dal";
 
 export default async function SignInPage() {
@@ -8,6 +8,6 @@ export default async function SignInPage() {
   if (session) {
     redirect("/");
   } else {
-    return <SignInForm />;
+    return <SignInFormClient />;
   }
 }

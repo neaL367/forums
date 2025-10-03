@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { SignUpForm } from "@/features/auth/sign-up";
+import { SignUpFormClient } from "@/features/auth/sign-up-client";
 import { getServerSession } from "@/lib/dal";
 
 export default async function SignUpPage() {
@@ -7,6 +7,6 @@ export default async function SignUpPage() {
   if (session) {
     redirect("/");
   } else {
-    return <SignUpForm />;
+    return <SignUpFormClient />;
   }
 }

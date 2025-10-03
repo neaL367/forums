@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { VerificationEmailForm } from "@/features/auth/verification-email";
+import { VerificationEmailFormClient } from "@/features/auth/verification-email-client";
 import { getServerSession } from "@/lib/dal";
 
 export default async function VerificationEmailPage() {
@@ -8,6 +8,6 @@ export default async function VerificationEmailPage() {
   if (session && session.user.emailVerified) {
     redirect("/");
   } else {
-    return <VerificationEmailForm />;
+    return <VerificationEmailFormClient />;
   }
 }

@@ -1,6 +1,5 @@
 import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
@@ -8,16 +7,10 @@ import { MembersTableClient } from "@/features/administrator/members/members-dat
 import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
 import { breadcrumbs } from "@/features/administrator/members/data/data";
 
-import { getServerSession } from "@/lib/dal";
 import { auth } from "@/lib/auth";
 import type { Member } from "@/types/member";
 
 export default async function MembersManagementPage() {
-  const session = await getServerSession();
-
-  if (!session) redirect("/");
-  if (session.user.role !== "ADMINISTRATOR") redirect("/");
-
   return (
     <>
       <AdministratorHeader breadcrumbs={breadcrumbs} />
