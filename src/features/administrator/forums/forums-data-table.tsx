@@ -1,24 +1,21 @@
 "use client";
 
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  Row,
-  SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
+  type ExpandedState,
 } from "@tanstack/react-table";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-
+import { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -27,9 +24,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Forum } from "@/types/forum";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DataTablePaginationProps } from "@features/administrator/shared/data-table/data-table-pagination";
+import type { Forum } from "@/types/forum";
+import type { DataTablePaginationProps } from "@features/administrator/shared/data-table/data-table-pagination";
+
+interface ForumsDataTableProps {
+  data?: Forum[];
+  columns?: ColumnDef<Forum>[];
+}
 
 const ForumsToolbar = dynamic(
   () =>
@@ -37,10 +39,8 @@ const ForumsToolbar = dynamic(
       (mod) => mod.ForumsToolbar
     ),
   {
-    loading: () => (
-      <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
-    ),
     ssr: false,
+    loading: () => <Skeleton className="h-8 w-full sm:w-[300px]" />,
   }
 );
 
@@ -50,143 +50,127 @@ const DataTablePagination = dynamic<DataTablePaginationProps<Forum>>(
       "@features/administrator/shared/data-table/data-table-pagination"
     ).then((mod) => mod.DataTablePagination),
   {
-    loading: () => (
-      <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
-    ),
     ssr: false,
+    loading: () => (
+      <div className="flex justify-end">
+        <Skeleton className="h-8 w-[300px]" />
+      </div>
+    ),
   }
 );
 
-interface ForumsDataTableProps {
-  data?: Forum[];
-  columns?: ColumnDef<Forum>[];
-}
-
 export function ForumsDataTable({
-  columns = [],
   data = [],
+  columns = [],
 }: ForumsDataTableProps) {
-  const [rowSelection, setRowSelection] = useState({});
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    forumCategory: false
+  });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [expanded, setExpanded] = useState({});
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+
+  const memoColumns = useMemo(() => columns, [columns]);
 
   const table = useReactTable({
     data,
-    columns,
-    state: {
-      sorting,
-      columnVisibility,
-      rowSelection,
-      columnFilters,
-      expanded,
-    },
-    enableRowSelection: true,
+    columns: memoColumns,
+    state: { sorting, columnVisibility, rowSelection, columnFilters, expanded },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onExpandedChange: setExpanded,
+    enableRowSelection: true,
     getSubRows: (row) => row.subForums,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
   useEffect(() => {
-    const searchValue = columnFilters.find((f) => f.id === "title")
-      ?.value as string;
+    const searchValue = columnFilters.find((f) => f.id === "title")?.value;
+    const facetValue = columnFilters.find(
+      (f) => f.id === "forumCategory"
+    )?.value;
 
-    if (searchValue && searchValue.length > 0) {
-      const newExpanded: Record<string, boolean> = {};
-      const searchLower = searchValue.toLowerCase();
-
-      const checkAndExpandRow = (row: Row<Forum>) => {
-        const forum = row.original;
-
-        // Check if any subforum matches
-        const hasMatchingSubforum = (
-          subForums: Forum[] | undefined
-        ): boolean => {
-          if (!subForums || subForums.length === 0) return false;
-
-          return subForums.some(
-            (sub) =>
-              sub.title.toLowerCase().includes(searchLower) ||
-              (sub.description?.toLowerCase().includes(searchLower) ?? false) ||
-              hasMatchingSubforum(sub.subForums)
-          );
-        };
-
-        if (hasMatchingSubforum(forum.subForums)) {
-          newExpanded[row.id] = true;
-
-          // expand all child rows recursively
-          const expandChildren = (parentRow: Row<Forum>) => {
-            const subRows = parentRow.subRows || [];
-            subRows.forEach((subRow) => {
-              newExpanded[subRow.id] = true;
-              expandChildren(subRow);
-            });
-          };
-          expandChildren(row);
-        }
-      };
-
-      table.getRowModel().rows.forEach(checkAndExpandRow);
-      setExpanded(newExpanded);
-    } else {
+    // Reset if no filters
+    if (!searchValue && !facetValue) {
       setExpanded({});
+      return;
     }
+
+    const newExpanded: Record<string, boolean> = {};
+
+    // Check for text search matches
+    const hasSearchMatch = (subs?: Forum[]): boolean => {
+      if (!searchValue || typeof searchValue !== "string") return false;
+      const searchLower = searchValue.toLowerCase();
+      return !!subs?.some(
+        (sub) =>
+          sub.title.toLowerCase().includes(searchLower) ||
+          sub.description?.toLowerCase().includes(searchLower) ||
+          hasSearchMatch(sub.subForums)
+      );
+    };
+
+    // Check for facet filter matches
+    const hasFacetMatch = (subs?: Forum[]): boolean => {
+      if (!facetValue || !Array.isArray(facetValue)) return false;
+      return !!subs?.some(
+        (sub) => facetValue.includes(sub.title) || hasFacetMatch(sub.subForums)
+      );
+    };
+
+    table.getRowModel().rows.forEach((row) => {
+      if (
+        hasSearchMatch(row.original.subForums) ||
+        hasFacetMatch(row.original.subForums)
+      ) {
+        newExpanded[row.id] = true;
+      }
+    });
+
+    setExpanded(newExpanded);
   }, [columnFilters, table]);
 
   return (
     <div className="space-y-4">
       <ForumsToolbar table={table} allForums={data} />
       <div className="overflow-hidden rounded-md border">
-        <Table>
+        <Table aria-label="Forums list">
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      className="px-6"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+            {table.getHeaderGroups().map((hg) => (
+              <TableRow key={hg.id}>
+                {hg.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className="px-6"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="group hover:bg-muted/50"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={
-                        cell.column.id === "expander" ? "pl-6" : "px-6"
-                      }
-                    >
+                    <TableCell key={cell.id} className="px-6">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

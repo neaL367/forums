@@ -3,8 +3,10 @@ import { X, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { DataTableViewOptions } from "@/features/administrator/shared/data-table/data-table-view-options";
-import { AddForumDialog } from "@/features/administrator/forums/dialogs/add-forum-dialog";
+import { DataTableViewOptions } from "@features/administrator/shared/data-table/data-table-view-options";
+import { DataTableFacetedFilter } from "@features/administrator/shared/data-table/data-table-faceted-filter";
+import { AddForumDialog } from "@features/administrator/forums/dialogs/add-forum-dialog";
+import { filters } from "@features/administrator/forums/data/data";
 
 import type { Forum } from "@/types/forum";
 import type { Table } from "@tanstack/react-table";
@@ -33,7 +35,7 @@ export function ForumsToolbar<TData extends Forum>({
           className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]"
         />
 
-        {/* {filters.map((filter) => {
+        {filters.map((filter) => {
           const column = table.getColumn(filter.columnId);
           return column ? (
             <DataTableFacetedFilter
@@ -43,7 +45,7 @@ export function ForumsToolbar<TData extends Forum>({
               options={filter.options}
             />
           ) : null;
-        })} */}
+        })}
 
         {/* Reset Filters */}
         {isFiltered && (

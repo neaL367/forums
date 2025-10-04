@@ -1,5 +1,6 @@
 import { Check, PlusCircle } from "lucide-react";
 import { Column } from "@tanstack/react-table";
+import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -34,16 +35,39 @@ export function DataTableFacetedFilter<TData, TValue>({
   title,
   options,
 }: DataTableFacetedFilterProps<TData, TValue>) {
+  const [open, setOpen] = useState(false);
   const facets = column?.getFacetedUniqueValues();
+  const filterValue = column?.getFilterValue();
+  
+  // Only treat as selected values if it's an array (from faceted filter)
   const selectedValues = new Set(
-    column?.getFilterValue() as (string | number | boolean)[]
+    Array.isArray(filterValue) ? filterValue : []
   );
 
+  const handleSelect = (optionValue: string | number | boolean) => {
+    const newSelectedValues = new Set(selectedValues);
+    
+    if (newSelectedValues.has(optionValue)) {
+      newSelectedValues.delete(optionValue);
+    } else {
+      newSelectedValues.add(optionValue);
+    }
+    
+    const filterValues = Array.from(newSelectedValues);
+    column?.setFilterValue(
+      filterValues.length ? filterValues : undefined
+    );
+  };
+
+  const handleClear = () => {
+    column?.setFilterValue(undefined);
+  };
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
-          <PlusCircle />
+          <PlusCircle className="mr-2 h-4 w-4" />
           {title}
           {selectedValues?.size > 0 && (
             <>
@@ -91,17 +115,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                 return (
                   <CommandItem
                     key={String(option.value)}
-                    onSelect={() => {
-                      if (isSelected) {
-                        selectedValues.delete(option.value);
-                      } else {
-                        selectedValues.add(option.value);
-                      }
-                      const filterValues = Array.from(selectedValues);
-                      column?.setFilterValue(
-                        filterValues.length ? filterValues : undefined
-                      );
-                    }}
+                    onSelect={() => handleSelect(option.value)}
                   >
                     <div
                       className={cn(
@@ -111,7 +125,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                           : "opacity-50 [&_svg]:invisible"
                       )}
                     >
-                      <Check />
+                      <Check className="h-4 w-4" />
                     </div>
                     <span>{option.label}</span>
                     {facets?.get(option.value) && (
@@ -128,7 +142,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
+                    onSelect={handleClear}
                     className="justify-center text-center"
                   >
                     Clear filters

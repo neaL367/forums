@@ -41,27 +41,6 @@ const formatDate = (dateString: string) => {
   }
 };
 
-const createHierarchicalFilter = (
-  searchValue: string,
-  forum: Forum
-): boolean => {
-  const search = searchValue.toLowerCase();
-
-  const matchesCurrent =
-    forum.title.toLowerCase().includes(search) ||
-    (forum.description?.toLowerCase().includes(search) ?? false);
-
-  if (matchesCurrent) return true;
-
-  // Early return if no subforums
-  if (!forum.subForums?.length) return false;
-
-  // Recursive subforum matching
-  return forum.subForums.some((sub) =>
-    createHierarchicalFilter(searchValue, sub)
-  );
-};
-
 export const forumsColumns: ColumnDef<Forum>[] = [
   {
     accessorKey: "title",
@@ -123,7 +102,7 @@ export const forumsColumns: ColumnDef<Forum>[] = [
               </span>
             </div>
             {forum.description && (
-              <p className="text-muted-foreground text-sm max-w-[600px] truncate">
+              <p className="text-muted-foreground text-sm max-w-[350px] text-wrap">
                 {forum.description}
               </p>
             )}
@@ -131,11 +110,44 @@ export const forumsColumns: ColumnDef<Forum>[] = [
         </div>
       );
     },
+    // Only handle text search (string values)
     filterFn: (row, _columnId, value) => {
-      return createHierarchicalFilter(value, row.original);
+      if (typeof value !== "string") return true;
+      const search = value.toLowerCase();
+      const forum = row.original;
+
+      const matchesSearch = (f: Forum): boolean => {
+        if (f.title.toLowerCase().includes(search)) return true;
+        if (f.description?.toLowerCase().includes(search)) return true;
+        if (f.subForums?.some((sub) => matchesSearch(sub))) return true;
+        return false;
+      };
+
+      return matchesSearch(forum);
     },
     enableHiding: false,
     enableSorting: true,
+  },
+  {
+    id: "forumCategory",
+    accessorFn: (row) => row.title,
+    // Only handle faceted filter (array values)
+    filterFn: (row, _columnId, value) => {
+      if (!Array.isArray(value) || value.length === 0) return true;
+      const forum = row.original;
+
+      const matchesFacet = (f: Forum): boolean => {
+        if (value.includes(f.title)) return true;
+        if (f.subForums?.some((sub) => matchesFacet(sub))) return true;
+        return false;
+      };
+
+      return matchesFacet(forum);
+    },
+    enableSorting: false,
+    enableHiding: false,
+    // Hide this column from the table display
+    enableColumnFilter: true,
   },
   {
     accessorKey: "topicCount",
