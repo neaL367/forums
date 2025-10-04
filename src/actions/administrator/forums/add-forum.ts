@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidateTag } from "next/cache";
 import { getServerSession } from "@/lib/dal"
 import { AddForumSchema } from "@/zod/administrator/add-forum"
 import { getForumDepth, insertForum } from "@/database/forums";
@@ -58,6 +59,8 @@ export async function addForumAction(prevState: AddForumFormState, formData: For
       description: validated.data.description,
       parentForumId,
     })
+
+    revalidateTag("admin-mgt-forums")
 
 
     return {

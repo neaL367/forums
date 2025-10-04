@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
 
 import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
@@ -28,7 +29,13 @@ export default async function ForumsPage() {
 }
 
 async function ForumsTable() {
-  const forums = await getAllForums()
+  const getCachedAllForums = unstable_cache(async () => getAllForums(), 
+    ["id"], {
+    tags: ["admin-mgt-forums"],
+    revalidate: 300,
+  });
+
+  const forums = await getCachedAllForums();
 
   return <ForumsTableClient forums={forums} />;
 }

@@ -24,6 +24,10 @@ export const forums = [
     value: "Rockstar",
     label: "Rockstar",
   },
+  {
+    value: "Community",
+    label: "Community",
+  },
 ];
 
 export const filters = [
