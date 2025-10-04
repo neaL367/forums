@@ -16,7 +16,7 @@ const initialState: ChangeUsernameFormState = {
   message: "",
 };
 
-export default function UsernameSettingsForm() {
+export function UsernameSettingsForm() {
   const router = useRouter();
   const { data: session, refetch } = authClient.useSession();
   

@@ -16,7 +16,7 @@ const initialState: ChangePasswordFormState = {
   message: "",
 };
 
-export default function PasswordSettingsForm() {
+export function PasswordSettingsForm() {
   const router = useRouter();
   const { data: session, refetch } = authClient.useSession();
   

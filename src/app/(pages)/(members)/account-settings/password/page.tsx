@@ -1,5 +1,5 @@
-import PasswordSettingsForm from "@/features/account-settings/password";
+import { PasswordSettingsFormClient } from "@/features/account-settings/password-client";
 
 export default function PasswordSettingsPage() {
-  return <PasswordSettingsForm />;
+  return <PasswordSettingsFormClient />;
 }

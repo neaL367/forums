@@ -19,7 +19,7 @@ const initialState: ChangeEmailFormState = {
   message: "",
 };
 
-export default function EmailSettingsForm() {
+export function EmailSettingsForm() {
   const router = useRouter();
   const { data: session, refetch } = authClient.useSession();
   

@@ -1,5 +1,5 @@
-import EmailSettingsForm from "@/features/account-settings/email";
+import { EmailSettingsFormClient } from "@/features/account-settings/email-client";
 
 export default function EmailSettingsPage() {
-  return <EmailSettingsForm />;
+  return <EmailSettingsFormClient />;
 }

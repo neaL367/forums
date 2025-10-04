@@ -1,5 +1,5 @@
-import UsernameSettingsForm from "@/features/account-settings/username";
+import { UsernameSettingsFormClient } from "@/features/account-settings/username-client";
 
 export default function UsernameSettingsPage() {
-  return <UsernameSettingsForm />;
+  return <UsernameSettingsFormClient />;
 }
