@@ -41,7 +41,7 @@ const formatDate = (dateString: string) => {
   }
 };
 
-export const forumsColumns: ColumnDef<Forum>[] = [
+export const forumsColumns = (availableParentForums: Forum[]): ColumnDef<Forum>[] => [
   {
     accessorKey: "title",
     header: ({ column }) => (
@@ -198,7 +198,7 @@ export const forumsColumns: ColumnDef<Forum>[] = [
     id: "actions",
     cell: ({ row }) => (
       <div className=" flex items-center justify-center">
-        <ForumsRowActions row={row} />
+        <ForumsRowActions row={row} availableParentForums={availableParentForums} />
       </div>
     ),
     header: () => (

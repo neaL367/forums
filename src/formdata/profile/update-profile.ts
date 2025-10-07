@@ -1,3 +1,5 @@
+import { FormState } from "@/formdata/formstate";
+
 export type UpdateProfileFormData = {
     image?: string
     bio?: string
@@ -5,12 +7,4 @@ export type UpdateProfileFormData = {
     website?: string
 }
 
-export type UpdateProfileFormState = {
-    success?: boolean
-    message?: string
-    errors?: {
-        [K in keyof UpdateProfileFormData]?: string[]
-    }
-    inputs?: UpdateProfileFormData
-    resetKey?: string
-}
+export type UpdateProfileFormState = FormState<UpdateProfileFormData>

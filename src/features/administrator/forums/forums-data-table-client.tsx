@@ -19,5 +19,6 @@ const ForumsDataTable = dynamic(
 );
 
 export function ForumsTableClient({ forums }: { forums: Forum[] }) {
-  return <ForumsDataTable data={forums} columns={forumsColumns} />;
+  const columns = forumsColumns(forums);
+  return <ForumsDataTable data={forums} columns={columns} />;
 }

@@ -1,12 +1,7 @@
+import { FormState } from "@/formdata/formstate";
+
 export type ChangeUsernameFormData = {
   displayUsername: string
 }
 
-export type ChangeUsernameFormState = {
-  success?: boolean
-  message?: string
-  errors?: {
-     [K in keyof ChangeUsernameFormData]?: string[]
-  }
-  inputs?: Partial<ChangeUsernameFormData>
-}
+export type  ChangeUsernameFormState = FormState< ChangeUsernameFormData>

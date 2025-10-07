@@ -10,6 +10,38 @@ import { breadcrumbs } from "@/features/administrator/members/data/data";
 import { auth } from "@/lib/auth";
 import type { Member } from "@/types/member";
 
+const getCachedMembers = unstable_cache(
+  async (headerData: Headers) => {
+    try {
+      const res = await auth.api.listUsers({
+        query: {},
+        headers: headerData,
+      });
+
+      return {
+        success: true,
+        members: res.users,
+        total: res.total,
+      };
+    } catch {
+      return {
+        success: false,
+        message: "An unexpected error occurred while fetching members.",
+      };
+    }
+  },
+  ["id"],
+  { tags: ["admin-mgt-members"], revalidate: 3600 }
+);
+
+async function MembersTable() {
+  const headerData = await headers();
+  const response = await getCachedMembers(headerData);
+  const members: Member[] = (response?.members ?? []) as Member[];
+
+  return <MembersTableClient members={members} />;
+}
+
 export default async function MembersManagementPage() {
   return (
     <>
@@ -30,36 +62,4 @@ export default async function MembersManagementPage() {
       </div>
     </>
   );
-}
-
-async function MembersTable() {
-  const getCachedMembers = unstable_cache(
-    async (headerData: Headers) => {
-      try {
-        const res = await auth.api.listUsers({
-          query: {},
-          headers: headerData,
-        });
-
-        return {
-          success: true,
-          members: res.users,
-          total: res.total,
-        };
-      } catch {
-        return {
-          success: false,
-          message: "An unexpected error occurred while fetching members.",
-        };
-      }
-    },
-    ["id"],
-    { tags: ["admin-mgt-members"], revalidate: 3600 }
-  );
-
-  const headerData = await headers();
-  const response = await getCachedMembers(headerData);
-  const members: Member[] = (response?.members ?? []) as Member[];
-
-  return <MembersTableClient members={members} />;
 }

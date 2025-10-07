@@ -96,10 +96,10 @@ export async function insertForum(data: {
 }
 
 export async function updateForum(data: {
-  id: number
-  title: string
-  description: string
-  parentForumId: number | null
+  id: string
+  title?: string
+  description?: string
+  parentForumId?: string | null
 }): Promise<Forum> {
   try {
     const result = await sql`

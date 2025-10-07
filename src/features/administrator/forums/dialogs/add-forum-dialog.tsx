@@ -3,8 +3,9 @@
 import type React from "react";
 
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useActionState } from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 import {
   Dialog,
@@ -15,18 +16,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 import { addForumAction } from "@/actions/administrator/forums/add-forum";
 import type { AddForumFormState } from "@/formdata/administrator/forums/add-forum";
@@ -46,7 +54,9 @@ export function AddForumDialog({
   children,
   availableParentForums,
 }: AddForumDialogProps) {
-  const [open, setOpen] = useState(false);
+  const [open, onOpenChange] = useState(false);
+  const [comboboxOpen, setComboboxOpen] = useState(false);
+  const [selectedParentId, setSelectedParentId] = useState<string>("none");
 
   const [state, formAction, isPending] = useActionState(
     addForumAction,
@@ -68,19 +78,38 @@ export function AddForumDialog({
     return result;
   };
 
-  const flatForums = flattenForums(availableParentForums);
+  const flatForums = useMemo(
+    () => flattenForums(availableParentForums),
+    [availableParentForums]
+  );
+
+  const eligibleForums = useMemo(
+    () => flatForums.filter((forum) => forum.depth < 2),
+    [flatForums]
+  );
 
   useEffect(() => {
     if (state.success) {
       toast.success(state.message ?? "Forum added successfully");
-      setOpen(false);
+      onOpenChange(false);
+      setSelectedParentId("none");
     } else if (state.message && !state.success) {
       toast.error(state.message);
     }
   }, [state.success, state.message]);
 
+  useEffect(() => {
+    if (!state.success && state.inputs?.parentForumId) {
+      setSelectedParentId(state.inputs.parentForumId);
+    }
+  }, [state.inputs?.parentForumId, state.success]);
+
+  const selectedForum = eligibleForums.find(
+    (forum) => forum.id === selectedParentId
+  );
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -122,39 +151,98 @@ export function AddForumDialog({
             )}
           </div>
 
-          {/* Parent Forum */}
+          {/* Parent Forum - Searchable Combobox */}
           <div className="grid gap-2">
             <Label htmlFor="parentForumId">Parent Forum</Label>
-            <Select
+            <input
+              type="hidden"
               name="parentForumId"
-              defaultValue={
-                !state.success
-                  ? (state.inputs?.parentForumId ?? "none")
-                  : "none"
-              }
-            >
-              <SelectTrigger id="parentForumId">
-                <SelectValue placeholder="Select parent forum (optional)" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">None (Top-level forum)</SelectItem>
-                {flatForums
-                  .filter((forum) => forum.depth < 2)
-                  .map((forum) => (
-                    <SelectItem key={forum.id} value={forum.id}>
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant="outline"
-                          className="text-xs px-1 py-0 h-4"
+              value={selectedParentId}
+            />
+            <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={comboboxOpen}
+                  className="w-full justify-between"
+                  type="button"
+                  disabled={isPending}
+                >
+                  {selectedParentId === "none" ? (
+                    "None (Top-level forum)"
+                  ) : selectedForum ? (
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className="text-xs px-1 py-0 h-4"
+                      >
+                        L{selectedForum.depth}
+                      </Badge>
+                      {selectedForum.title}
+                    </div>
+                  ) : (
+                    "Select parent forum..."
+                  )}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                <Command>
+                  <CommandInput placeholder="Search forums..." />
+                  <CommandList>
+                    <CommandEmpty>No forum found.</CommandEmpty>
+                    <CommandGroup>
+                      <CommandItem
+                        value="none-top-level"
+                        onSelect={() => {
+                          setSelectedParentId("none");
+                          setComboboxOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            selectedParentId === "none"
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        None (Top-level forum)
+                      </CommandItem>
+                      {eligibleForums.map((forum) => (
+                        <CommandItem
+                          key={forum.id}
+                          value={`${forum.title}-${forum.id}`}
+                          onSelect={() => {
+                            setSelectedParentId(forum.id);
+                            setComboboxOpen(false);
+                          }}
                         >
-                          L{forum.depth}
-                        </Badge>
-                        {forum.title}
-                      </div>
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              selectedParentId === forum.id
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant="outline"
+                              className="text-xs px-1 py-0 h-4"
+                            >
+                              L{forum.depth}
+                            </Badge>
+                            <span className="truncate">{forum.title}</span>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
             {state.errors?.parentForumId && (
               <p className="text-sm text-red-600">
                 {state.errors.parentForumId[0]}
@@ -169,7 +257,7 @@ export function AddForumDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() => setOpen(false)}
+              onClick={() => onOpenChange(false)}
               disabled={isPending}
             >
               Cancel

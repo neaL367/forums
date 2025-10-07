@@ -7,6 +7,20 @@ import { AdministratorHeader } from "@/features/administrator/shared/admnistrato
 import { breadcrumbs } from "@/features/administrator/forums/data/data";
 import { getAllForums } from "@/database/forums";
 
+const getCachedAllForums = unstable_cache(
+  async () => getAllForums(),
+  ["forums"],
+  {
+    tags: ["admin-mgt-forums"],
+    revalidate: 300,
+  }
+);
+
+async function ForumsTable() {
+  const forums = await getCachedAllForums();
+  return <ForumsTableClient forums={forums} />;
+}
+
 export default async function ForumsPage() {
   return (
     <>
@@ -16,8 +30,10 @@ export default async function ForumsPage() {
           <h1 className="text-3xl font-bold text-foreground">
             Forums Management
           </h1>
-          Oversee and manage member accounts, including roles, permissions and
-          usernames.
+          <p className="text-muted-foreground">
+            Manage discussion forums, organize categories, and edit forum
+            hierarchies.
+          </p>
         </div>
 
         <Suspense fallback={<DataTableSkeleton />}>
@@ -26,16 +42,4 @@ export default async function ForumsPage() {
       </div>
     </>
   );
-}
-
-async function ForumsTable() {
-  const getCachedAllForums = unstable_cache(async () => getAllForums(), 
-    ["id"], {
-    tags: ["admin-mgt-forums"],
-    revalidate: 300,
-  });
-
-  const forums = await getCachedAllForums();
-
-  return <ForumsTableClient forums={forums} />;
 }

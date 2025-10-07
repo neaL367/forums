@@ -1,3 +1,4 @@
+import { FormState } from "@/formdata/formstate";
 
 export type ResetPasswordFormData = {
   password: string
@@ -5,12 +6,4 @@ export type ResetPasswordFormData = {
   token: string
 }
 
-
-export type ResetPasswordFormState = {
-  errors?: {
-    [K in keyof ResetPasswordFormData]?: string[]
-  }
-  inputs?: Partial<ResetPasswordFormData>
-  message?: string
-  success?: boolean
-}
+export type ResetPasswordFormState = FormState<ResetPasswordFormData>
