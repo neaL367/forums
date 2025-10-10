@@ -21,7 +21,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Member, Roles } from "@/types/member";
 import { authClient } from "@/lib/auth-client";
 
 import { actions } from "@/features/administrator/members/data/data";
@@ -32,6 +31,7 @@ import { SetPasswordDialog } from "@/features/administrator/members/dialogs/set-
 import { EditMemberDialog } from "@/features/administrator/members/dialogs/edit-member-dialog";
 import { SessionManagementDialog } from "@/features/administrator/members/dialogs/sessions-manage-dialog";
 import { ConfirmationDialogs } from "@/features/administrator/members/dialogs/confirmation-alert-dialog";
+import type { Member, Roles } from "@/types/member";
 
 interface MemberRowActionsProps {
   row: Row<Member>;

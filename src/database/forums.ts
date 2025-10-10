@@ -130,7 +130,7 @@ export async function updateForum(data: {
   }
 }
 
-export async function deleteForum(id: number): Promise<void> {
+export async function deleteForum(id: string): Promise<void> {
   try {
     const result = await sql`
       DELETE FROM public.forum

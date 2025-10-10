@@ -16,12 +16,13 @@ interface ForumsToolbarProps<TData> {
   allForums: Forum[];
 }
 
+
 export function ForumsToolbar<TData extends Forum>({ 
   table, 
   allForums 
 }: ForumsToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-
+  
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 w-full">
       <div className="flex flex-1 flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full">

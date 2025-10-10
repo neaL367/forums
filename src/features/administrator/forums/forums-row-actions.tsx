@@ -19,6 +19,7 @@ import type { Forum } from "@/types/forum";
 import { Dialog } from "@/components/ui/dialog";
 
 import { EditForumDialog } from "@/features/administrator/forums/dialogs/edit-forum-dialog";
+import { DeleteForumDialog } from "./dialogs/delete-forum-dialog";
 
 // import { DeleteForumDialog } from "@/features/administrator/forums/dialogs/delete-forum-dialog";
 
@@ -66,16 +67,16 @@ export function ForumsRowActions({
             }}
           ></EditForumDialog>
         );
-      // case "deleteForum":
-      //   return (
-      //     <DeleteForumDialog
-      //       forum={forum}
-      //       open={true}
-      //       onOpenChange={(open) => {
-      //         if (!open) setDialogMenu("none");
-      //       }}
-      //     />
-      //   );
+      case "deleteForum":
+        return (
+          <DeleteForumDialog
+            forum={forum}
+            open={true}
+            onOpenChange={(open) => {
+              if (!open) setDialogMenu("none");
+            }}
+          />
+        );
       default:
         return null;
     }

@@ -15,11 +15,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { Member } from "@/types/member";
 import { impersonateMemberAction } from "@/actions/administrator/members/impersonate";
 import { unbanMemberAction } from "@/actions/administrator/members/ban";
 import { removeMemberAction } from "@/actions/administrator/members/member";
 import { revokeAllSessionsMemberAction } from "@/actions/administrator/members/revoke";
+import type { Member } from "@/types/member";
 
 interface ConfirmationDialogsProps {
   member: Member;

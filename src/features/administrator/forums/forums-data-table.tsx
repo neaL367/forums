@@ -65,7 +65,7 @@ export function ForumsDataTable({
 }: ForumsDataTableProps) {
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    forumCategory: false
+    forumCategory: false,
   });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -91,6 +91,21 @@ export function ForumsDataTable({
     getSortedRowModel: getSortedRowModel(),
   });
 
+    const hasSearchMatch = useMemo(() => {
+    const searchValue = columnFilters.find((f) => f.id === "title")?.value;
+    if (!searchValue || typeof searchValue !== "string") return () => false;
+
+    const searchLower = searchValue.toLowerCase();
+    return function checkMatch(subs?: Forum[]): boolean {
+      return !!subs?.some(
+        (sub) =>
+          sub.title.toLowerCase().includes(searchLower) ||
+          sub.description?.toLowerCase().includes(searchLower) ||
+          checkMatch(sub.subForums)
+      );
+    };
+  }, [columnFilters]);
+
   useEffect(() => {
     const searchValue = columnFilters.find((f) => f.id === "title")?.value;
     const facetValue = columnFilters.find(
@@ -104,18 +119,6 @@ export function ForumsDataTable({
     }
 
     const newExpanded: Record<string, boolean> = {};
-
-    // Check for text search matches
-    const hasSearchMatch = (subs?: Forum[]): boolean => {
-      if (!searchValue || typeof searchValue !== "string") return false;
-      const searchLower = searchValue.toLowerCase();
-      return !!subs?.some(
-        (sub) =>
-          sub.title.toLowerCase().includes(searchLower) ||
-          sub.description?.toLowerCase().includes(searchLower) ||
-          hasSearchMatch(sub.subForums)
-      );
-    };
 
     // Check for facet filter matches
     const hasFacetMatch = (subs?: Forum[]): boolean => {
@@ -135,7 +138,8 @@ export function ForumsDataTable({
     });
 
     setExpanded(newExpanded);
-  }, [columnFilters, table]);
+  }, [columnFilters, hasSearchMatch, table]);
+
 
   return (
     <div className="space-y-4">
