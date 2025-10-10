@@ -2,7 +2,7 @@ import { DataTableColumnHeader } from "@features/administrator/shared/data-table
 import type { Member } from "@/types/member";
 import type { Column } from "@tanstack/react-table";
 
-interface MembersColumnHeaderProps {
+type MembersColumnHeaderProps = {
   column: Column<Member>;
   title: string;
 }

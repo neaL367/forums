@@ -5,25 +5,48 @@ import { Input } from "@/components/ui/input";
 
 import { DataTableFacetedFilter } from "@/features/administrator/shared/data-table/data-table-faceted-filter";
 import { DataTableViewOptions } from "@/features/administrator/shared/data-table/data-table-view-options";
-import { filters } from "@/features/administrator/members/data/data";
 
 import type { Member } from "@/types/member";
 import type { Table } from "@tanstack/react-table";
 
-export interface FilterOption {
-  label: string;
-  value: string | number | boolean;
-  icon?: React.ComponentType<{ className?: string }>;
-}
-
-interface DataTableToolbarProps<TData> {
+type DataTableToolbarProps<TData> = {
   table: Table<TData>;
-}
+  members: Member[];
+};
 
 export function MembersToolbar<TData extends Member>({
   table,
+  members,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+
+  const roleOptions = Array.from(new Set(members.map((m) => m.role))).map(
+    (role) => ({ value: role, label: role })
+  );
+
+  const emailVerifiedOptions = Array.from(
+    new Set(members.map((m) => m.emailVerified))
+  ).map((value) => ({
+    value,
+    label: value ? "Verified" : "Not Verified",
+  }));
+
+  const bannedOptions = Array.from(new Set(members.map((m) => m.banned))).map(
+    (value) => ({
+      value,
+      label: value ? "Banned" : "Not Banned",
+    })
+  );
+
+  const filters = [
+    { columnId: "role", title: "Role", options: roleOptions },
+    {
+      columnId: "emailVerified",
+      title: "Email Verified",
+      options: emailVerifiedOptions,
+    },
+    { columnId: "banned", title: "Ban", options: bannedOptions },
+  ];
 
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 lg:gap-0 w-full">

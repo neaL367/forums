@@ -6,23 +6,30 @@ import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@features/administrator/shared/data-table/data-table-view-options";
 import { DataTableFacetedFilter } from "@features/administrator/shared/data-table/data-table-faceted-filter";
 import { AddForumDialog } from "@features/administrator/forums/dialogs/add-forum-dialog";
-import { filters } from "@features/administrator/forums/data/data";
 
 import type { Forum } from "@/types/forum";
 import type { Table } from "@tanstack/react-table";
 
-interface ForumsToolbarProps<TData> {
+type ForumsToolbarProps<TData> = {
   table: Table<TData>;
-  allForums: Forum[];
-}
+  forums: Forum[];
+};
 
-
-export function ForumsToolbar<TData extends Forum>({ 
-  table, 
-  allForums 
+export function ForumsToolbar<TData extends Forum>({
+  table,
+  forums,
 }: ForumsToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  
+
+  const forumTitleOptions = forums.map((forum) => ({
+    value: forum.title,
+    label: forum.title,
+  }));
+
+  const filters = [
+    { columnId: "forumCategory", title: "Forum", options: forumTitleOptions },
+  ];
+
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 w-full">
       <div className="flex flex-1 flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full">
@@ -63,7 +70,7 @@ export function ForumsToolbar<TData extends Forum>({
 
       <div className="flex flex-wrap gap-2">
         <DataTableViewOptions table={table} />
-        <AddForumDialog availableParentForums={allForums}>
+        <AddForumDialog availableParentForums={forums}>
           <Button variant="outline" size="sm">
             <Plus className="mr-2 h-4 w-4" />
             Add Forum

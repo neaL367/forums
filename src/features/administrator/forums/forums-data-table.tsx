@@ -143,7 +143,7 @@ export function ForumsDataTable({
 
   return (
     <div className="space-y-4">
-      <ForumsToolbar table={table} allForums={data} />
+      <ForumsToolbar table={table} forums={data} />
       <div className="overflow-hidden rounded-md border">
         <Table aria-label="Forums list">
           <TableHeader>

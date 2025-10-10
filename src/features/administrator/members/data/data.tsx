@@ -25,46 +25,6 @@ export const roles = [
   },
 ];
 
-export const emailVerification = [
-  {
-    value: true,
-    label: "Verified",
-  },
-  {
-    value: false,
-    label: "Not Verified",
-  },
-];
-
-export const ban = [
-  {
-    value: true,
-    label: "Banned",
-  },
-  {
-    value: false,
-    label: "Not Banned",
-  },
-];
-
-export const filters = [
-  {
-    columnId: "role",
-    title: "Role",
-    options: roles,
-  },
-  {
-    columnId: "emailVerified",
-    title: "Email Verified",
-    options: emailVerification,
-  },
-  {
-    columnId: "banned",
-    title: "Ban",
-    options: ban,
-  },
-];
-
 export const actions = [
   {
     label: "View Profile",
@@ -98,7 +58,6 @@ export const actions = [
     label: "Remove Member",
   },
 ];
-
 
 export const breadcrumbs = [
   { label: "Administrator", href: "/administrator" },

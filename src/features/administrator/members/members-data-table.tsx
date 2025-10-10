@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import type {  DataTablePaginationProps } from "@/features/administrator/shared/data-table/data-table-pagination";
+import type { DataTablePaginationProps } from "@/features/administrator/shared/data-table/data-table-pagination";
 import type { Member } from "@/types/member";
 
 const MembersToolbar = dynamic(
@@ -56,12 +56,15 @@ const DataTablePagination = dynamic<DataTablePaginationProps<Member>>(
   }
 );
 
-interface DataTableProps {
+type DataTableProps = {
   data?: Member[];
   columns?: ColumnDef<Member>[];
 }
 
-export function MembersDataTable({ columns = [], data = [] }: DataTableProps) {
+export function MembersDataTable({
+  columns = [],
+  data = [],
+}: DataTableProps) {
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -92,14 +95,18 @@ export function MembersDataTable({ columns = [], data = [] }: DataTableProps) {
 
   return (
     <div className="space-y-4">
-      <MembersToolbar table={table} />
+      <MembersToolbar table={table} members={data} />
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} colSpan={header.colSpan} className="px-6">
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className="px-6"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
