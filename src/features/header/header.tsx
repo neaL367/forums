@@ -24,7 +24,7 @@ export async function Header() {
           <Search />
         </Suspense>
 
-        <MemberMenu member={member} session={session} />
+        <MemberMenu member={member} session={session?.session} />
       </div>
     </header>
   );

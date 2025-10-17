@@ -23,9 +23,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Member } from "@/types/member";
-import { listUserSessionsAction, revokeMemberSessionAction } from "@/actions/administrator/members/revoke";
-
+import {
+  listUserSessionsAction,
+  revokeMemberSessionAction,
+} from "@/actions/administrator/members/revoke";
+import type { Member } from "@/types/member";
+import type { Session } from "@/lib/auth";
 
 interface SessionManagementDialogProps {
   member: Member;
@@ -33,38 +36,31 @@ interface SessionManagementDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-interface UserSession {
-  id: string;
-  sessionToken: string;
-  createdAt: Date;
-  expires: Date;
-  userAgent?: string;
-  ipAddress?: string;
-}
-
 export function SessionManagementDialog({
   member,
   open,
   onOpenChange,
 }: SessionManagementDialogProps) {
-  const [sessions, setSessions] = useState<UserSession[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(false);
   const [revoking, setRevoking] = useState<string | null>(null);
-
 
   const loadSessions = useCallback(async () => {
     setLoading(true);
     try {
       const result = await listUserSessionsAction(member.id);
       if (result.success && result.sessions) {
-        setSessions(result.sessions.map(s => ({
-          id: s.id,
-          sessionToken: s.token,
-          createdAt: s.createdAt,
-          expires: s.expiresAt,
-          userAgent: s.userAgent || undefined,
-          ipAddress: s.ipAddress || undefined
-        })));
+        setSessions(
+          result.sessions.map((s) => ({
+            ...s,
+            id: s.id,
+            sessionToken: s.token,
+            createdAt: s.createdAt,
+            expiresAt: s.expiresAt,
+            userAgent: s.userAgent,
+            ipAddress: s.ipAddress,
+          })),
+        );
       }
     } catch {
       toast.error("Failed to load sessions");
@@ -72,7 +68,7 @@ export function SessionManagementDialog({
       setLoading(false);
     }
   }, [member.id]);
-  
+
   useEffect(() => {
     if (open) {
       loadSessions();
@@ -85,7 +81,7 @@ export function SessionManagementDialog({
       await revokeMemberSessionAction(sessionToken);
       toast.success("Session revoked successfully");
       // Remove the session from the list
-      setSessions(sessions.filter((s) => s.sessionToken !== sessionToken));
+      setSessions(sessions.filter((s) => s.token !== sessionToken));
     } catch {
       toast.error("Failed to revoke session");
     } finally {
@@ -169,9 +165,9 @@ export function SessionManagementDialog({
                     <TableRow key={session.id}>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          {getDeviceIcon(session.userAgent)}
+                          {getDeviceIcon(session.userAgent ?? "Unknown")}
                           <span className="text-sm">
-                            {getDeviceType(session.userAgent)}
+                            {getDeviceType(session.userAgent ?? "Unknown")}
                           </span>
                         </div>
                       </TableCell>
@@ -181,24 +177,24 @@ export function SessionManagementDialog({
                       <TableCell className="text-sm">
                         {format(
                           new Date(session.createdAt),
-                          "MMM dd, yyyy HH:mm"
+                          "MMM dd, yyyy HH:mm",
                         )}
                       </TableCell>
                       <TableCell className="text-sm">
                         {format(
-                          new Date(session.expires),
-                          "MMM dd, yyyy HH:mm"
+                          new Date(session.expiresAt),
+                          "MMM dd, yyyy HH:mm",
                         )}
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant={
-                            isSessionExpired(session.expires)
+                            isSessionExpired(session.expiresAt)
                               ? "secondary"
                               : "default"
                           }
                         >
-                          {isSessionExpired(session.expires)
+                          {isSessionExpired(session.expiresAt)
                             ? "Expired"
                             : "Active"}
                         </Badge>
@@ -207,15 +203,13 @@ export function SessionManagementDialog({
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() =>
-                            handleRevokeSession(session.sessionToken)
-                          }
+                          onClick={() => handleRevokeSession(session.token)}
                           disabled={
-                            revoking === session.sessionToken ||
-                            isSessionExpired(session.expires)
+                            revoking === session.token ||
+                            isSessionExpired(session.expiresAt)
                           }
                         >
-                          {revoking === session.sessionToken ? (
+                          {revoking === session.token ? (
                             <>
                               <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                               Revoking...

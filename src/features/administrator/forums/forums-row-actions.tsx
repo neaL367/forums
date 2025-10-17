@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useCallback, JSX } from "react";
-import { Row } from "@tanstack/react-table";
 import { toast } from "sonner";
-
+import { useState, useCallback, JSX } from "react";
 import { MoreHorizontal, Edit, Trash2, MessageSquare } from "lucide-react";
+import { Row } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,13 +14,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { Forum } from "@/types/forum";
 import { Dialog } from "@/components/ui/dialog";
-
 import { EditForumDialog } from "@/features/administrator/forums/dialogs/edit-forum-dialog";
-import { DeleteForumDialog } from "./dialogs/delete-forum-dialog";
+import { DeleteForumDialog } from "@/features/administrator/forums/dialogs/delete-forum-dialog";
 
-// import { DeleteForumDialog } from "@/features/administrator/forums/dialogs/delete-forum-dialog";
+import type { Forum } from "@/types/forum";
 
 interface ForumsRowActionsProps {
   row: Row<Forum>;

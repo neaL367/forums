@@ -7,15 +7,24 @@ import { getForumDepth, insertForum } from "@/database/forums";
 import type { AddForumFormData, AddForumFormState } from "@/formdata/administrator/forums/add-forum"
 
 export async function addForumAction(prevState: AddForumFormState, formData: FormData): Promise<AddForumFormState> {
-    const rawData: AddForumFormData = {
-        title: formData.get("title") as string,
-        description: formData.get("description") as string,
-        parentForumId: formData.get("parentForumId") as string | undefined,
+  try {
+    const session = await getServerSession();
+
+    if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
+      return {
+        success: false,
+        message: "Access denied: You must be an administrator to add categories.",
+      };
     }
 
-    // Validate with Zod
+    const rawData: AddForumFormData = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      parentForumId: formData.get("parentForumId") as string | undefined,
+    }
+
     const validated = AddForumSchema.safeParse(rawData)
-    
+
     if (!validated.success) {
       return {
         errors: validated.error.flatten().fieldErrors,
@@ -25,33 +34,22 @@ export async function addForumAction(prevState: AddForumFormState, formData: For
       }
     }
 
+    // Convert "none" to null for parentForumId
+    const parentForumId =
+      validated.data.parentForumId === "none" || !validated.data.parentForumId
+        ? null
+        : String(validated.data.parentForumId)
 
-    try {
-        const session = await getServerSession();
-        
-        if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
-            return {
-                success: false,
-                message: "Access denied: You must be an administrator to add categories.",
-            };
+    if (parentForumId !== null) {
+      const parentDepth = await getForumDepth(parentForumId)
+      if (parentDepth >= 2) {
+        return {
+          inputs: rawData,
+          message: "Cannot create forum: Maximum nesting depth (3 levels) would be exceeded",
+          success: false,
         }
-
-        // Convert "none" to null for parentForumId
-        const parentForumId =
-        validated.data.parentForumId === "none" || !validated.data.parentForumId
-            ? null
-            : String(validated.data.parentForumId)
-
-        if (parentForumId !== null) {
-            const parentDepth = await getForumDepth(parentForumId)
-            if (parentDepth >= 2) {
-                return {
-                inputs: rawData,
-                message: "Cannot create forum: Maximum nesting depth (3 levels) would be exceeded",
-                success: false,
-                }
-            }
-        }
+      }
+    }
 
     // Insert into database
     await insertForum({

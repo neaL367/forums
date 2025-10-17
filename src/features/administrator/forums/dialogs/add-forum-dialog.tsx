@@ -3,7 +3,7 @@
 import type React from "react";
 
 import { toast } from "sonner";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useActionState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
@@ -63,6 +63,8 @@ export function AddForumDialog({
     initialState
   );
 
+  const prevStateRef = useRef(state);
+
   // Flatten forums to get all forums with their depths
   const flattenForums = (forums: Forum[]): Forum[] => {
     const result: Forum[] = [];
@@ -95,6 +97,10 @@ export function AddForumDialog({
       setSelectedParentId("none");
     } else if (state.message && !state.success) {
       toast.error(state.message);
+!state.success) {
+        toast.error(state.message);
+      }
+      prevStateRef.current = state;
     }
   }, [state.success, state.message]);
 

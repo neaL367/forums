@@ -23,7 +23,7 @@ import {
 import { SignOutButton } from "@/features/header/signout-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { stopImpersonationAction } from "@/actions/administrator/members/impersonate";
-import { Member, Session } from "@/lib/auth";
+import type { Member, Session } from "@/lib/auth";
 
 interface MemberMenuProps {
   member?: Member;
@@ -125,7 +125,7 @@ export function MemberMenu({ member, session }: MemberMenuProps) {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
 
-            {session?.session.impersonatedBy && (
+            {session?.impersonatedBy && (
               <DropdownMenuItem
                 onClick={handleStopImpersonation}
                 className="flex items-center gap-2 cursor-pointer text-orange-600 hover:text-orange-700"
