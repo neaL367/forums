@@ -41,7 +41,6 @@ const formatDate = (dateString: string) => {
   }
 };
 
-
 export const forumsColumns = (availableParentForums: Forum[]): ColumnDef<Forum>[] => [
   {
     accessorKey: "title",
