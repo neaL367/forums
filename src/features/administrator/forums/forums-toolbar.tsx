@@ -1,12 +1,13 @@
-import { X, Plus } from "lucide-react";
+"use client"
 
+import { X, Plus } from "lucide-react";
+import { useEffect } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
 import { DataTableViewOptions } from "@features/administrator/shared/data-table/data-table-view-options";
 import { DataTableFacetedFilter } from "@features/administrator/shared/data-table/data-table-faceted-filter";
 import { AddForumDialog } from "@features/administrator/forums/dialogs/add-forum-dialog";
-
 import type { Forum } from "@/types/forum";
 import type { Table } from "@tanstack/react-table";
 
@@ -20,15 +21,57 @@ export function ForumsToolbar<TData extends Forum>({
   forums,
 }: ForumsToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-
+  
   const forumTitleOptions = forums.map((forum) => ({
     value: forum.title,
     label: forum.title,
   }));
-
+    
+  const collectDepths = (forums: Forum[], depths = new Set<number>()): Set<number> => {
+    forums.forEach((forum) => {
+      depths.add(forum.depth);
+      if (forum.subForums?.length) collectDepths(forum.subForums, depths);
+    });
+    return depths;
+  };
+  
+  const uniqueDepths = Array.from(collectDepths(forums)).sort((a, b) => a - b);
+  
+  const forumDepthOptions = uniqueDepths.map((depth) => ({
+    value: depth.toString(),
+    label: `Level ${depth}`,
+  }));
+  
   const filters = [
     { columnId: "forumCategory", title: "Forum", options: forumTitleOptions },
+    { columnId: "depth", title: "Depth", options: forumDepthOptions },
   ];
+  
+  const depthColumn = table.getColumn("depth");
+  const titleColumn = table.getColumn("title");
+  const depthFilterValue = depthColumn?.getFilterValue();
+  const titleFilterValue = titleColumn?.getFilterValue();
+
+  const handleExpandCollapse = useDebouncedCallback(() => {
+    const depthFilter = depthFilterValue as string[] | undefined;
+    const searchFilter = titleFilterValue as string | undefined;
+    
+    // Check if any filter includes depths other than L0
+    const hasNonL0DepthFilter = depthFilter && depthFilter.length > 0 && 
+      depthFilter.some(d => d !== "0");
+    
+    if (hasNonL0DepthFilter || searchFilter) {
+      // Expand all rows when filtering for L1+ or searching
+      table.toggleAllRowsExpanded(true);
+    } else {
+      // Collapse all rows when no filters or only L0 is selected
+      table.toggleAllRowsExpanded(false);
+    }
+  }, 300);
+
+  useEffect(() => {
+    handleExpandCollapse();
+  }, [depthFilterValue, titleFilterValue, handleExpandCollapse]);
 
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 w-full">
@@ -42,7 +85,6 @@ export function ForumsToolbar<TData extends Forum>({
           }
           className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]"
         />
-
         {filters.map((filter) => {
           const column = table.getColumn(filter.columnId);
           return column ? (
@@ -54,7 +96,6 @@ export function ForumsToolbar<TData extends Forum>({
             />
           ) : null;
         })}
-
         {/* Reset Filters */}
         {isFiltered && (
           <Button
@@ -67,7 +108,6 @@ export function ForumsToolbar<TData extends Forum>({
           </Button>
         )}
       </div>
-
       <div className="flex flex-wrap gap-2">
         <DataTableViewOptions table={table} />
         <AddForumDialog availableParentForums={forums}>

@@ -12,9 +12,9 @@ export default async function AdministratorLayout(
   if (!session) redirect("/");
   if (session.user.role !== "ADMINISTRATOR") redirect("/");
   return (
-    <div className="flex h-screen bg-black">
+    <div className="flex h-full bg-black">
       <AdministratorSidebar />
-      <SidebarInset className="px-10 py-6">{props.children}</SidebarInset>
+      <SidebarInset className="px-10 pt-6 pb-20">{props.children}</SidebarInset>
     </div>
   );
 }

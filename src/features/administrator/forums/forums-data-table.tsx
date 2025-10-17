@@ -36,12 +36,12 @@ interface ForumsDataTableProps {
 const ForumsToolbar = dynamic(
   () =>
     import("@features/administrator/forums/forums-toolbar").then(
-      (mod) => mod.ForumsToolbar
+      (mod) => mod.ForumsToolbar,
     ),
   {
     ssr: false,
     loading: () => <Skeleton className="h-8 w-full sm:w-[300px]" />,
-  }
+  },
 );
 
 const DataTablePagination = dynamic<DataTablePaginationProps<Forum>>(
@@ -56,7 +56,7 @@ const DataTablePagination = dynamic<DataTablePaginationProps<Forum>>(
         <Skeleton className="h-8 w-[300px]" />
       </div>
     ),
-  }
+  },
 );
 
 export function ForumsDataTable({
@@ -66,6 +66,7 @@ export function ForumsDataTable({
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     forumCategory: false,
+    depth: false,
   });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -84,62 +85,71 @@ export function ForumsDataTable({
     onExpandedChange: setExpanded,
     enableRowSelection: true,
     getSubRows: (row) => row.subForums,
+    autoResetExpanded: false,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-
-    const hasSearchMatch = useMemo(() => {
-    const searchValue = columnFilters.find((f) => f.id === "title")?.value;
-    if (!searchValue || typeof searchValue !== "string") return () => false;
-
-    const searchLower = searchValue.toLowerCase();
-    return function checkMatch(subs?: Forum[]): boolean {
-      return !!subs?.some(
-        (sub) =>
-          sub.title.toLowerCase().includes(searchLower) ||
-          sub.description?.toLowerCase().includes(searchLower) ||
-          checkMatch(sub.subForums)
-      );
-    };
-  }, [columnFilters]);
-
+  
   useEffect(() => {
     const searchValue = columnFilters.find((f) => f.id === "title")?.value;
-    const facetValue = columnFilters.find(
-      (f) => f.id === "forumCategory"
-    )?.value;
+    const forumValue = columnFilters.find((f) => f.id === "forumCategory")?.value;
+    const depthValue = columnFilters.find((f) => f.id === "depth")?.value;
 
-    // Reset if no filters
-    if (!searchValue && !facetValue) {
+    // Check if depth filter only contains L0
+    const isOnlyL0Depth = Array.isArray(depthValue) && 
+      depthValue.length > 0 && 
+      depthValue.every(d => d === "0");
+
+    // Reset if no filters or only L0 depth filter
+    if ((!searchValue && !forumValue && !depthValue) || isOnlyL0Depth) {
       setExpanded({});
       return;
     }
 
     const newExpanded: Record<string, boolean> = {};
 
-    // Check for facet filter matches
-    const hasFacetMatch = (subs?: Forum[]): boolean => {
-      if (!facetValue || !Array.isArray(facetValue)) return false;
+    const hasSearchMatch = (subs?: Forum[]): boolean => {
+      if (!searchValue || typeof searchValue !== "string") return false;
+      const searchLower = searchValue.toLowerCase();
       return !!subs?.some(
-        (sub) => facetValue.includes(sub.title) || hasFacetMatch(sub.subForums)
+        (sub) =>
+          sub.title.toLowerCase().includes(searchLower) ||
+          sub.description?.toLowerCase().includes(searchLower) ||
+          hasSearchMatch(sub.subForums),
+      );
+    };
+
+    const hasForumMatch = (subs?: Forum[]): boolean => {
+      if (!forumValue || !Array.isArray(forumValue)) return false;
+      return !!subs?.some(
+        (sub) => forumValue.includes(sub.title) || hasForumMatch(sub.subForums),
+      );
+    };
+
+    const hasDepthMatch = (subs?: Forum[]): boolean => {
+      if (!depthValue || !Array.isArray(depthValue)) return false;
+      return !!subs?.some(
+        (sub) =>
+          depthValue.includes(sub.depth.toString()) ||
+          hasDepthMatch(sub.subForums),
       );
     };
 
     table.getRowModel().rows.forEach((row) => {
       if (
         hasSearchMatch(row.original.subForums) ||
-        hasFacetMatch(row.original.subForums)
+        hasForumMatch(row.original.subForums) ||
+        hasDepthMatch(row.original.subForums)
       ) {
         newExpanded[row.id] = true;
       }
     });
 
     setExpanded(newExpanded);
-  }, [columnFilters, hasSearchMatch, table]);
-
+  }, [columnFilters, table]);
 
   return (
     <div className="space-y-4">
@@ -159,7 +169,7 @@ export function ForumsDataTable({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 ))}
@@ -177,7 +187,7 @@ export function ForumsDataTable({
                     <TableCell key={cell.id} className="px-6">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

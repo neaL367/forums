@@ -14,23 +14,23 @@ import type { Forum } from "@/types/forum";
 const ForumsColumnHeader = dynamic(
   () =>
     import("@/features/administrator/forums/forums-column-header").then(
-      (mod) => ({ default: mod.ForumsColumnHeader })
+      (mod) => ({ default: mod.ForumsColumnHeader }),
     ),
   {
     loading: () => <Skeleton className="h-8 w-24" />,
     ssr: false,
-  }
+  },
 );
 
 const ForumsRowActions = dynamic(
   () =>
     import("@/features/administrator/forums/forums-row-actions").then(
-      (mod) => ({ default: mod.ForumsRowActions })
+      (mod) => ({ default: mod.ForumsRowActions }),
     ),
   {
     loading: () => <Skeleton className="h-8 w-8 rounded" />,
     ssr: false,
-  }
+  },
 );
 
 const formatDate = (dateString: string) => {
@@ -41,7 +41,17 @@ const formatDate = (dateString: string) => {
   }
 };
 
-export const forumsColumns = (availableParentForums: Forum[]): ColumnDef<Forum>[] => [
+const matchesForumRecursive = (
+  forum: Forum,
+  predicate: (f: Forum) => boolean
+): boolean => {
+  if (predicate(forum)) return true;
+  return forum.subForums?.some((sub) => matchesForumRecursive(sub, predicate)) ?? false;
+};
+
+export const forumsColumns = (
+  availableParentForums: Forum[],
+): ColumnDef<Forum>[] => [
   {
     accessorKey: "title",
     header: ({ column }) => (
@@ -58,7 +68,6 @@ export const forumsColumns = (availableParentForums: Forum[]): ColumnDef<Forum>[
           className="flex items-center gap-3 py-1"
           style={{ paddingLeft: `${depth * 32}px` }}
         >
-          {/* Expander button or spacer */}
           <div className="flex-shrink-0 pt-0.5">
             {hasSubForums ? (
               <Button
@@ -82,7 +91,6 @@ export const forumsColumns = (availableParentForums: Forum[]): ColumnDef<Forum>[
             )}
           </div>
 
-          {/* Forum content */}
           <div className="flex flex-col gap-1.5 flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <Badge
@@ -110,20 +118,17 @@ export const forumsColumns = (availableParentForums: Forum[]): ColumnDef<Forum>[
         </div>
       );
     },
-    // Only handle text search (string values)
     filterFn: (row, _columnId, value) => {
-      if (typeof value !== "string") return true;
-      const search = value.toLowerCase();
-      const forum = row.original;
-
-      const matchesSearch = (f: Forum): boolean => {
-        if (f.title.toLowerCase().includes(search)) return true;
-        if (f.description?.toLowerCase().includes(search)) return true;
-        if (f.subForums?.some((sub) => matchesSearch(sub))) return true;
-        return false;
-      };
-
-      return matchesSearch(forum);
+      // Handle text search
+      if (typeof value === "string") {
+        const search = value.toLowerCase();
+        return matchesForumRecursive(row.original, (f) =>
+          f.title.toLowerCase().includes(search) ||
+          f.description?.toLowerCase().includes(search) ||
+          false
+        );
+      }
+      return true;
     },
     enableHiding: false,
     enableSorting: true,
@@ -131,22 +136,25 @@ export const forumsColumns = (availableParentForums: Forum[]): ColumnDef<Forum>[
   {
     id: "forumCategory",
     accessorFn: (row) => row.title,
-    // Only handle faceted filter (array values)
     filterFn: (row, _columnId, value) => {
       if (!Array.isArray(value) || value.length === 0) return true;
-      const forum = row.original;
-
-      const matchesFacet = (f: Forum): boolean => {
-        if (value.includes(f.title)) return true;
-        if (f.subForums?.some((sub) => matchesFacet(sub))) return true;
-        return false;
-      };
-
-      return matchesFacet(forum);
+      return matchesForumRecursive(row.original, (f) => value.includes(f.title));
     },
     enableSorting: false,
     enableHiding: false,
-    // Hide this column from the table display
+    enableColumnFilter: true,
+  },
+  {
+    id: "depth",
+    accessorFn: (row) => row.depth.toString(),
+    filterFn: (row, _columnId, value) => {
+      if (!Array.isArray(value) || value.length === 0) return true;
+      return matchesForumRecursive(row.original, (f) => 
+        value.includes(f.depth.toString())
+      );
+    },
+    enableSorting: false,
+    enableHiding: false,
     enableColumnFilter: true,
   },
   {
@@ -197,12 +205,15 @@ export const forumsColumns = (availableParentForums: Forum[]): ColumnDef<Forum>[
   {
     id: "actions",
     cell: ({ row }) => (
-      <div className=" flex items-center justify-center">
-        <ForumsRowActions row={row} availableParentForums={availableParentForums} />
+      <div className="flex items-center justify-center">
+        <ForumsRowActions
+          row={row}
+          availableParentForums={availableParentForums}
+        />
       </div>
     ),
     header: () => (
-      <div className=" flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <span className="text-sm font-medium">Actions</span>
       </div>
     ),
