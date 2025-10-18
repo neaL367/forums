@@ -43,10 +43,13 @@ const formatDate = (dateString: string) => {
 
 const matchesForumRecursive = (
   forum: Forum,
-  predicate: (f: Forum) => boolean
+  predicate: (f: Forum) => boolean,
 ): boolean => {
   if (predicate(forum)) return true;
-  return forum.subForums?.some((sub) => matchesForumRecursive(sub, predicate)) ?? false;
+  return (
+    forum.subForums?.some((sub) => matchesForumRecursive(sub, predicate)) ??
+    false
+  );
 };
 
 export const forumsColumns = (
@@ -119,13 +122,14 @@ export const forumsColumns = (
       );
     },
     filterFn: (row, _columnId, value) => {
-      // Handle text search
       if (typeof value === "string") {
         const search = value.toLowerCase();
-        return matchesForumRecursive(row.original, (f) =>
-          f.title.toLowerCase().includes(search) ||
-          f.description?.toLowerCase().includes(search) ||
-          false
+        return matchesForumRecursive(
+          row.original,
+          (f) =>
+            f.title.toLowerCase().includes(search) ||
+            f.description?.toLowerCase().includes(search) ||
+            false,
         );
       }
       return true;
@@ -138,7 +142,9 @@ export const forumsColumns = (
     accessorFn: (row) => row.title,
     filterFn: (row, _columnId, value) => {
       if (!Array.isArray(value) || value.length === 0) return true;
-      return matchesForumRecursive(row.original, (f) => value.includes(f.title));
+      return matchesForumRecursive(row.original, (f) =>
+        value.includes(f.title),
+      );
     },
     enableSorting: false,
     enableHiding: false,
@@ -149,8 +155,8 @@ export const forumsColumns = (
     accessorFn: (row) => row.depth.toString(),
     filterFn: (row, _columnId, value) => {
       if (!Array.isArray(value) || value.length === 0) return true;
-      return matchesForumRecursive(row.original, (f) => 
-        value.includes(f.depth.toString())
+      return matchesForumRecursive(row.original, (f) =>
+        value.includes(f.depth.toString()),
       );
     },
     enableSorting: false,

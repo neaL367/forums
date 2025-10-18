@@ -1,6 +1,6 @@
+import { DataTableColumnHeader } from "@features/administrator/shared/data-table/data-table-column-header";
 import type { Column } from "@tanstack/react-table";
 import type { Forum } from "@/types/forum";
-import { DataTableColumnHeader } from "@features/administrator/shared/data-table/data-table-column-header";
 
 interface ForumsColumnHeaderProps {
   column: Column<Forum>;

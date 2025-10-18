@@ -21,29 +21,15 @@ export function ForumsToolbar<TData extends Forum>({
   forums,
 }: ForumsToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  
-  const forumTitleOptions = forums.map((forum) => ({
-    value: forum.title,
-    label: forum.title,
-  }));
     
-  const collectDepths = (forums: Forum[], depths = new Set<number>()): Set<number> => {
-    forums.forEach((forum) => {
-      depths.add(forum.depth);
-      if (forum.subForums?.length) collectDepths(forum.subForums, depths);
-    });
-    return depths;
-  };
+  const allDepths = [0, 1, 2];
   
-  const uniqueDepths = Array.from(collectDepths(forums)).sort((a, b) => a - b);
-  
-  const forumDepthOptions = uniqueDepths.map((depth) => ({
+  const forumDepthOptions = allDepths.map((depth) => ({
     value: depth.toString(),
-    label: `Level ${depth}`,
+    label: `L${depth}`,
   }));
   
   const filters = [
-    { columnId: "forumCategory", title: "Forum", options: forumTitleOptions },
     { columnId: "depth", title: "Depth", options: forumDepthOptions },
   ];
   
@@ -67,7 +53,7 @@ export function ForumsToolbar<TData extends Forum>({
       // Collapse all rows when no filters or only L0 is selected
       table.toggleAllRowsExpanded(false);
     }
-  }, 300);
+  }, 500);
 
   useEffect(() => {
     handleExpandCollapse();

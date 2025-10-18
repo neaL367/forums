@@ -15,7 +15,7 @@ import {
   type ExpandedState,
 } from "@tanstack/react-table";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -72,12 +72,16 @@ export function ForumsDataTable({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
-  const memoColumns = useMemo(() => columns, [columns]);
-
   const table = useReactTable({
     data,
-    columns: memoColumns,
-    state: { sorting, columnVisibility, rowSelection, columnFilters, expanded },
+    columns,
+    state: { 
+      sorting, 
+      columnVisibility, 
+      rowSelection, 
+      columnFilters, 
+      expanded 
+    },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -86,70 +90,13 @@ export function ForumsDataTable({
     enableRowSelection: true,
     getSubRows: (row) => row.subForums,
     autoResetExpanded: false,
+
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-  
-  useEffect(() => {
-    const searchValue = columnFilters.find((f) => f.id === "title")?.value;
-    const forumValue = columnFilters.find((f) => f.id === "forumCategory")?.value;
-    const depthValue = columnFilters.find((f) => f.id === "depth")?.value;
-
-    // Check if depth filter only contains L0
-    const isOnlyL0Depth = Array.isArray(depthValue) && 
-      depthValue.length > 0 && 
-      depthValue.every(d => d === "0");
-
-    // Reset if no filters or only L0 depth filter
-    if ((!searchValue && !forumValue && !depthValue) || isOnlyL0Depth) {
-      setExpanded({});
-      return;
-    }
-
-    const newExpanded: Record<string, boolean> = {};
-
-    const hasSearchMatch = (subs?: Forum[]): boolean => {
-      if (!searchValue || typeof searchValue !== "string") return false;
-      const searchLower = searchValue.toLowerCase();
-      return !!subs?.some(
-        (sub) =>
-          sub.title.toLowerCase().includes(searchLower) ||
-          sub.description?.toLowerCase().includes(searchLower) ||
-          hasSearchMatch(sub.subForums),
-      );
-    };
-
-    const hasForumMatch = (subs?: Forum[]): boolean => {
-      if (!forumValue || !Array.isArray(forumValue)) return false;
-      return !!subs?.some(
-        (sub) => forumValue.includes(sub.title) || hasForumMatch(sub.subForums),
-      );
-    };
-
-    const hasDepthMatch = (subs?: Forum[]): boolean => {
-      if (!depthValue || !Array.isArray(depthValue)) return false;
-      return !!subs?.some(
-        (sub) =>
-          depthValue.includes(sub.depth.toString()) ||
-          hasDepthMatch(sub.subForums),
-      );
-    };
-
-    table.getRowModel().rows.forEach((row) => {
-      if (
-        hasSearchMatch(row.original.subForums) ||
-        hasForumMatch(row.original.subForums) ||
-        hasDepthMatch(row.original.subForums)
-      ) {
-        newExpanded[row.id] = true;
-      }
-    });
-
-    setExpanded(newExpanded);
-  }, [columnFilters, table]);
 
   return (
     <div className="space-y-4">

@@ -6,37 +6,41 @@ import { Input } from "@/components/ui/input";
 import { DataTableFacetedFilter } from "@/features/administrator/shared/data-table/data-table-faceted-filter";
 import { DataTableViewOptions } from "@/features/administrator/shared/data-table/data-table-view-options";
 
-import type { Member } from "@/types/member";
+import type { Member, Roles } from "@/types/member";
 import type { Table } from "@tanstack/react-table";
 
 type DataTableToolbarProps<TData> = {
   table: Table<TData>;
-  members: Member[];
 };
 
 export function MembersToolbar<TData extends Member>({
   table,
-  members,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
-  const roleOptions = Array.from(new Set(members.map((m) => m.role))).map(
-    (role) => ({ value: role, label: role })
-  );
+  const allRoles: Roles[] = [
+    "OWNER",
+    "ADMINISTRATOR",
+    "MODERATOR",
+    "STAFF",
+    "MEMBERS",
+    "GUEST",
+  ];
 
-  const emailVerifiedOptions = Array.from(
-    new Set(members.map((m) => m.emailVerified))
-  ).map((value) => ({
-    value,
-    label: value ? "Verified" : "Not Verified",
+  const roleOptions = allRoles.map((role) => ({
+    value: role,
+    label: role.charAt(0).toUpperCase() + role.slice(1).toLowerCase(),
   }));
 
-  const bannedOptions = Array.from(new Set(members.map((m) => m.banned))).map(
-    (value) => ({
-      value,
-      label: value ? "Banned" : "Not Banned",
-    })
-  );
+  const emailVerifiedOptions = [
+    { value: true, label: "Verified" },
+    { value: false, label: "Not Verified" },
+  ];
+
+  const bannedOptions = [
+    { value: true, label: "Banned" },
+    { value: false, label: "Not Banned" },
+  ];
 
   const filters = [
     { columnId: "role", title: "Role", options: roleOptions },

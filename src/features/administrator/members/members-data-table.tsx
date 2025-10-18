@@ -1,10 +1,6 @@
 "use client";
 
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
@@ -13,6 +9,10 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
 } from "@tanstack/react-table";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -95,7 +95,7 @@ export function MembersDataTable({
 
   return (
     <div className="space-y-4">
-      <MembersToolbar table={table} members={data} />
+      <MembersToolbar table={table} />
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
