@@ -2,18 +2,26 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useDebouncedCallback } from 'use-debounce';
-import { SearchIcon } from 'lucide-react';
+import { useDebouncedCallback } from "use-debounce";
+import { SearchIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function Search() {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
 
-  const [searchType, setSearchType] = useState(searchParams.get("type") || "all");
+  const [searchType, setSearchType] = useState(
+    searchParams.get("type") || "all",
+  );
 
   const handleSearch = useDebouncedCallback((term: string, type: string) => {
     const params = new URLSearchParams(searchParams);
@@ -30,7 +38,7 @@ export function Search() {
     }
 
     replace(`/search?${params.toString()}`);
-  }, 300)
+  }, 500);
 
   return (
     <div className="relative hidden lg:flex items-center gap-2 flex-1 max-w-2xl">
@@ -44,9 +52,10 @@ export function Search() {
         defaultValue={searchParams.get("query")?.toString()}
       />
       <Button
-        size="sm"
+        size="icon"
         variant="ghost"
-        className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-zinc-400 hover:text-white"
+        className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+        disabled
       >
         <SearchIcon className="h-4 w-4" />
       </Button>
