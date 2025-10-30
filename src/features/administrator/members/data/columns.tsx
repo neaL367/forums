@@ -9,7 +9,7 @@ import type { Member } from "@/types/member";
 
 const MembersColumnHeader = dynamic(
   () =>
-    import("@/features/administrator/members/members-column-header").then(
+    import("@/features/administrator/members/data-table/members-column-header").then(
       (mod) => ({ default: mod.MembersColumnHeader })
     ),
   {
@@ -20,7 +20,7 @@ const MembersColumnHeader = dynamic(
 
 const MembersRowActions = dynamic(
   () =>
-    import("@/features/administrator/members/members-row-actions").then(
+    import("@/features/administrator/members/data-table/members-row-actions").then(
       (mod) => ({ default: mod.MembersRowActions })
     ),
   {

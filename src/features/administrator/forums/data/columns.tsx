@@ -11,7 +11,7 @@ import type { Forum } from "@/types/forum";
 
 const ForumsColumnHeader = dynamic(
   () =>
-    import("@/features/administrator/forums/forums-column-header").then(
+    import("@/features/administrator/forums/data-table/forums-column-header").then(
       (mod) => ({ default: mod.ForumsColumnHeader }),
     ),
   {
@@ -22,7 +22,7 @@ const ForumsColumnHeader = dynamic(
 
 const ForumsRowActions = dynamic(
   () =>
-    import("@/features/administrator/forums/forums-row-actions").then(
+    import("@/features/administrator/forums/data-table/forums-row-actions").then(
       (mod) => ({ default: mod.ForumsRowActions }),
     ),
   {

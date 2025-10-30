@@ -9,7 +9,7 @@ import type { Forum } from "@/types/forum";
 
 const ForumsDataTable = dynamic(
   () =>
-    import("@features/administrator/forums/forums-data-table").then(
+    import("@features/administrator/forums/data-table/forums-data-table").then(
       (mod) => mod.ForumsDataTable
     ),
   {

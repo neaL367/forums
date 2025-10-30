@@ -1,22 +1,19 @@
-"use client";
-
 import {
-    type ColumnDef,
-    type ColumnFiltersState,
-    type SortingState,
-    type VisibilityState,
-    flexRender,
-    getCoreRowModel,
-    getFacetedRowModel,
-    getFacetedUniqueValues,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useReactTable,
+  flexRender,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
+  type ExpandedState,
 } from "@tanstack/react-table";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-
 import {
   Table,
   TableBody,
@@ -26,110 +23,116 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import type { Forum } from "@/types/forum";
 import type { DataTablePaginationProps } from "@features/administrator/shared/data-table/data-table-pagination";
-import type { Reply } from "@/types/reply";
 
-const RepliesToolbar = dynamic(
+interface ForumsDataTableProps {
+  data?: Forum[];
+  columns?: ColumnDef<Forum>[];
+}
+
+const ForumsToolbar = dynamic(
   () =>
-    import("@features/administrator/replies/replies-toolbar").then(
-      (mod) => mod.RepliesToolbar
+    import("@/features/administrator/forums/data-table/forums-toolbar").then(
+      (mod) => mod.ForumsToolbar,
     ),
   {
-    loading: () => (
-      <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
-    ),
     ssr: false,
-  }
+    loading: () => <Skeleton className="h-8 w-full sm:w-[300px]" />,
+  },
 );
 
-const DataTablePagination = dynamic<DataTablePaginationProps<Reply>>(
+const DataTablePagination = dynamic<DataTablePaginationProps<Forum>>(
   () =>
     import(
       "@features/administrator/shared/data-table/data-table-pagination"
     ).then((mod) => mod.DataTablePagination),
   {
-    loading: () => (
-      <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
-    ),
     ssr: false,
-  }
+    loading: () => (
+      <div className="flex justify-end">
+        <Skeleton className="h-8 w-[300px]" />
+      </div>
+    ),
+  },
 );
 
-interface DataTableProps {
-  data?: Reply[];
-  columns?: ColumnDef<Reply>[];
-}
-
-export function RepliesDataTable({ columns = [], data = [] }: DataTableProps) {
-  const [rowSelection, setRowSelection] = useState({});
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+export function ForumsDataTable({
+  data = [],
+  columns = [],
+}: ForumsDataTableProps) {
+  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    forumCategory: false,
+    depth: false,
+  });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [expanded, setExpanded] = useState<ExpandedState>({});
 
   const table = useReactTable({
     data,
     columns,
-    state: {
-      sorting,
-      columnVisibility,
-      rowSelection,
-      columnFilters,
+    state: { 
+      sorting, 
+      columnVisibility, 
+      rowSelection, 
+      columnFilters, 
+      expanded 
     },
-    enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    onExpandedChange: setExpanded,
+    enableRowSelection: true,
+    getSubRows: (row) => row.subForums,
+    autoResetExpanded: false,
 
     getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
   return (
     <div className="space-y-4">
-      <RepliesToolbar table={table} />
+      <ForumsToolbar table={table} forums={data} />
       <div className="overflow-hidden rounded-md border">
-        <Table>
+        <Table aria-label="Forums list">
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      className="px-6"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+            {table.getHeaderGroups().map((hg) => (
+              <TableRow key={hg.id}>
+                {hg.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className="px-6"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="group"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="px-6">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -141,7 +144,7 @@ export function RepliesDataTable({ columns = [], data = [] }: DataTableProps) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No forums found.
                 </TableCell>
               </TableRow>
             )}

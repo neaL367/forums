@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
 import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
-import { RepliesTableClient } from "@/features/administrator/replies/replies-data-table-client";
+import { RepliesTableClient } from "@/features/administrator/replies/data-table/replies-data-table-client";
 import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
 import { breadcrumbs } from "@/features/administrator/replies/data/data";
 import { getAllReplies } from "@/database/replies";

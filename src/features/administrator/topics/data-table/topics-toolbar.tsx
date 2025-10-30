@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 
 import { DataTableViewOptions } from "@features/administrator/shared/data-table/data-table-view-options";
 import { DataTableFacetedFilter } from "@features/administrator/shared/data-table/data-table-faceted-filter";
-import { AddTopicDialog } from "@features/administrator/topics/dialogs/add-topic-dialog";
+import { AddTopicDialog } from "@/features/administrator/topics/dialog/add-topic-dialog";
 import { filters } from "@features/administrator/topics/data/data";
 
 import type { Topic } from "@/types/topic";

@@ -9,7 +9,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 const TopicsColumnHeader = dynamic(
   () =>
-    import("@/features/administrator/topics/topics-column-header").then(
+    import("@/features/administrator/topics/data-table/topics-column-header").then(
       (mod) => ({ default: mod.TopicsColumnHeader })
     ),
   {
@@ -20,7 +20,7 @@ const TopicsColumnHeader = dynamic(
 
 const TopicsRowActions = dynamic(
   () =>
-    import("@/features/administrator/topics/topics-row-actions").then(
+    import("@/features/administrator/topics/data-table/topics-row-actions").then(
       (mod) => ({ default: mod.TopicsRowActions })
     ),
   {

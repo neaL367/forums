@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Dialog } from "@/components/ui/dialog";
-import { EditForumDialog } from "@/features/administrator/forums/dialogs/edit-forum-dialog";
-import { DeleteForumDialog } from "@/features/administrator/forums/dialogs/delete-forum-dialog";
+import { EditForumDialog } from "@/features/administrator/forums/dialog/edit-forum-dialog";
+import { DeleteForumDialog } from "@/features/administrator/forums/dialog/delete-forum-dialog";
 
 import type { Forum } from "@/types/forum";
 

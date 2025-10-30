@@ -1,16 +1,18 @@
+"use client";
+
 import {
-  flexRender,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
+    type ColumnDef,
+    type ColumnFiltersState,
+    type SortingState,
+    type VisibilityState,
+    flexRender,
+    getCoreRowModel,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    useReactTable,
 } from "@tanstack/react-table";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -23,15 +25,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { Skeleton } from "@/components/ui/skeleton";
-import type { DataTablePaginationProps } from "@/features/administrator/shared/data-table/data-table-pagination";
-import type { Member } from "@/types/member";
 
-const MembersToolbar = dynamic(
+import type { DataTablePaginationProps } from "@features/administrator/shared/data-table/data-table-pagination";
+import type { Reply } from "@/types/reply";
+
+const RepliesToolbar = dynamic(
   () =>
-    import("@features/administrator/members/members-toolbar").then(
-      (mod) => mod.MembersToolbar
+    import("@features/administrator/replies/data-table/replies-toolbar").then(
+      (mod) => mod.RepliesToolbar
     ),
   {
     loading: () => (
@@ -41,7 +43,7 @@ const MembersToolbar = dynamic(
   }
 );
 
-const DataTablePagination = dynamic<DataTablePaginationProps<Member>>(
+const DataTablePagination = dynamic<DataTablePaginationProps<Reply>>(
   () =>
     import(
       "@features/administrator/shared/data-table/data-table-pagination"
@@ -54,16 +56,13 @@ const DataTablePagination = dynamic<DataTablePaginationProps<Member>>(
   }
 );
 
-type DataTableProps = {
-  data?: Member[];
-  columns?: ColumnDef<Member>[];
+interface DataTableProps {
+  data?: Reply[];
+  columns?: ColumnDef<Reply>[];
 }
 
-export function MembersDataTable({
-  columns = [],
-  data = [],
-}: DataTableProps) {
-  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+export function RepliesDataTable({ columns = [], data = [] }: DataTableProps) {
+  const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -93,26 +92,28 @@ export function MembersDataTable({
 
   return (
     <div className="space-y-4">
-      <MembersToolbar table={table} />
+      <RepliesToolbar table={table} />
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    className="px-6"
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className="px-6"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>
@@ -121,7 +122,8 @@ export function MembersDataTable({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() ? "selected" : undefined}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="group"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="px-6">

@@ -11,7 +11,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 const RepliesColumnHeader = dynamic(
   () =>
-    import("@/features/administrator/replies/replies-column-header").then(
+    import("@/features/administrator/replies/data-table/replies-column-header").then(
       (mod) => ({ default: mod.RepliesColumnHeader })
     ),
   {
@@ -22,7 +22,7 @@ const RepliesColumnHeader = dynamic(
 
 const RepliesRowActions = dynamic(
   () =>
-    import("@/features/administrator/replies/replies-row-actions").then(
+    import("@/features/administrator/replies/data-table/replies-row-actions").then(
       (mod) => ({ default: mod.RepliesRowActions })
     ),
   {

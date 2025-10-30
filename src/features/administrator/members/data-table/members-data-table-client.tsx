@@ -9,7 +9,7 @@ import type { Member } from "@/types/member";
 
 const MembersDataTable = dynamic(
   () =>
-    import("@features/administrator/members/members-data-table").then(
+    import("@features/administrator/members/data-table/members-data-table").then(
       (mod) => mod.MembersDataTable
     ),
   {

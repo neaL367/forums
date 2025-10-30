@@ -30,7 +30,7 @@ import type { Forum } from "@/types/forum";
 
 const TopicsToolbar = dynamic(
   () =>
-    import("@features/administrator/topics/topics-toolbar").then(
+    import("@features/administrator/topics/data-table/topics-toolbar").then(
       (mod) => mod.TopicsToolbar,
     ),
   {

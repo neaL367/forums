@@ -9,7 +9,7 @@ import type { Reply } from "@/types/reply";
 
 const RepliesDataTable = dynamic(
   () =>
-    import("@features/administrator/replies/replies-data-table").then(
+    import("@features/administrator/replies/data-table/replies-data-table").then(
       (mod) => mod.RepliesDataTable
     ),
   {

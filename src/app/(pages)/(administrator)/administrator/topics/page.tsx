@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
 
-import { TopicsTableClient } from "@/features/administrator/topics/topics-data-table-client";
+import { TopicsTableClient } from "@/features/administrator/topics/data-table/topics-data-table-client";
 import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
 import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
 import { breadcrumbs } from "@/features/administrator/topics/data/data";

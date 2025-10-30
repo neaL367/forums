@@ -1,7 +1,8 @@
 import {
   flexRender,
   getCoreRowModel,
-  getExpandedRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
@@ -10,10 +11,10 @@ import {
   type ColumnFiltersState,
   type SortingState,
   type VisibilityState,
-  type ExpandedState,
 } from "@tanstack/react-table";
 import dynamic from "next/dynamic";
 import { useState } from "react";
+
 import {
   Table,
   TableBody,
@@ -22,89 +23,83 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Forum } from "@/types/forum";
-import type { DataTablePaginationProps } from "@features/administrator/shared/data-table/data-table-pagination";
+import type { DataTablePaginationProps } from "@/features/administrator/shared/data-table/data-table-pagination";
+import type { Member } from "@/types/member";
 
-interface ForumsDataTableProps {
-  data?: Forum[];
-  columns?: ColumnDef<Forum>[];
-}
-
-const ForumsToolbar = dynamic(
+const MembersToolbar = dynamic(
   () =>
-    import("@features/administrator/forums/forums-toolbar").then(
-      (mod) => mod.ForumsToolbar,
+    import("@features/administrator/members/data-table/members-toolbar").then(
+      (mod) => mod.MembersToolbar
     ),
   {
+    loading: () => (
+      <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
+    ),
     ssr: false,
-    loading: () => <Skeleton className="h-8 w-full sm:w-[300px]" />,
-  },
+  }
 );
 
-const DataTablePagination = dynamic<DataTablePaginationProps<Forum>>(
+const DataTablePagination = dynamic<DataTablePaginationProps<Member>>(
   () =>
     import(
       "@features/administrator/shared/data-table/data-table-pagination"
     ).then((mod) => mod.DataTablePagination),
   {
-    ssr: false,
     loading: () => (
-      <div className="flex justify-end">
-        <Skeleton className="h-8 w-[300px]" />
-      </div>
+      <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
     ),
-  },
+    ssr: false,
+  }
 );
 
-export function ForumsDataTable({
-  data = [],
+type DataTableProps = {
+  data?: Member[];
+  columns?: ColumnDef<Member>[];
+}
+
+export function MembersDataTable({
   columns = [],
-}: ForumsDataTableProps) {
+  data = [],
+}: DataTableProps) {
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    forumCategory: false,
-    depth: false,
-  });
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [expanded, setExpanded] = useState<ExpandedState>({});
 
   const table = useReactTable({
     data,
     columns,
-    state: { 
-      sorting, 
-      columnVisibility, 
-      rowSelection, 
-      columnFilters, 
-      expanded 
+    state: {
+      sorting,
+      columnVisibility,
+      rowSelection,
+      columnFilters,
     },
+    enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    onExpandedChange: setExpanded,
-    enableRowSelection: true,
-    getSubRows: (row) => row.subForums,
-    autoResetExpanded: false,
 
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
   return (
     <div className="space-y-4">
-      <ForumsToolbar table={table} forums={data} />
+      <MembersToolbar table={table} />
       <div className="overflow-hidden rounded-md border">
-        <Table aria-label="Forums list">
+        <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((hg) => (
-              <TableRow key={hg.id}>
-                {hg.headers.map((header) => (
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
@@ -114,7 +109,7 @@ export function ForumsDataTable({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 ))}
@@ -122,17 +117,17 @@ export function ForumsDataTable({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() ? "selected" : undefined}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="px-6">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
@@ -144,7 +139,7 @@ export function ForumsDataTable({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No forums found.
+                  No results.
                 </TableCell>
               </TableRow>
             )}
