@@ -1,5 +1,3 @@
-'use client'
-
 import { toast } from 'sonner'
 import { useState, useEffect, useRef } from 'react'
 import { useActionState } from 'react'

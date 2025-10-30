@@ -1,5 +1,3 @@
-"use client"
-
 import { X, Plus } from "lucide-react";
 import { useEffect } from "react";
 import { useDebouncedCallback } from "use-debounce";

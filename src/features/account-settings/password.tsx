@@ -1,13 +1,12 @@
-"use client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useActionState, useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 import { authClient } from "@/lib/auth-client";
-import { useActionState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { changePasswordAction } from "@/actions/account-settings/change-password";
 import { ChangePasswordFormState } from "@/formdata/account-setting/change-password";
 

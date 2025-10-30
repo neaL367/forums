@@ -1,7 +1,3 @@
-"use client";
-
-import type React from "react";
-
 import { toast } from "sonner";
 import { useState, useEffect, useMemo } from "react";
 import { useActionState } from "react";

@@ -1,6 +1,8 @@
-import AccountSettingsSidebar from "@/features/account-settings/shared/sidebar-navigation";
-import { getServerSession } from "@/lib/dal";
 import { redirect } from "next/navigation";
+
+import { AccountSettingsSidebar } from "@/features/account-settings/shared/sidebar-navigation";
+
+import { getServerSession } from "@/lib/dal";
 
 export default async function AccountSettingsLayout(
   props: LayoutProps<"/account-settings">

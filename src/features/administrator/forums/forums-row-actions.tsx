@@ -1,5 +1,3 @@
-"use client";
-
 import { toast } from "sonner";
 import { useState, useCallback, JSX } from "react";
 import { MoreHorizontal, Edit, Trash2, MessageSquare } from "lucide-react";

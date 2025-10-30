@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { Loader2, Monitor, Smartphone, Tablet, Globe } from "lucide-react";

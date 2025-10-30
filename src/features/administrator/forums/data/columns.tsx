@@ -1,5 +1,3 @@
-"use client";
-
 import { format } from "date-fns";
 import dynamic from "next/dynamic";
 import { Calendar, ChevronRight, ChevronDown } from "lucide-react";

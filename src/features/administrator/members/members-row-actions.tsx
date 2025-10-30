@@ -1,5 +1,3 @@
-"use client";
-
 import { toast } from "sonner";
 import { JSX, useCallback, useMemo, useState } from "react";
 import { MoreHorizontal, Loader2 } from "lucide-react";

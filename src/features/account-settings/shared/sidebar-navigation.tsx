@@ -17,7 +17,7 @@ const navItems = [
   { href: "/account-settings/email", label: "Email", icon: Mail },
 ];
 
-export default function AccountSettingsSidebar() {
+export function AccountSettingsSidebar() {
   const pathname = usePathname();
 
   return (
