@@ -1,14 +1,14 @@
 "use server"
 
 import { revalidateTag } from "next/cache";
-import { getServerSession } from "@/lib/dal"
+import { authServer } from "@/lib/auth-server"
 import { AddForumSchema } from "@/zod/administrator/forum/add-forum"
 import { getForumDepth, insertForum } from "@/database/forums";
 import type { AddForumFormData, AddForumFormState } from "@/formdata/administrator/forum/add-forum"
 
 export async function addForumAction(prevState: AddForumFormState, formData: FormData): Promise<AddForumFormState> {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {

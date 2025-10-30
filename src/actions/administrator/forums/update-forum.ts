@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { getServerSession } from "@/lib/dal";
+import { authServer } from "@/lib/auth-server";
 import { getForumDepth, updateForum } from "@/database/forums";
 import { UpdateForumSchema } from "@/zod/administrator/forum/update-forum";
 import type { UpdateForumFormData, UpdateForumFormState } from "@/formdata/administrator/forum/update-forum";
@@ -11,7 +11,7 @@ export async function updateForumAction(
   formData: FormData
 ): Promise<UpdateForumFormState> {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {

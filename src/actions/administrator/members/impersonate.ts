@@ -3,11 +3,11 @@
 import { APIError } from "better-auth/api";
 import { headers } from "next/headers";
 import { auth } from "@lib/auth";
-import { getServerSession } from "@/lib/dal";
+import { authServer } from "@/lib/auth-server";
 
 export async function impersonateMemberAction(memberId: string) {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
@@ -35,7 +35,7 @@ export async function impersonateMemberAction(memberId: string) {
 
 export async function stopImpersonationAction() {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {

@@ -4,11 +4,11 @@ import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
-import { getServerSession } from "@/lib/dal";
+import { authServer } from "@/lib/auth-server";
 
 export async function banMemberAction(memberId: string, banReason?: string, banExpiresIn?: number) {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
@@ -39,7 +39,7 @@ export async function banMemberAction(memberId: string, banReason?: string, banE
 
 export async function unbanMemberAction(memberId: string) {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {

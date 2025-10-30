@@ -4,7 +4,7 @@ import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
-import { getServerSession } from "@/lib/dal";
+import { authServer } from "@/lib/auth-server";
 
 type ListMembersParams = {
   searchValue?: string;
@@ -21,7 +21,7 @@ type ListMembersParams = {
 
 export async function setMemberRoleAction(memberId: string, role: "MEMBERS" | "ADMINISTRATOR" | "MODERATOR" | "OWNER" | "STAFF" | "GUEST") {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
@@ -52,7 +52,7 @@ export async function setMemberRoleAction(memberId: string, role: "MEMBERS" | "A
 
 export async function setMemberPasswordAction(memberId: string, newPassword: string) {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {

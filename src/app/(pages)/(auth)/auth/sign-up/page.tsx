@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { SignUpFormClient } from "@/features/auth/sign-up-client";
-import { getServerSession } from "@/lib/dal";
+import { authServer } from "@/lib/auth-server";
 
 export default async function SignUpPage() {
-  const session = await getServerSession();
+  const session = await authServer();
   if (session) {
     redirect("/");
   } else {

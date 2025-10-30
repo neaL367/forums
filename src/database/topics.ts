@@ -1,6 +1,6 @@
 import "server-only";
 
-import { sql } from "@/lib/dal";
+import { sql } from "@/lib/auth-server";
 import type { Topic } from "@/types/topic";
 import type { Reply } from "@/types/reply";
 

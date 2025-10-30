@@ -3,7 +3,7 @@
 import { APIError } from "better-auth/api"
 import { revalidateTag } from "next/cache"
 import { getMemberProfileById, updateMemberProfile } from "@/database/members"
-import { getServerSession } from "@/lib/dal"
+import { authServer } from "@/lib/auth-server"
 import { UpdateProfileSchema } from "@/zod/profile/update-profile"
 import type { UpdateProfileFormData, UpdateProfileFormState } from "@/formdata/profile/update-profile"
 
@@ -36,7 +36,7 @@ export async function updateProfileAction(
   const { image, bio, location, website } = validated.data
 
   try {
-    const session = await getServerSession()
+    const session = await authServer()
 
     if (!session?.user?.id) {
       return {

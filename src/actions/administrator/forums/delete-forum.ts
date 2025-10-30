@@ -1,12 +1,12 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { getServerSession } from "@/lib/dal";
+import { authServer } from "@/lib/auth-server";
 import { deleteForum } from "@/database/forums";
 
 export async function deleteForumAction(forumId: string) {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {

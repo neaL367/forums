@@ -8,6 +8,6 @@ import { auth } from "@/lib/auth"
 
 export const sql = neon(process.env.DATABASE_URL!)
 
-export const getServerSession = cache(async () => {
+export const authServer = cache(async () => {
   return await auth.api.getSession({ headers: await headers() });
 })

@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { ForgotUsernameFormClient } from "@/features/auth/forgot-username-client";
-import { getServerSession } from "@/lib/dal";
+import { authServer } from "@/lib/auth-server";
 
 export default async function ForgotUsernamePage() {
-  const session = await getServerSession();
+  const session = await authServer();
 
   if (session) {
     redirect("/");

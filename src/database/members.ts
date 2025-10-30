@@ -1,6 +1,6 @@
 import "server-only"
 
-import { sql } from '@/lib/dal'
+import { sql } from '@/lib/auth-server'
 import type { Member, MemberProfile } from '@/types/member'
 
 export const getAllMembersProfile = async (): Promise<Pick<Member, "id">[]> => {

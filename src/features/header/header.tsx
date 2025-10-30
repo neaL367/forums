@@ -3,10 +3,10 @@ import { Suspense } from "react";
 
 import { MemberMenu } from "@/features/header/member-menu";
 import { Search } from "@/features/header/search";
-import { getServerSession } from "@/lib/dal";
+import { authServer } from "@/lib/auth-server";
 
 export async function Header() {
-  const session = await getServerSession();
+  const session = await authServer();
   const member = session?.user;
 
   return (

@@ -3,11 +3,11 @@
 import { APIError } from "better-auth/api";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
-import { getServerSession } from "@/lib/dal";
+import { authServer } from "@/lib/auth-server";
 
 export async function revokeMemberSessionAction(sessionToken: string) {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
@@ -35,7 +35,7 @@ export async function revokeMemberSessionAction(sessionToken: string) {
 
 export async function revokeAllSessionsMemberAction(memberId: string) {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {

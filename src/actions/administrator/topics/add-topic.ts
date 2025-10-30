@@ -1,14 +1,14 @@
 "use server"
 
 import { revalidateTag } from "next/cache";
-import { getServerSession } from "@/lib/dal"
+import { authServer } from "@/lib/auth-server"
 import { insertTopic } from "@/database/topics";
 import { AddTopicSchema }  from "@/zod/administrator/topic/add-topic"
 import type { AddTopicFormData, AddTopicFormState } from "@/formdata/administrator/topic/add-topic";
 
 export async function addTopicAction(prevState: AddTopicFormState, formData: FormData): Promise<AddTopicFormState> {
   try {
-    const session = await getServerSession();
+    const session = await authServer();
 
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {

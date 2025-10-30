@@ -1,5 +1,5 @@
 import "server-only"
-import { sql } from "@/lib/dal"
+import { sql } from "@/lib/auth-server"
 import type { Reply } from "@/types/reply"
 
 export const getAllReplies = async (): Promise<Reply[]> => {

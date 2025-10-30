@@ -2,12 +2,12 @@ import { redirect } from "next/navigation";
 
 import { AccountSettingsSidebar } from "@/features/account-settings/shared/sidebar-navigation";
 
-import { getServerSession } from "@/lib/dal";
+import { authServer } from "@/lib/auth-server";
 
 export default async function AccountSettingsLayout(
   props: LayoutProps<"/account-settings">
 ) {
-  const session = await getServerSession();
+  const session = await authServer();
   if (!session) redirect("/auth/sign-in");
   if (!session?.user) return null;
 
