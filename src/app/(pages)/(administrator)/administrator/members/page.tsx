@@ -31,7 +31,7 @@ const getCachedMembers = unstable_cache(
     }
   },
   ["id"],
-  { tags: ["admin-mgt-members"], revalidate: 3600 }
+  { tags: ["admin-mgt-members"], revalidate: 60 }
 );
 
 async function MembersTable() {

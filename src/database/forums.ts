@@ -70,6 +70,44 @@ export const getAllForums = async (): Promise<Forum[]> => {
   }
 };
 
+export const getForumsForAddTopic = async (): Promise<Array<Pick<Forum, 'id' | 'title' | 'depth'>>> => {
+  try {
+    const forums = await sql`
+      SELECT 
+        f.id, 
+        f.title, 
+        f."parentForumId"
+      FROM public.forum f
+      ORDER BY f.title;
+    ` as Array<{ id: string; title: string; parentForumId: string | null }>;
+
+    // Calculate depth for each forum
+    const calculateDepth = (
+      forumId: string, 
+      forumList: typeof forums, 
+      visited = new Set<string>()
+    ): number => {
+      if (visited.has(forumId)) return 0;
+      visited.add(forumId);
+      
+      const forum = forumList.find(f => f.id === forumId);
+      if (!forum || !forum.parentForumId) return 0;
+      
+      return 1 + calculateDepth(forum.parentForumId, forumList, visited);
+    };
+
+    // Map to simple dropdown format
+    return forums.map(f => ({
+      id: f.id,
+      title: f.title,
+      depth: calculateDepth(f.id, forums),
+    }));
+  } catch (error) {
+    console.error("Error fetching forums for dropdown:", error);
+    return [];
+  }
+};
+
 export async function insertForum(data: {
   title: string
   description: string

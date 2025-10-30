@@ -25,7 +25,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 import type { Forum } from "@/types/forum";
-import type { AddForumFormState } from "@/formdata/administrator/forums/add-forum";
+import type { AddForumFormState } from "@/formdata/administrator/forum/add-forum";
 import { updateForumAction } from "@/actions/administrator/forums/update-forum";
 
 const initialState: AddForumFormState = {

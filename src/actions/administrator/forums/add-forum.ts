@@ -2,9 +2,9 @@
 
 import { revalidateTag } from "next/cache";
 import { getServerSession } from "@/lib/dal"
-import { AddForumSchema } from "@/zod/administrator/add-forum"
+import { AddForumSchema } from "@/zod/administrator/forum/add-forum"
 import { getForumDepth, insertForum } from "@/database/forums";
-import type { AddForumFormData, AddForumFormState } from "@/formdata/administrator/forums/add-forum"
+import type { AddForumFormData, AddForumFormState } from "@/formdata/administrator/forum/add-forum"
 
 export async function addForumAction(prevState: AddForumFormState, formData: FormData): Promise<AddForumFormState> {
   try {
@@ -13,7 +13,7 @@ export async function addForumAction(prevState: AddForumFormState, formData: For
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
         success: false,
-        message: "Access denied: You must be an administrator to add categories.",
+        message: "Access denied: You must be an administrator.",
       };
     }
 

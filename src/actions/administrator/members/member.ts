@@ -26,7 +26,7 @@ export async function setMemberRoleAction(memberId: string, role: "MEMBERS" | "A
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
         success: false,
-        message: "Access denied: You must be an administrator to add categories.",
+        message: "Access denied: You must be an administrator.",
       };
     }
 
@@ -57,7 +57,7 @@ export async function setMemberPasswordAction(memberId: string, newPassword: str
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
         success: false,
-        message: "Access denied: You must be an administrator to add categories.",
+        message: "Access denied: You must be an administrator.",
       };
     }
     

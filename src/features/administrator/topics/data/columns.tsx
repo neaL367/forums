@@ -39,7 +39,7 @@ export const topicsColumns: ColumnDef<Topic>[] = [
     ),
     cell: ({ getValue }) => {
       return (
-        <div className="whitespace-normal break-words text-sm w-[300px]">
+        <div className="whitespace-normal break-words text-sm w-[400px]">
           {/* {isPinned && <Pin className="h-3 w-3 text-yellow-500" />}
           {isLocked && <Lock className="h-3 w-3 text-red-500" />} */}
           <span className="text-sm font-medium">{getValue() as string}</span>
@@ -86,7 +86,7 @@ export const topicsColumns: ColumnDef<Topic>[] = [
     ),
     cell: ({ getValue }) => {
       const date = getValue() as string;
-      return <span>{format(new Date(date), "MMM dd, yyyy")}</span>;
+      return <span>{format(new Date(date), "MMM dd, yyyy HH:mm a zzz")}</span>;
     },
   },
   {
@@ -96,7 +96,7 @@ export const topicsColumns: ColumnDef<Topic>[] = [
     ),
     cell: ({ getValue }) => {
       const date = getValue() as string;
-      return <span>{format(new Date(date), "MMM dd, yyyy")}</span>;
+      return <span>{format(new Date(date), "MMM dd, yyyy HH:mm a zzz")}</span>;
     },
   },
   {

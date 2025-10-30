@@ -3,8 +3,8 @@
 import { revalidateTag } from "next/cache";
 import { getServerSession } from "@/lib/dal";
 import { getForumDepth, updateForum } from "@/database/forums";
-import { UpdateForumSchema } from "@/zod/administrator/update-forum";
-import type { UpdateForumFormData, UpdateForumFormState } from "@/formdata/administrator/forums/update-forum";
+import { UpdateForumSchema } from "@/zod/administrator/forum/update-forum";
+import type { UpdateForumFormData, UpdateForumFormState } from "@/formdata/administrator/forum/update-forum";
 
 export async function updateForumAction(
   prevState: UpdateForumFormState,
@@ -16,7 +16,7 @@ export async function updateForumAction(
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
         success: false,
-        message: "Access denied: You must be an administrator to edit forums.",
+        message: "Access denied: You must be an administrator.",
       };
     }
 

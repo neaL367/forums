@@ -12,7 +12,7 @@ export async function impersonateMemberAction(memberId: string) {
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
         success: false,
-        message: "Access denied: You must be an administrator to add categories.",
+        message: "Access denied: You must be an administrator.",
       };
     }
 
@@ -40,7 +40,7 @@ export async function stopImpersonationAction() {
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
         success: false,
-        message: "Access denied: You must be an administrator to add categories.",
+        message: "Access denied: You must be an administrator.",
       };
     }
 

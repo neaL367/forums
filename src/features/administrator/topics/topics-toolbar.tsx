@@ -5,16 +5,22 @@ import { Input } from "@/components/ui/input";
 
 import { DataTableViewOptions } from "@features/administrator/shared/data-table/data-table-view-options";
 import { DataTableFacetedFilter } from "@features/administrator/shared/data-table/data-table-faceted-filter";
+import { AddTopicDialog } from "@features/administrator/topics/dialogs/add-topic-dialog";
 import { filters } from "@features/administrator/topics/data/data";
 
 import type { Topic } from "@/types/topic";
+import type { Forum } from "@/types/forum";
 import type { Table } from "@tanstack/react-table";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  forums: Array<Pick<Forum, 'id' | 'title' | 'depth'>>; 
 }
 
-export function TopicsToolbar<TData extends Topic>({ table }: DataTableToolbarProps<TData>) {
+export function TopicsToolbar<TData extends Topic>({
+  table,
+  forums
+}: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
@@ -58,10 +64,12 @@ export function TopicsToolbar<TData extends Topic>({ table }: DataTableToolbarPr
       {/* Right-side controls */}
       <div className="flex flex-wrap gap-2 mt-2 lg:mt-0">
         <DataTableViewOptions table={table} />
-        <Button variant="outline" size="sm">
-          <Plus className="md:mr-2 h-4 w-4" />
-          <span className="hidden lg:inline">Add Topic</span>
-        </Button>
+        <AddTopicDialog forums={forums}>
+          <Button variant="outline" size="sm">
+            <Plus className="md:mr-2 h-4 w-4" />
+            <span className="hidden lg:inline">Add Topic</span>
+          </Button>
+        </AddTopicDialog>
       </div>
     </div>
   );

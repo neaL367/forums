@@ -11,7 +11,7 @@ export async function deleteForumAction(forumId: string) {
     if (!session?.user?.id || session?.user.role !== "ADMINISTRATOR") {
       return {
         success: false,
-        message: "Access denied: You must be an administrator to edit forums.",
+        message: "Access denied: You must be an administrator.",
       };
     }
 

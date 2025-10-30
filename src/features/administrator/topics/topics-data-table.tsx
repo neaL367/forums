@@ -1,18 +1,18 @@
 "use client";
 
 import {
-    type ColumnDef,
-    type ColumnFiltersState,
-    type SortingState,
-    type VisibilityState,
-    flexRender,
-    getCoreRowModel,
-    getFacetedRowModel,
-    getFacetedUniqueValues,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useReactTable,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -28,18 +28,19 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DataTablePaginationProps } from "@features/administrator/shared/data-table/data-table-pagination";
 import type { Topic } from "@/types/topic";
+import type { Forum } from "@/types/forum";
 
 const TopicsToolbar = dynamic(
   () =>
     import("@features/administrator/topics/topics-toolbar").then(
-      (mod) => mod.TopicsToolbar
+      (mod) => mod.TopicsToolbar,
     ),
   {
     loading: () => (
       <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
     ),
     ssr: false,
-  }
+  },
 );
 
 const DataTablePagination = dynamic<DataTablePaginationProps<Topic>>(
@@ -52,15 +53,20 @@ const DataTablePagination = dynamic<DataTablePaginationProps<Topic>>(
       <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
     ),
     ssr: false,
-  }
+  },
 );
 
 interface DataTableProps {
   data?: Topic[];
   columns?: ColumnDef<Topic>[];
+  forums?: Array<Pick<Forum, 'id' | 'title' | 'depth'>>;
 }
 
-export function TopicsDataTable({ columns = [], data = [] }: DataTableProps) {
+export function TopicsDataTable({
+  columns = [],
+  data = [],
+  forums = [],
+}: DataTableProps) {
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -91,7 +97,7 @@ export function TopicsDataTable({ columns = [], data = [] }: DataTableProps) {
 
   return (
     <div className="space-y-4">
-      <TopicsToolbar table={table} />
+      <TopicsToolbar table={table} forums={forums} />
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
@@ -108,7 +114,7 @@ export function TopicsDataTable({ columns = [], data = [] }: DataTableProps) {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -128,7 +134,7 @@ export function TopicsDataTable({ columns = [], data = [] }: DataTableProps) {
                     <TableCell key={cell.id} className="px-6">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

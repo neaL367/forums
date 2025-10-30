@@ -6,6 +6,7 @@ import { DataTableSkeleton } from "@features/administrator/shared/data-table/dat
 import { topicsColumns } from "@features/administrator/topics/data/columns";
 
 import type { Topic } from "@/types/topic";
+import type { Forum } from "@/types/forum";
 
 const TopicsDataTable = dynamic(
   () =>
@@ -18,6 +19,6 @@ const TopicsDataTable = dynamic(
   }
 );
 
-export function TopicsTableClient({ topics }: { topics: Topic[] }) {
-  return <TopicsDataTable data={topics} columns={topicsColumns} />;
+export function TopicsTableClient({ topics, forums }: { topics: Topic[], forums?: Array<Pick<Forum, 'id' | 'title' | 'depth'>> }) {
+  return <TopicsDataTable data={topics} forums={forums} columns={topicsColumns} />;
 }

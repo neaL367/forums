@@ -12,7 +12,7 @@ const getCachedAllForums = unstable_cache(
   ["forums"],
   {
     tags: ["admin-mgt-forums"],
-    revalidate: 300,
+    revalidate: 60,
   }
 );
 
