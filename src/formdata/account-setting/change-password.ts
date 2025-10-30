@@ -1,4 +1,4 @@
-import { FormState } from "@/formdata/formstate";
+import { FormState } from "@/types/formstate";
 
 export type ChangePasswordFormData = {
   currentPassword: string

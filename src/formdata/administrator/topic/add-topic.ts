@@ -1,4 +1,4 @@
-import { FormState } from "@/formdata/formstate";
+import { FormState } from "@/types/formstate";
 
 export type AddTopicFormData = {
   title: string;
