@@ -1,10 +1,10 @@
 import { render } from "@react-email/render"
 import nodemailer from "nodemailer"
 
-import { ResetPasswordEmail } from "@/components/email/reset-password"
-import { UsernameReminderEmail } from "@/components/email/username-reminder"
-import { VerificationEmail } from "@/components/email/verification"
-import { ChangeEmailVerification } from "@/components/email/change-email"
+import { ResetPasswordEmail } from "@/features/email/reset-password"
+import { UsernameReminderEmail } from "@/features/email/username-reminder"
+import { VerificationEmail } from "@/features/email/verification"
+import { ChangeEmailVerification } from "@/features/email/change-email"
 
 
 export type EmailOptions = {
