@@ -29,6 +29,7 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible";
+import type { Route } from "next";
 
 const navigation: {
   name: string;
@@ -92,7 +93,7 @@ export function AdministratorSidebar() {
                         isActive={pathname === item.href}
                         tooltip={item.name}
                       >
-                        <Link href={{ pathname: item.href }}>
+                        <Link href={item.href as Route}>
                           <item.icon />
                           <span className="group-data-[collapsible=icon]:hidden">{item.name}</span>
                         </Link>

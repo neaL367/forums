@@ -11,5 +11,3 @@ const withBundleAnalyzer = bundleAnalyzer({
 })
 
 export default withBundleAnalyzer(nextConfig);
-
-// export default nextConfig
