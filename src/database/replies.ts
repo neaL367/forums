@@ -1,5 +1,6 @@
 import "server-only"
-import { sql } from "@/lib/auth-server"
+
+import { sql } from "@/lib/neon-database";
 import type { Reply } from "@/types/reply"
 
 export const getAllReplies = async (): Promise<Reply[]> => {

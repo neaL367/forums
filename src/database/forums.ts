@@ -1,6 +1,6 @@
 import "server-only"
 
-import { sql } from "@/lib/auth-server";
+import { sql } from "@/lib/neon-database";
 import type { Forum } from "@/types/forum";
 import type { Topic } from "@/types/topic";
 

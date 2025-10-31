@@ -1,6 +1,6 @@
 import "server-only"
 
-import { sql } from "@/lib/auth-server";
+import { sql } from "@/lib/neon-database";
 import type { Member } from "@/types/member";
 
 export const forgotUsername = (async (email: string): Promise<Member> => {
