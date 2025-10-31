@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import { useDataTable } from "@/hooks/use-data-table";
 
 import {
@@ -10,37 +9,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import { ForumsToolbar } from "@/features/administrator/forums/data-table/forums-toolbar";
+import { DataTablePagination } from "@/features/administrator/shared/data-table/data-table-pagination";
 
 import type { Forum } from "@/types/forum";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { DataTablePaginationProps } from "@features/administrator/shared/data-table/data-table-pagination";
-
-const ForumsToolbar = dynamic(
-  () =>
-    import("@/features/administrator/forums/data-table/forums-toolbar").then(
-      (mod) => mod.ForumsToolbar,
-    ),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="h-8 w-full sm:w-[300px]" />,
-  },
-);
-
-const DataTablePagination = dynamic<DataTablePaginationProps<Forum>>(
-  () =>
-    import(
-      "@features/administrator/shared/data-table/data-table-pagination"
-    ).then((mod) => mod.DataTablePagination),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex justify-end">
-        <Skeleton className="h-8 w-[300px]" />
-      </div>
-    ),
-  },
-);
 
 type ForumsDataTableProps = {
   data?: Forum[];

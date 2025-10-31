@@ -1,5 +1,3 @@
-import dynamic from "next/dynamic";
-
 import {
   Table,
   TableBody,
@@ -9,38 +7,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { useDataTable } from "@/hooks/use-data-table";
 
-import type { DataTablePaginationProps } from "@/features/administrator/shared/data-table/data-table-pagination";
+import { MembersToolbar } from "@/features/administrator/members/data-table/members-toolbar";
+import { DataTablePagination } from "@/features/administrator/shared/data-table/data-table-pagination";
+
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Member } from "@/types/member";
-
-const MembersToolbar = dynamic(
-  () =>
-    import("@features/administrator/members/data-table/members-toolbar").then(
-      (mod) => mod.MembersToolbar,
-    ),
-  {
-    loading: () => (
-      <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
-    ),
-    ssr: false,
-  },
-);
-
-const DataTablePagination = dynamic<DataTablePaginationProps<Member>>(
-  () =>
-    import(
-      "@features/administrator/shared/data-table/data-table-pagination"
-    ).then((mod) => mod.DataTablePagination),
-  {
-    loading: () => (
-      <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
-    ),
-    ssr: false,
-  },
-);
 
 type MembersDataTableProps = {
   data?: Member[];
