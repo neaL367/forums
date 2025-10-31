@@ -1,19 +1,4 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-} from "@tanstack/react-table";
 import dynamic from "next/dynamic";
-import { useState } from "react";
 
 import {
   Table,
@@ -25,20 +10,23 @@ import {
 } from "@/components/ui/table";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDataTable } from "@/hooks/use-data-table";
+
 import type { DataTablePaginationProps } from "@/features/administrator/shared/data-table/data-table-pagination";
+import type { ColumnDef } from "@tanstack/react-table";
 import type { Member } from "@/types/member";
 
 const MembersToolbar = dynamic(
   () =>
     import("@features/administrator/members/data-table/members-toolbar").then(
-      (mod) => mod.MembersToolbar
+      (mod) => mod.MembersToolbar,
     ),
   {
     loading: () => (
       <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
     ),
     ssr: false,
-  }
+  },
 );
 
 const DataTablePagination = dynamic<DataTablePaginationProps<Member>>(
@@ -51,44 +39,21 @@ const DataTablePagination = dynamic<DataTablePaginationProps<Member>>(
       <Skeleton className="h-8 w-full sm:w-[150px] md:w-[250px] lg:w-[300px]" />
     ),
     ssr: false,
-  }
+  },
 );
 
-type DataTableProps = {
+type MembersDataTableProps = {
   data?: Member[];
   columns?: ColumnDef<Member>[];
-}
+};
 
 export function MembersDataTable({
   columns = [],
   data = [],
-}: DataTableProps) {
-  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  const table = useReactTable({
+}: MembersDataTableProps) {
+  const { table, flexRender } = useDataTable<Member>({
     data,
     columns,
-    state: {
-      sorting,
-      columnVisibility,
-      rowSelection,
-      columnFilters,
-    },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
   return (
@@ -109,7 +74,7 @@ export function MembersDataTable({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 ))}
@@ -127,7 +92,7 @@ export function MembersDataTable({
                     <TableCell key={cell.id} className="px-6">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

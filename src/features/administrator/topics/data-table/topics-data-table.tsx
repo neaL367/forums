@@ -1,19 +1,4 @@
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
 import dynamic from "next/dynamic";
-import { useState } from "react";
 
 import {
   Table,
@@ -23,10 +8,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import { Skeleton } from "@/components/ui/skeleton";
+
 import type { DataTablePaginationProps } from "@features/administrator/shared/data-table/data-table-pagination";
+import type { ColumnDef } from "@tanstack/react-table";
 import type { Topic } from "@/types/topic";
 import type { Forum } from "@/types/forum";
+
+import { useDataTable } from "@/hooks/use-data-table";
 
 const TopicsToolbar = dynamic(
   () =>
@@ -54,43 +44,20 @@ const DataTablePagination = dynamic<DataTablePaginationProps<Topic>>(
   },
 );
 
-interface DataTableProps {
+type DataTableProps = {
   data?: Topic[];
   columns?: ColumnDef<Topic>[];
-  forums?: Array<Pick<Forum, 'id' | 'title' | 'depth'>>;
-}
+  forums?: Array<Pick<Forum, "id" | "title" | "depth">>;
+};
 
 export function TopicsDataTable({
   columns = [],
   data = [],
   forums = [],
 }: DataTableProps) {
-  const [rowSelection, setRowSelection] = useState({});
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  const table = useReactTable({
+  const { table, flexRender } = useDataTable<Topic>({
     data,
     columns,
-    state: {
-      sorting,
-      columnVisibility,
-      rowSelection,
-      columnFilters,
-    },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
   return (

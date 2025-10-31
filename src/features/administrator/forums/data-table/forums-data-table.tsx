@@ -1,19 +1,6 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  getExpandedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-  type ExpandedState,
-} from "@tanstack/react-table";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useDataTable } from "@/hooks/use-data-table";
+
 import {
   Table,
   TableBody,
@@ -22,14 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
-import type { Forum } from "@/types/forum";
-import type { DataTablePaginationProps } from "@features/administrator/shared/data-table/data-table-pagination";
 
-interface ForumsDataTableProps {
-  data?: Forum[];
-  columns?: ColumnDef<Forum>[];
-}
+import { Skeleton } from "@/components/ui/skeleton";
+
+import type { Forum } from "@/types/forum";
+import type { ColumnDef } from "@tanstack/react-table";
+import type { DataTablePaginationProps } from "@features/administrator/shared/data-table/data-table-pagination";
 
 const ForumsToolbar = dynamic(
   () =>
@@ -57,43 +42,20 @@ const DataTablePagination = dynamic<DataTablePaginationProps<Forum>>(
   },
 );
 
+type ForumsDataTableProps = {
+  data?: Forum[];
+  columns?: ColumnDef<Forum>[];
+}
+
 export function ForumsDataTable({
   data = [],
   columns = [],
 }: ForumsDataTableProps) {
-  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    forumCategory: false,
-    depth: false,
-  });
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [expanded, setExpanded] = useState<ExpandedState>({});
-
-  const table = useReactTable({
+  const { table, flexRender } = useDataTable<Forum>({
     data,
     columns,
-    state: { 
-      sorting, 
-      columnVisibility, 
-      rowSelection, 
-      columnFilters, 
-      expanded 
-    },
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    onExpandedChange: setExpanded,
-    enableRowSelection: true,
+    enableExpand: true,
     getSubRows: (row) => row.subForums,
-    autoResetExpanded: false,
-
-    getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   });
 
   return (

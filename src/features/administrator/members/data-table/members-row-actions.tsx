@@ -1,10 +1,9 @@
 import { toast } from "sonner";
-import { JSX, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { MoreHorizontal, Loader2 } from "lucide-react";
 import { Row } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,12 +34,24 @@ interface MemberRowActionsProps {
   row: Row<Member>;
 }
 
+// Define dialog types for type safety
+type DialogType =
+  | "none"
+  | "ban"
+  | "unban"
+  | "setPassword"
+  | "editMember"
+  | "manageSessions"
+  | "remove"
+  | "impersonate"
+  | "revokeAllSessions";
+
 export function MembersRowActions({ row }: MemberRowActionsProps) {
   const member = row.original;
   const { data: session, refetch } = authClient.useSession();
   const currentUserId = session?.user?.id;
 
-  const [dialogMenu, setDialogMenu] = useState<string>("none");
+  const [activeDialog, setActiveDialog] = useState<DialogType>("none");
   const [loading, setLoading] = useState(false);
 
   const computedActions = useMemo(() => {
@@ -56,69 +67,15 @@ export function MembersRowActions({ row }: MemberRowActionsProps) {
       })
       .filter(
         (action) =>
-          !(action.label === "Impersonate" && member.id === currentUserId)
+          !(action.label === "Impersonate" && member.id === currentUserId),
       );
   }, [member.banned, member.id, currentUserId]);
 
   const isSelf = member.id === currentUserId;
 
-  const handleDialogMenu = (): JSX.Element | null => {
-    switch (dialogMenu) {
-      case "ban":
-        return (
-          <BanMemberDialog
-            member={member}
-            open={true}
-            onOpenChange={(open) => {
-              if (!open) setDialogMenu("none");
-            }}
-          />
-        );
-      case "setPassword":
-        return (
-          <SetPasswordDialog
-            member={member}
-            open={true}
-            onOpenChange={(open) => {
-              if (!open) setDialogMenu("none");
-            }}
-          />
-        );
-      case "editMember":
-        return (
-          <EditMemberDialog
-            member={member}
-            open={true}
-            onOpenChange={(open) => {
-              if (!open) setDialogMenu("none");
-            }}
-          />
-        );
-      case "manageSessions":
-        return (
-          <SessionManagementDialog
-            member={member}
-            open={true}
-            onOpenChange={(open) => {
-              if (!open) setDialogMenu("none");
-            }}
-          />
-        );
-      case "unban":
-      case "remove":
-      case "impersonate":
-      case "revokeAllSessions":
-        return (
-          <ConfirmationDialogs
-            member={member}
-            alertType={dialogMenu}
-            onClose={() => setDialogMenu("none")}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  const closeDialog = useCallback(() => {
+    setActiveDialog("none");
+  }, []);
 
   const handleAction = useCallback(
     (actionLabel: string) => {
@@ -127,32 +84,32 @@ export function MembersRowActions({ row }: MemberRowActionsProps) {
           window.open(`/profile/${member.id}`, "_blank");
           break;
         case "Edit Member":
-          setDialogMenu("editMember");
+          setActiveDialog("editMember");
           break;
         case "Set Password":
-          setDialogMenu("setPassword");
+          setActiveDialog("setPassword");
           break;
         case "Impersonate":
-          setDialogMenu("impersonate");
+          setActiveDialog("impersonate");
           break;
         case "Manage Sessions":
-          setDialogMenu("manageSessions");
+          setActiveDialog("manageSessions");
           break;
         case "Revoke All Sessions":
-          setDialogMenu("revokeAllSessions");
+          setActiveDialog("revokeAllSessions");
           break;
         case "Ban Member":
-          setDialogMenu("ban");
+          setActiveDialog("ban");
           break;
         case "Unban Member":
-          setDialogMenu("unban");
+          setActiveDialog("unban");
           break;
         case "Remove Member":
-          setDialogMenu("remove");
+          setActiveDialog("remove");
           break;
       }
     },
-    [member.id]
+    [member.id],
   );
 
   const handleRoleChange = useCallback(
@@ -168,11 +125,18 @@ export function MembersRowActions({ row }: MemberRowActionsProps) {
         setLoading(false);
       }
     },
-    [member.id, refetch]
+    [member.id, refetch],
   );
 
+  // Confirmation dialog types
+  const isConfirmationDialog =
+    activeDialog === "unban" ||
+    activeDialog === "remove" ||
+    activeDialog === "impersonate" ||
+    activeDialog === "revokeAllSessions";
+
   return (
-    <Dialog>
+    <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -250,7 +214,10 @@ export function MembersRowActions({ row }: MemberRowActionsProps) {
                     {"shortcut" in action &&
                       (action as { shortcut?: React.ReactNode }).shortcut && (
                         <DropdownMenuShortcut>
-                          {(action as { shortcut?: React.ReactNode }).shortcut}
+                          {
+                            (action as { shortcut?: React.ReactNode })
+                              .shortcut
+                          }
                         </DropdownMenuShortcut>
                       )}
                   </DropdownMenuItem>
@@ -260,7 +227,47 @@ export function MembersRowActions({ row }: MemberRowActionsProps) {
           })}
         </DropdownMenuContent>
       </DropdownMenu>
-      {handleDialogMenu()}
-    </Dialog>
+
+      {/* Render active dialogs */}
+      {activeDialog === "ban" && (
+        <BanMemberDialog
+          member={member}
+          open={true}
+          onOpenChange={(open) => !open && closeDialog()}
+        />
+      )}
+
+      {activeDialog === "setPassword" && (
+        <SetPasswordDialog
+          member={member}
+          open={true}
+          onOpenChange={(open) => !open && closeDialog()}
+        />
+      )}
+
+      {activeDialog === "editMember" && (
+        <EditMemberDialog
+          member={member}
+          open={true}
+          onOpenChange={(open) => !open && closeDialog()}
+        />
+      )}
+
+      {activeDialog === "manageSessions" && (
+        <SessionManagementDialog
+          member={member}
+          open={true}
+          onOpenChange={(open) => !open && closeDialog()}
+        />
+      )}
+
+      {isConfirmationDialog && (
+        <ConfirmationDialogs
+          member={member}
+          alertType={activeDialog}
+          onClose={closeDialog}
+        />
+      )}
+    </>
   );
 }
