@@ -1,4 +1,4 @@
-import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
+import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header-client";
 import { breadcrumbs } from "@/features/administrator/reports/data/data";
 
 export default function ReportsPage() {

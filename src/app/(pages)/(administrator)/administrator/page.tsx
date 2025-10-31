@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
+import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header-client";
 
 const stats = [
   {

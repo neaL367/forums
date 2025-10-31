@@ -4,7 +4,7 @@ import { Suspense } from "react";
 
 import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
 import { MembersTableClient } from "@/features/administrator/members/data-table/members-data-table-client";
-import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
+import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header-client";
 import { breadcrumbs } from "@/features/administrator/members/data/data";
 
 import { auth } from "@/lib/auth";

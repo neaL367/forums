@@ -1,11 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-
+import { useState, useEffect } from "react";
 import { DataTableSkeleton } from "@features/administrator/shared/data-table/data-table-skeleton";
-import { forumsColumns } from "@features/administrator/forums/data/columns";
 
 import type { Forum } from "@/types/forum";
+import type { ColumnDef } from "@tanstack/react-table";
 
 const ForumsDataTable = dynamic(
   () =>
@@ -14,11 +14,23 @@ const ForumsDataTable = dynamic(
     ),
   {
     ssr: false,
-    loading: () => <DataTableSkeleton />,
   }
 );
 
 export function ForumsTableClient({ forums }: { forums: Forum[] }) {
-  const columns = forumsColumns(forums);
+  const [columns, setColumns] = useState<ColumnDef<Forum>[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    import("@features/administrator/forums/data/columns").then((mod) => {
+      setColumns(mod.forumsColumns(forums));
+      setIsLoading(false);
+    });
+  }, [forums]);
+
+  if (isLoading || !columns.length) {
+    return <DataTableSkeleton />;
+  }
+
   return <ForumsDataTable data={forums} columns={columns} />;
 }

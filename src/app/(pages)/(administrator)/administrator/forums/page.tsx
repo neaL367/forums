@@ -3,7 +3,7 @@ import { Suspense } from "react";
 
 import { DataTableSkeleton } from "@/features/administrator/shared/data-table/data-table-skeleton";
 import { ForumsTableClient } from "@/features/administrator/forums/data-table/forums-data-table-client";
-import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header";
+import { AdministratorHeader } from "@/features/administrator/shared/admnistrator-header-client";
 import { breadcrumbs } from "@/features/administrator/forums/data/data";
 import { getAllForums } from "@/database/forums";
 

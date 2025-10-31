@@ -1,3 +1,7 @@
+import dynamic from "next/dynamic";
+import type { ReactElement } from "react";
+import { useDataTable } from "@/hooks/use-data-table";
+
 import {
   Table,
   TableBody,
@@ -7,14 +11,31 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { TopicsToolbar } from "@/features/administrator/topics/data-table/topics-toolbar";
-import { DataTablePagination } from "@/features/administrator/shared/data-table/data-table-pagination";
-
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Topic } from "@/types/topic";
 import type { Forum } from "@/types/forum";
 
-import { useDataTable } from "@/hooks/use-data-table";
+const TopicsToolbar = dynamic(
+  () =>
+    import("@features/administrator/topics/data-table/topics-toolbar").then(
+      (mod) => ({ default: mod.TopicsToolbar })
+    ),
+  {
+    ssr: false,
+    loading: () => <div className="h-10 w-full" />,
+  }
+);
+
+const DataTablePagination = dynamic(
+  () =>
+    import("@features/administrator/shared/data-table/data-table-pagination").then(
+      (mod) => mod.DataTablePagination as typeof mod.DataTablePagination
+    ),
+  {
+    ssr: false,
+    loading: () => <div className="h-8 w-full" />,
+  }
+) as <TData>(props: { table: import("@tanstack/react-table").Table<TData> }) => ReactElement;
 
 type DataTableProps = {
   data?: Topic[];

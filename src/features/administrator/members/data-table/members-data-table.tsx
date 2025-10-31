@@ -1,3 +1,7 @@
+import dynamic from "next/dynamic";
+import type { ReactElement } from "react";
+import { useDataTable } from "@/hooks/use-data-table";
+
 import {
   Table,
   TableBody,
@@ -7,13 +11,30 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useDataTable } from "@/hooks/use-data-table";
-
-import { MembersToolbar } from "@/features/administrator/members/data-table/members-toolbar";
-import { DataTablePagination } from "@/features/administrator/shared/data-table/data-table-pagination";
-
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Member } from "@/types/member";
+
+const MembersToolbar = dynamic(
+  () =>
+    import("@features/administrator/members/data-table/members-toolbar").then(
+      (mod) => ({ default: mod.MembersToolbar })
+    ),
+  {
+    ssr: false,
+    loading: () => <div className="h-10 w-full" />,
+  }
+);
+
+const DataTablePagination = dynamic(
+  () =>
+    import("@features/administrator/shared/data-table/data-table-pagination").then(
+      (mod) => mod.DataTablePagination as typeof mod.DataTablePagination
+    ),
+  {
+    ssr: false,
+    loading: () => <div className="h-8 w-full" />,
+  }
+) as <TData>(props: { table: import("@tanstack/react-table").Table<TData> }) => ReactElement;
 
 type MembersDataTableProps = {
   data?: Member[];
