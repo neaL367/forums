@@ -1,7 +1,4 @@
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useActionState, useEffect, useRef, useState } from "react";
 import { Loader2, ArrowLeft } from "lucide-react";
 import {
   Card,
@@ -15,9 +12,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { authClient } from "@/lib/auth-client";
 import { resetPasswordAction } from "@/actions/auth/reset-password";
-import type { ResetPasswordFormState } from "@/formdata/auth/reset-password";
+import { useForm } from "@/hooks/use-form";
+
+import type {
+  ResetPasswordFormData,
+  ResetPasswordFormState,
+} from "@/formdata/auth/reset-password";
 
 const initialState: ResetPasswordFormState = {
   success: false,
@@ -29,49 +30,13 @@ interface ResetPasswordFormProps {
 }
 
 export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
-  const router = useRouter();
-  const { data: session, refetch } = authClient.useSession();
-
-  const [waitingForSession, setWaitingForSession] = useState(false);
-  const loadingToastRef = useRef<string | number | null>(null);
-
-  const [state, formAction, pending] = useActionState(
-    async (prevState: ResetPasswordFormState, formData: FormData) => {
-      loadingToastRef.current = toast.loading("Resetting your password...");
-      return await resetPasswordAction(prevState, formData);
-    },
-    initialState
-  );
-
-  useEffect(() => {
-    if (state?.message) {
-      if (loadingToastRef.current) {
-        toast.dismiss(loadingToastRef.current);
-        loadingToastRef.current = null;
-      }
-
-      if (state.success) {
-        setWaitingForSession(true);
-        refetch();
-
-        if (waitingForSession) {
-          toast.success(state.message);
-          router.push("/");
-          setWaitingForSession(false);
-        }
-      } else {
-        toast.error(state.message);
-      }
-    }
-  }, [refetch, state, waitingForSession, router]);
-
-  useEffect(() => {
-    if (waitingForSession && session) {
-      toast.success(state.message);
-      router.push("/");
-      setWaitingForSession(false);
-    }
-  }, [session, waitingForSession, state.message, router]);
+  const { state, formAction, pending, waitingForSession } =
+    useForm<ResetPasswordFormData>({
+      action: resetPasswordAction,
+      initialState,
+      loadingMessage: "Resetting your password...",
+      successRedirect: "/",
+    });
 
   return (
     <Card className="z-50 rounded-md rounded-t-none min-w-lg">

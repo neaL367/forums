@@ -1,16 +1,21 @@
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useActionState, useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { signUpAction } from "@/actions/auth/sign-up";
-import { authClient } from "@/lib/auth-client";
-import type { SignUpFormState } from "@/formdata/auth/sign-up";
+import { useForm } from "@/hooks/use-form";
+
+import type { SignUpFormData, SignUpFormState } from "@/formdata/auth/sign-up";
 
 const initialState: SignUpFormState = {
   success: false,
@@ -18,46 +23,13 @@ const initialState: SignUpFormState = {
 };
 
 export function SignUpForm() {
-  const router = useRouter();
-  const { data: session, refetch } = authClient.useSession();
-  
-  // Track if we're waiting for a successful sign-up
-  const [waitingForSession, setWaitingForSession] = useState(false);
-  const loadingToastRef = useRef<string | number | null>(null);
-
-  const [state, formAction, pending] = useActionState(
-    async (prevState: SignUpFormState, formData: FormData) => {
-      loadingToastRef.current = toast.loading("Creating your account...");
-      return await signUpAction(prevState, formData);
-    },
-    initialState
-  );
-
-  // Handle initial form response
-  useEffect(() => {
-    if (state?.message) {
-      if (loadingToastRef.current) {
-        toast.dismiss(loadingToastRef.current);
-        loadingToastRef.current = null;
-      }
-
-      if (state.success) {
-        setWaitingForSession(true);
-        refetch();
-      } else {
-        toast.error(state.message);
-      }
-    }
-  }, [refetch, state]);
-
-  useEffect(() => {
-    if (waitingForSession && session) {
-      toast.success(state.message);
-      router.push("/");
-      router.refresh();
-      setWaitingForSession(false);
-    }
-  }, [session, waitingForSession, state.message, router]);
+  const { state, formAction, pending } = useForm<SignUpFormData>({
+    action: signUpAction,
+    initialState: initialState,
+    loadingMessage: "Creating your account...",
+    successRedirect: "/",
+    awaitSession: true,
+  });
 
   return (
     <Card className="z-50 rounded-md rounded-t-none min-w-lg">
@@ -147,8 +119,8 @@ export function SignUpForm() {
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={pending || waitingForSession}>
-            {pending || waitingForSession ? (
+          <Button type="submit" className="w-full" disabled={pending}>
+            {pending ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
               "Create an account"

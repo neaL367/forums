@@ -1,13 +1,14 @@
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useActionState, useEffect, useRef } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { authClient } from "@/lib/auth-client";
+
+import { useForm } from "@/hooks/use-form";
 import { changeUsernameAction } from "@/actions/account-settings/change-username";
-import type { ChangeUsernameFormState } from "@/formdata/account-setting/change-username";
+
+import type {
+  ChangeUsernameFormData,
+  ChangeUsernameFormState,
+} from "@/formdata/account-setting/change-username";
 
 const initialState: ChangeUsernameFormState = {
   success: false,
@@ -15,35 +16,14 @@ const initialState: ChangeUsernameFormState = {
 };
 
 export function UsernameSettingsForm() {
-  const router = useRouter();
-  const { data: session, refetch } = authClient.useSession();
-  
-  const loadingToastRef = useRef<string | number | null>(null);
-
-  const [state, action, pending] = useActionState(
-    async (prevState: ChangeUsernameFormState, formData: FormData) => {
-      loadingToastRef.current = toast.loading("Updating your username...");
-      return await changeUsernameAction(prevState, formData);
-    },
-    initialState
-  );
-
-  useEffect(() => {
-    if (state?.message) {
-      if (loadingToastRef.current) {
-        toast.dismiss(loadingToastRef.current);
-        loadingToastRef.current = null;
-      }
-
-      if (state.success) {
-        toast.success(state.message);
-        router.push("/account-settings");
-        refetch();
-      } else {
-        toast.error(state.message);
-      }
-    }
-  }, [refetch, router, state]);
+  const { state, formAction, pending, session } =
+    useForm<ChangeUsernameFormData>({
+      action: changeUsernameAction,
+      initialState,
+      loadingMessage: "Updating your email address...",
+      successRedirect: "/account-settings",
+      awaitSession: true,
+    });
 
   return (
     <Card className="from-primary/5 to-card dark:bg-card bg-gradient-to-t shadow-xs">
@@ -55,7 +35,7 @@ export function UsernameSettingsForm() {
         </p>
       </CardHeader>
       <CardContent>
-        <form action={action} className="space-y-4">
+        <form action={formAction} className="space-y-4">
           <div>
             <label
               htmlFor="displayUsername"

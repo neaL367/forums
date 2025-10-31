@@ -1,7 +1,4 @@
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useActionState, useEffect, useRef } from "react";
 import { Loader2, ArrowLeft } from "lucide-react";
 
 import {
@@ -17,9 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { forgotUsernameAction } from "@/actions/auth/forgot-username";
-import { authClient } from "@/lib/auth-client";
+import { useForm } from "@/hooks/use-form";
 
-import type { ForgotUsernameFormState } from "@/formdata/auth/forgot-username";
+import type {
+  ForgotUsernameFormData,
+  ForgotUsernameFormState,
+} from "@/formdata/auth/forgot-username";
 
 const initialState: ForgotUsernameFormState = {
   success: false,
@@ -27,34 +27,12 @@ const initialState: ForgotUsernameFormState = {
 };
 
 export function ForgotUsernameForm() {
-  const router = useRouter();
-  const { refetch } = authClient.useSession();
-  
-  const loadingToastRef = useRef<string | number | null>(null);
-
-  const [state, formAction, pending] = useActionState(
-    async (prevState: ForgotUsernameFormState, formData: FormData) => {
-      loadingToastRef.current = toast.loading("Sending username to your email...");
-      return await forgotUsernameAction(prevState, formData);
-    },
-    initialState
-  );
-
-  useEffect(() => {
-    if (state?.message) {
-      if (loadingToastRef.current) {
-        toast.dismiss(loadingToastRef.current);
-        loadingToastRef.current = null;
-      }
-
-      if (state.success) {
-        toast.success(state.message);
-        router.push("/");
-      } else {
-        toast.error(state.message);
-      }
-    }
-  }, [refetch, router, state]);
+  const { state, formAction, pending } = useForm<ForgotUsernameFormData>({
+    action: forgotUsernameAction,
+    initialState,
+    loadingMessage: "Sending username to your email...",
+    successRedirect: "/",
+  });
 
   return (
     <Card className="z-50 rounded-md rounded-t-none min-w-lg">

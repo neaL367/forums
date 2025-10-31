@@ -1,16 +1,17 @@
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useActionState, useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-import { authClient } from "@/lib/auth-client";
 import { changeEmailAction } from "@/actions/account-settings/change-email";
-import type { ChangeEmailFormState } from "@/formdata/account-setting/change-email";
+import { useForm } from "@/hooks/use-form";
+
+import type {
+  ChangeEmailFormData,
+  ChangeEmailFormState,
+} from "@/formdata/account-setting/change-email";
 
 const initialState: ChangeEmailFormState = {
   success: false,
@@ -18,35 +19,13 @@ const initialState: ChangeEmailFormState = {
 };
 
 export function EmailSettingsForm() {
-  const router = useRouter();
-  const { data: session, refetch } = authClient.useSession();
-  
-  const loadingToastRef = useRef<string | number | null>(null);
-
-  const [state, action, pending] = useActionState(
-    async (prevState: ChangeEmailFormState, formData: FormData) => {
-      loadingToastRef.current = toast.loading("Updating your email address...");
-      return await changeEmailAction(prevState, formData);
-    },
-    initialState
-  );
-
-  useEffect(() => {
-    if (state?.message) {
-      if (loadingToastRef.current) {
-        toast.dismiss(loadingToastRef.current);
-        loadingToastRef.current = null;
-      }
-
-      if (state.success) {
-        toast.success(state.message);
-        router.push("/account-settings");
-        refetch();
-      } else {
-        toast.error(state.message);
-      }
-    }
-  }, [state, refetch, router]);
+  const { state, formAction, pending, session } = useForm<ChangeEmailFormData>({
+    action: changeEmailAction,
+    initialState,
+    loadingMessage: "Updating your email address...",
+    successRedirect: "/account-settings",
+    awaitSession: true,
+  });
 
   return (
     <Card className="from-primary/5 to-card dark:bg-card bg-gradient-to-t shadow-xs">
@@ -57,7 +36,7 @@ export function EmailSettingsForm() {
         </p>
       </CardHeader>
       <CardContent>
-        <form action={action} className="space-y-4">
+        <form action={formAction} className="space-y-4">
           <input type="hidden" name="userId" value={session?.user.id ?? ""} />
 
           <div>

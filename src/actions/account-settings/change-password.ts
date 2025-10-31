@@ -32,7 +32,7 @@ export async function changePasswordAction(prevState: ChangePasswordFormState, f
       body: {
         currentPassword: currentPassword,
         newPassword: newPassword,
-        revokeOtherSessions: true,
+        revokeOtherSessions: false,
       },
       headers: await headers(),
     })

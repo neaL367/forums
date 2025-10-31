@@ -1,14 +1,11 @@
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useActionState, useEffect, useRef } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-import { authClient } from "@/lib/auth-client";
 import { changePasswordAction } from "@/actions/account-settings/change-password";
-import { ChangePasswordFormState } from "@/formdata/account-setting/change-password";
+import { useForm } from "@/hooks/use-form";
+
+import type { ChangePasswordFormData, ChangePasswordFormState } from "@/formdata/account-setting/change-password";
 
 const initialState: ChangePasswordFormState = {
   success: false,
@@ -16,35 +13,12 @@ const initialState: ChangePasswordFormState = {
 };
 
 export function PasswordSettingsForm() {
-  const router = useRouter();
-  const { data: session, refetch } = authClient.useSession();
-  
-  const loadingToastRef = useRef<string | number | null>(null);
-
-  const [state, action, pending] = useActionState(
-    async (prevState: ChangePasswordFormState, formData: FormData) => {
-      loadingToastRef.current = toast.loading("Updating your password...");
-      return await changePasswordAction(prevState, formData);
-    },
-    initialState
-  );
-
-  useEffect(() => {
-    if (state?.message) {
-      if (loadingToastRef.current) {
-        toast.dismiss(loadingToastRef.current);
-        loadingToastRef.current = null;
-      }
-
-      if (state.success) {
-        toast.success(state.message);
-        router.push("/account-settings");
-        refetch();
-      } else {
-        toast.error(state.message);
-      }
-    }
-  }, [state, refetch, router]);
+  const { state, formAction, pending, session } = useForm<ChangePasswordFormData>({
+    action: changePasswordAction,
+    initialState,
+    loadingMessage: "Updating your email address...",
+    successRedirect: "/account-settings",
+  });
 
   return (
     <Card className="from-primary/5 to-card dark:bg-card bg-gradient-to-t shadow-xs">
@@ -55,7 +29,7 @@ export function PasswordSettingsForm() {
         </p>
       </CardHeader>
       <CardContent>
-        <form action={action} className="space-y-4">
+        <form action={formAction} className="space-y-4">
           <input type="hidden" name="userId" value={session?.user.id ?? ""} />
 
           <div>

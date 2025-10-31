@@ -27,7 +27,7 @@ export async function forgotPasswordAction(prevState: ForgotPasswordFormState, f
     await auth.api.forgetPassword({
       body: {
         email,
-        redirectTo: `${process.env.BETTER_AUTH_URL}/reset-password`,
+        redirectTo: `${process.env.BETTER_AUTH_URL}/auth/reset-password`,
       },
       headers: await headers(),
     })

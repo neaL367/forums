@@ -1,13 +1,12 @@
-import "server-only"
+import "server-only";
 
-import { neon } from "@neondatabase/serverless"
-import { headers } from "next/headers"
-import { cache } from "react"
+import { neon } from "@neondatabase/serverless";
+import { headers } from "next/headers";
 
-import { auth } from "@/lib/auth"
+import { auth } from "@/lib/auth";
 
-export const sql = neon(process.env.DATABASE_URL!)
+export const sql = neon(process.env.DATABASE_URL!);
 
-export const authServer = cache(async () => {
+export const authServer = async () => {
   return await auth.api.getSession({ headers: await headers() });
-})
+};

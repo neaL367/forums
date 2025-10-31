@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useActionState, useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
+
 import {
   Card,
   CardContent,
@@ -16,8 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { signInAction } from "@/actions/auth/sign-in";
-import { authClient } from "@/lib/auth-client";
-import type { SignInFormState } from "@/formdata/auth/sign-in";
+import { useForm } from "@/hooks/use-form";
+
+import type { SignInFormData, SignInFormState } from "@/formdata/auth/sign-in";
 
 const initialState: SignInFormState = {
   success: false,
@@ -25,44 +24,13 @@ const initialState: SignInFormState = {
 };
 
 export function SignInForm() {
-  const router = useRouter();
-  const { data: session, refetch } = authClient.useSession();
-  const [waitingForSession, setWaitingForSession] = useState(false);
-
-  const loadingToastRef = useRef<string | number | null>(null);
-
-  const [state, formAction, pending] = useActionState(
-    async (prevState: SignInFormState, formData: FormData) => {
-      loadingToastRef.current = toast.loading("Signing in...");
-      return await signInAction(prevState, formData);
-    },
-    initialState
-  );
-
-  useEffect(() => {
-    if (state?.message) {
-      if (loadingToastRef.current) {
-        toast.dismiss(loadingToastRef.current);
-        loadingToastRef.current = null;
-      }
-
-      if (state.success) {
-        setWaitingForSession(true);
-        refetch();
-      } else {
-        toast.error(state.message);
-      }
-    }
-  }, [refetch, state]);
-
-  useEffect(() => {
-    if (waitingForSession && session) {
-      toast.success(state.message);
-      router.push("/");
-      router.refresh();
-      setWaitingForSession(false);
-    }
-  }, [session, waitingForSession, state.message, router]);
+  const { state, formAction, pending } = useForm<SignInFormData>({
+    action: signInAction,
+    initialState,
+    loadingMessage: "Signing in...",
+    successRedirect: "/",
+    awaitSession: true,
+  });
 
   return (
     <Card className="z-50 rounded-md rounded-t-none min-w-lg">
@@ -119,7 +87,7 @@ export function SignInForm() {
               </p>
             )}
           </div>
-          <Button type="submit" className="w-full" disabled={pending || waitingForSession}>
+          <Button type="submit" className="w-full" disabled={pending}>
             {pending ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
