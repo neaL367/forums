@@ -1,5 +1,4 @@
-import { toast } from "sonner";
-import { useEffect, useActionState } from "react";
+import { useMemo } from "react";
 
 import {
   Dialog,
@@ -25,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import type { Forum } from "@/types/forum";
 import type { AddForumFormState } from "@/formdata/administrator/forum/add-forum";
 import { updateForumAction } from "@/actions/administrator/forums/update-forum";
+import { useDialog } from "@/hooks/use-dialog";
 
 const initialState: AddForumFormState = {
   success: false,
@@ -42,18 +42,19 @@ export function EditForumDialog({
   forum,
   availableParentForums,
   open,
-  onOpenChange
+  onOpenChange,
 }: EditForumDialogProps) {
-
-  const [state, formAction, isPending] = useActionState(
-    updateForumAction,
-    initialState
-  );
+  const { state, formAction, pending } = useDialog({
+    action: updateForumAction,
+    initialState,
+    loadingMessage: "Updating forum...",
+    onSuccessCallbackAction: () => onOpenChange(false),
+  });
 
   const flattenForums = (forums: Forum[]): Forum[] => {
     const result: Forum[] = [];
     const flatten = (forumList?: Forum[]) => {
-      if (!Array.isArray(forumList)) return; 
+      if (!Array.isArray(forumList)) return;
       forumList.forEach((forum) => {
         result.push(forum);
         if (Array.isArray(forum.subForums) && forum.subForums.length > 0) {
@@ -66,16 +67,10 @@ export function EditForumDialog({
     return result;
   };
 
-  const flatForums = flattenForums(availableParentForums);
-
-  useEffect(() => {
-    if (state.success) {
-      toast.success(state.message ?? "Forum updated successfully");
-      onOpenChange(false);
-    } else if (state.message && !state.success) {
-      toast.error(state.message);
-    }
-  }, [state.success, state.message, onOpenChange]);
+  const flatForums = useMemo(
+    () => flattenForums(availableParentForums),
+    [availableParentForums],
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -150,7 +145,7 @@ export function EditForumDialog({
                   .filter(
                     (f) =>
                       f.id !== forum.id && // exclude self
-                      f.depth < 2 // prevent exceeding 3 levels
+                      f.depth < 2, // prevent exceeding 3 levels
                   )
                   .map((f) => (
                     <SelectItem key={f.id} value={f.id}>
@@ -182,12 +177,12 @@ export function EditForumDialog({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              disabled={isPending}
+              disabled={pending}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : "Save Changes"}
+            <Button type="submit" disabled={pending}>
+              {pending ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
         </form>

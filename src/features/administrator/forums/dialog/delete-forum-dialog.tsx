@@ -22,35 +22,54 @@ interface DeleteForumDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function DeleteForumDialog({ forum, open, onOpenChange }: DeleteForumDialogProps) {
+export function DeleteForumDialog({
+  forum,
+  open,
+  onOpenChange,
+}: DeleteForumDialogProps) {
   const [loading, setLoading] = useState(false);
 
   const handleDeleteForum = async () => {
     setLoading(true);
+    const toastId = toast.loading("Deleting forum...");
+
     try {
-      await deleteForumAction(forum.id);
-      toast.success("Forum deleted successfully");
-      onOpenChange(false);
-    } catch {
-      toast.error("Failed to delete forum");
+      const result = await deleteForumAction(forum.id);
+
+      toast.dismiss(toastId);
+
+      if (result.success) {
+        toast.success(result.message || "Forum deleted successfully");
+        onOpenChange(false);
+      } else {
+        toast.error(result.message || "Failed to delete forum");
+      }
+    } catch (error) {
+      toast.dismiss(toastId);
+      toast.error("An unexpected error occurred");
+      console.error("Error deleting forum:", error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={(open) => !open && onOpenChange(false)}>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete forum</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete <strong>{forum.title}</strong>?
+            Are you sure you want to delete <strong>{forum.title}</strong>? This
+            action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={handleDeleteForum}
+            onClick={(e) => {
+              e.preventDefault();
+              handleDeleteForum();
+            }}
             disabled={loading}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >

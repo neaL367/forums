@@ -46,7 +46,7 @@ export function ForumsRowActions({
           toast.info(`Action: ${actionLabel}`);
       }
     },
-    [forum.id]
+    [forum.id],
   );
 
   const handleDialogMenu = useCallback((): JSX.Element | null => {
@@ -78,41 +78,43 @@ export function ForumsRowActions({
   }, [dialogMenu, forum, availableParentForums]);
 
   return (
-    <Dialog>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-            aria-label="Open forum actions"
-          >
-            <MoreHorizontal className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[220px]">
-          <DropdownMenuItem onClick={() => handleAction("View Topics")}>
-            <MessageSquare className="mr-2 h-4 w-4" />
-            View Topics
-          </DropdownMenuItem>
+    <>
+      <Dialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+              aria-label="Open forum actions"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[220px]">
+            <DropdownMenuItem onClick={() => handleAction("View Topics")}>
+              <MessageSquare className="mr-2 h-4 w-4" />
+              View Topics
+            </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={() => handleAction("Edit Forum")}>
-            <Edit className="mr-2 h-4 w-4" />
-            Edit Forum
-          </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleAction("Edit Forum")}>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit Forum
+            </DropdownMenuItem>
 
-          <DropdownMenuSeparator />
+            <DropdownMenuSeparator />
 
-          <DropdownMenuItem
-            onClick={() => handleAction("Delete Forum")}
-            className="text-destructive focus:text-destructive"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete Forum
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <DropdownMenuItem
+              onClick={() => handleAction("Delete Forum")}
+              className="text-destructive focus:text-destructive"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Forum
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </Dialog>
       {handleDialogMenu()}
-    </Dialog>
+    </>
   );
 }

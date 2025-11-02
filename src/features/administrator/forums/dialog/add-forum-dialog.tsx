@@ -1,6 +1,4 @@
-import { toast } from "sonner";
 import { useState, useEffect, useMemo } from "react";
-import { useActionState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import {
@@ -35,6 +33,7 @@ import { cn } from "@/lib/utils";
 import { addForumAction } from "@/actions/administrator/forums/add-forum";
 import type { AddForumFormState } from "@/formdata/administrator/forum/add-forum";
 import type { Forum } from "@/types/forum";
+import { useDialog } from "@/hooks/use-dialog";
 
 const initialState: AddForumFormState = {
   success: false,
@@ -50,14 +49,15 @@ export function AddForumDialog({
   children,
   availableParentForums,
 }: AddForumDialogProps) {
-  const [open, onOpenChange] = useState(false);
   const [comboboxOpen, setComboboxOpen] = useState(false);
   const [selectedParentId, setSelectedParentId] = useState<string>("none");
 
-  const [state, formAction, isPending] = useActionState(
-    addForumAction,
-    initialState
-  );
+  const { state, formAction, pending, open, onOpenChange } = useDialog({
+    action: addForumAction,
+    initialState,
+    loadingMessage: "Adding forum...",
+    onSuccessCallbackAction: () => setSelectedParentId("none"),
+  });
 
   // Flatten forums to get all forums with their depths
   const flattenForums = (forums: Forum[]): Forum[] => {
@@ -76,23 +76,13 @@ export function AddForumDialog({
 
   const flatForums = useMemo(
     () => flattenForums(availableParentForums),
-    [availableParentForums]
+    [availableParentForums],
   );
 
   const eligibleForums = useMemo(
     () => flatForums.filter((forum) => forum.depth < 2),
-    [flatForums]
+    [flatForums],
   );
-
-  useEffect(() => {
-    if (state.success) {
-      toast.success(state.message ?? "Forum added successfully");
-      onOpenChange(false);
-      setSelectedParentId("none");
-    } else if (state.message && !state.success) {
-      toast.error(state.message);
-    }
-  }, [state.success, state.message]);
 
   useEffect(() => {
     if (!state.success && state.inputs?.parentForumId) {
@@ -101,7 +91,7 @@ export function AddForumDialog({
   }, [state.inputs?.parentForumId, state.success]);
 
   const selectedForum = eligibleForums.find(
-    (forum) => forum.id === selectedParentId
+    (forum) => forum.id === selectedParentId,
   );
 
   return (
@@ -163,7 +153,7 @@ export function AddForumDialog({
                   aria-expanded={comboboxOpen}
                   className="w-full justify-between"
                   type="button"
-                  disabled={isPending}
+                  disabled={pending}
                 >
                   {selectedParentId === "none" ? (
                     "None (Top-level forum)"
@@ -201,7 +191,7 @@ export function AddForumDialog({
                             "mr-2 h-4 w-4",
                             selectedParentId === "none"
                               ? "opacity-100"
-                              : "opacity-0"
+                              : "opacity-0",
                           )}
                         />
                         None (Top-level forum)
@@ -220,7 +210,7 @@ export function AddForumDialog({
                               "mr-2 h-4 w-4",
                               selectedParentId === forum.id
                                 ? "opacity-100"
-                                : "opacity-0"
+                                : "opacity-0",
                             )}
                           />
                           <div className="flex items-center gap-2">
@@ -254,12 +244,12 @@ export function AddForumDialog({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              disabled={isPending}
+              disabled={pending}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Adding..." : "Add Forum"}
+            <Button type="submit" disabled={pending}>
+              {pending ? "Adding..." : "Add Forum"}
             </Button>
           </DialogFooter>
         </form>
