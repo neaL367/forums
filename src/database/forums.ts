@@ -1,10 +1,15 @@
 import "server-only"
 
+import { cacheTag, cacheLife } from "next/cache";
 import { sql } from "@/lib/neon-database";
 import type { Forum } from "@/types/forum";
 import type { Topic } from "@/types/topic";
 
 export const getAllForums = async (): Promise<Forum[]> => {
+  "use cache"
+  cacheTag(`admin-forums`)
+  cacheLife('hours')
+  
   try {
     const forums = await sql`
       SELECT 
@@ -71,6 +76,10 @@ export const getAllForums = async (): Promise<Forum[]> => {
 };
 
 export const getForumsForAddTopic = async (): Promise<Array<Pick<Forum, 'id' | 'title' | 'depth'>>> => {
+  "use cache"
+  cacheTag(`admin-forums`)
+  cacheLife('hours')
+
   try {
     const forums = await sql`
       SELECT 

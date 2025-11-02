@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { authServer } from "@/lib/auth-server"
 import { AddForumSchema } from "@/zod/administrator/forum/add-forum"
 import { getForumDepth, insertForum } from "@/database/forums";
@@ -58,8 +58,7 @@ export async function addForumAction(prevState: AddForumFormState, formData: For
       parentForumId,
     })
 
-    revalidateTag("admin-mgt-forums")
-
+    updateTag("admin-forums")
 
     return {
       message: "Forum created successfully",

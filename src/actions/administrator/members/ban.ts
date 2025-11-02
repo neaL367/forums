@@ -1,7 +1,7 @@
 "use server"
 
 import { APIError } from "better-auth/api"
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
 import { authServer } from "@/lib/auth-server";
@@ -22,7 +22,7 @@ export async function banMemberAction(memberId: string, banReason?: string, banE
       headers: await headers(),
     });
 
-    revalidateTag("members")
+    updateTag("admin-members")
 
 
     return {
@@ -53,7 +53,7 @@ export async function unbanMemberAction(memberId: string) {
       headers: await headers(),
     });
 
-    revalidateTag("members")
+    updateTag("members")
 
 
     return {

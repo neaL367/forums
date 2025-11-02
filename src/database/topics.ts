@@ -1,10 +1,15 @@
 import "server-only";
 
+import { cacheTag, cacheLife } from "next/cache";
 import { sql } from "@/lib/neon-database";
 import type { Topic } from "@/types/topic";
 import type { Reply } from "@/types/reply";
 
 export const getAllTopics = async (): Promise<Topic[]> => {
+  "use cache"
+  cacheTag("admin-topics")
+  cacheLife('hours')
+
   try {
     const topics = await sql`
       SELECT

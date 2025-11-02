@@ -17,7 +17,7 @@ export function PasswordSettingsForm() {
     action: changePasswordAction,
     initialState,
     loadingMessage: "Updating your email address...",
-    successRedirect: "/account-settings",
+    awaitSession: true,
   });
 
   return (

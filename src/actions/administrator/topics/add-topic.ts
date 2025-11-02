@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { authServer } from "@/lib/auth-server"
 import { insertTopic } from "@/database/topics";
 import { AddTopicSchema }  from "@/zod/administrator/topic/add-topic"
@@ -39,8 +39,8 @@ export async function addTopicAction(prevState: AddTopicFormState, formData: For
       forumId: validated.data.forumId,
     })
 
-    revalidateTag("admin-mgt-topics")
-    revalidateTag("admin-mgt-forums")
+    updateTag("admin-topics")
+    updateTag("admin-forums")
 
     return {
       message: "Topic created successfully",

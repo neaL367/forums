@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useActionState, useEffect, useRef, useState } from "react";
@@ -10,7 +12,7 @@ import type { Route } from "next";
 type UseFormProps<TFormData> = {
   action: (
     prev: FormState<TFormData>,
-    formData: FormData
+    formData: FormData,
   ) => Promise<FormState<TFormData>>;
   initialState: FormState<TFormData>;
   successRedirect?: string;
@@ -30,16 +32,21 @@ export function useForm<TFormData>({
 
   const [waitingForSession, setWaitingForSession] = useState(false);
   const loadingToastRef = useRef<string | number | null>(null);
+  const hasShownSuccessToastRef = useRef(false);
 
   const wrappedAction = async (
     prevState: FormState<TFormData>,
-    formData: FormData
+    formData: FormData,
   ) => {
     loadingToastRef.current = toast.loading(loadingMessage);
+    hasShownSuccessToastRef.current = false;
     return action(prevState, formData);
   };
 
-  const [state, formAction, pending] = useActionState(wrappedAction, initialState);
+  const [state, formAction, pending] = useActionState(
+    wrappedAction,
+    initialState,
+  );
 
   useEffect(() => {
     if (!state?.message) return;
@@ -50,7 +57,10 @@ export function useForm<TFormData>({
     }
 
     if (state.success) {
-      toast.success(state.message);
+      if (!hasShownSuccessToastRef.current) {
+        hasShownSuccessToastRef.current = true;
+        toast.success(state.message);
+      }
 
       if (awaitSession) {
         setWaitingForSession(true);

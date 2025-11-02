@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { authServer } from "@/lib/auth-server";
 import { deleteForum } from "@/database/forums";
 
@@ -17,7 +17,7 @@ export async function deleteForumAction(forumId: string) {
 
     await deleteForum(forumId);
 
-    revalidateTag("admin-mgt-forums");
+    updateTag("admin-forums");
 
     return {
       message: "Forum deleted successfully",

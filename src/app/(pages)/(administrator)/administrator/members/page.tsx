@@ -1,4 +1,3 @@
-import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
 import { Suspense } from "react";
 
@@ -9,30 +8,31 @@ import { breadcrumbs } from "@/features/administrator/members/data/data";
 
 import { auth } from "@/lib/auth";
 import type { Member } from "@/types/member";
+import { cacheTag, cacheLife } from "next/cache";
 
-const getCachedMembers = unstable_cache(
-  async (headerData: Headers) => {
-    try {
-      const res = await auth.api.listUsers({
-        query: {},
-        headers: headerData,
-      });
+const getCachedMembers = async (headerData: Headers) => {
+  "use cache"
+  cacheTag("admin-members")
+  cacheLife('hours')
 
-      return {
-        success: true,
-        members: res.users,
-        total: res.total,
-      };
-    } catch {
-      return {
-        success: false,
-        message: "An unexpected error occurred while fetching members.",
-      };
-    }
-  },
-  ["id"],
-  { tags: ["admin-mgt-members"], revalidate: 60 }
-);
+  try {
+    const res = await auth.api.listUsers({
+      query: {},
+      headers: headerData,
+    });
+
+    return {
+      success: true,
+      members: res.users,
+      total: res.total,
+    };
+  } catch {
+    return {
+      success: false,
+      message: "An unexpected error occurred while fetching members.",
+    };
+  }
+};
 
 async function MembersTable() {
   const headerData = await headers();

@@ -1,4 +1,3 @@
-import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 
 import { authServer } from "@/lib/auth-server";
@@ -6,9 +5,11 @@ import { getMemberProfileById } from "@/database/members";
 import { ProfileClient } from "@/features/profile/profile-client";
 
 import type { MemberProfile } from "@/types/member";
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
 
-export async function generateMetadata(props: PageProps<"/profile/[memberId]">): Promise<Metadata> {
+export async function generateMetadata(
+  props: PageProps<"/profile/[memberId]">,
+): Promise<Metadata> {
   const { memberId } = await props.params;
   if (!memberId) return { title: "Profile Not Found" };
 
@@ -22,7 +23,9 @@ export async function generateMetadata(props: PageProps<"/profile/[memberId]">):
   };
 }
 
-export default async function ProfilePage(props: PageProps<"/profile/[memberId]">) {
+export default async function ProfilePage(
+  props: PageProps<"/profile/[memberId]">,
+) {
   const session = await authServer();
   const { memberId } = await props.params;
 
@@ -30,13 +33,7 @@ export default async function ProfilePage(props: PageProps<"/profile/[memberId]"
 
   const isOwnProfile = session?.user?.id === memberId;
 
-  const getCachedUserProfile = unstable_cache(
-    async (memberId: string) => getMemberProfileById(memberId),
-    [memberId],
-    { tags: ["profile"], revalidate: 300 }
-  );
-
-  const member = await getCachedUserProfile(memberId);
+  const member = await getMemberProfileById(memberId);
   if (!member) return notFound();
 
   return <ProfileClient member={member} isOwnProfile={isOwnProfile} />;

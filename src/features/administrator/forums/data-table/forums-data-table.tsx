@@ -17,29 +17,31 @@ import type { ColumnDef } from "@tanstack/react-table";
 const ForumsToolbar = dynamic(
   () =>
     import("@features/administrator/forums/data-table/forums-toolbar").then(
-      (mod) => ({ default: mod.ForumsToolbar })
+      (mod) => ({ default: mod.ForumsToolbar }),
     ),
   {
     ssr: false,
     loading: () => <div className="h-10 w-full" />,
-  }
+  },
 );
 
 const DataTablePagination = dynamic(
   () =>
-    import("@features/administrator/shared/data-table/data-table-pagination").then(
-      (mod) => mod.DataTablePagination as typeof mod.DataTablePagination
-    ),
+    import(
+      "@features/administrator/shared/data-table/data-table-pagination"
+    ).then((mod) => mod.DataTablePagination as typeof mod.DataTablePagination),
   {
     ssr: false,
     loading: () => <div className="h-8 w-full" />,
-  }
-) as <TData>(props: { table: import("@tanstack/react-table").Table<TData> }) => ReactElement;
+  },
+) as <TData>(props: {
+  table: import("@tanstack/react-table").Table<TData>;
+}) => ReactElement;
 
 type ForumsDataTableProps = {
   data?: Forum[];
   columns?: ColumnDef<Forum>[];
-}
+};
 
 export function ForumsDataTable({
   data = [],
@@ -50,6 +52,7 @@ export function ForumsDataTable({
     columns,
     enableExpand: true,
     getSubRows: (row) => row.subForums,
+    columnVisibility: { forumCategory: false, depth: false },
   });
 
   return (

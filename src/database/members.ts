@@ -1,5 +1,6 @@
 import "server-only"
 
+import { cacheTag, cacheLife } from "next/cache";
 import { sql } from "@/lib/neon-database";
 import type { Member, MemberProfile } from '@/types/member'
 
@@ -13,11 +14,15 @@ export const getAllMembersProfile = async (): Promise<Pick<Member, "id">[]> => {
   }
 }
 
-export const getMemberProfileById = async (id: string): Promise<MemberProfile> => {
+export const getMemberProfileById = async (memberId: string): Promise<MemberProfile> => {
+  "use cache"
+  cacheTag(`profile`)
+  cacheLife('hours')
+
   try {
     const rows = await sql`SELECT id, "displayUsername", image, role, bio, website, location,
                "createdAt", "updatedAt", "joinDate", "lastActive", "postCount", reputation
-        FROM public.member WHERE id = ${id}
+        FROM public.member WHERE id = ${memberId}
         LIMIT 1;
       `
     const user = rows[0] as MemberProfile
@@ -26,7 +31,7 @@ export const getMemberProfileById = async (id: string): Promise<MemberProfile> =
     }
     return user
   } catch (error) {
-    console.error(`Error fetching member profile by ID (${id}):`, error)
+    console.error(`Error fetching member profile by ID (${memberId}):`, error)
     throw new Error("Failed to fetch member")
   }
 }

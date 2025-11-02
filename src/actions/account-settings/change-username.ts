@@ -1,7 +1,7 @@
 "use server"
 
 import { APIError } from "better-auth/api"
-import { revalidateTag } from "next/cache"
+import { updateTag } from "next/cache"
 import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
@@ -51,7 +51,7 @@ export async function changeUsernameAction(
       headers: await headers(),
     })
 
-    revalidateTag("profile")
+    updateTag("profile")
 
     return {
       success: true,

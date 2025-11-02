@@ -33,7 +33,7 @@ const ForumsRowActions = dynamic(
 
 const formatDate = (dateString: string) => {
   try {
-    return format(new Date(dateString), "MMM dd, yyyy HH:mm a zzz");
+    return format(new Date(dateString), "MMM dd, yyyy HH:mm a");
   } catch {
     return "Invalid date";
   }
@@ -162,7 +162,7 @@ export const forumsColumns = (
     enableColumnFilter: true,
   },
   {
-    accessorKey: "topicCount",
+    accessorKey: "Topics",
     header: ({ column }) => (
       <ForumsColumnHeader column={column} title="Topics" />
     ),

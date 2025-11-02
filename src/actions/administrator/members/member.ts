@@ -1,7 +1,7 @@
 "use server"
 
 import { APIError } from "better-auth/api"
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
 import { authServer } from "@/lib/auth-server";
@@ -35,8 +35,8 @@ export async function setMemberRoleAction(memberId: string, role: "MEMBERS" | "A
       headers: await headers(),
     });
 
-    revalidateTag("profile")
-    revalidateTag("members")
+    updateTag("profile")
+    updateTag("admin-members")
 
     return {
       success: true,
@@ -86,7 +86,7 @@ export async function removeMemberAction(memberId: string) {
       headers: await headers(),
     });
 
-    revalidateTag("members")
+    updateTag("members")
 
     return {
       success: true,
@@ -114,8 +114,8 @@ export async function updateMemberAction(updates: {
       headers: await headers(),
     });
 
-    revalidateTag("profile")
-    revalidateTag("admin-mgt-members")
+    updateTag("profile")
+    updateTag("admin-members")
 
     return {
       success: true,

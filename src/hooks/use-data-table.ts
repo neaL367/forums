@@ -13,6 +13,7 @@ import {
   type SortingState,
   type VisibilityState,
   type ExpandedState,
+  type OnChangeFn,
 } from "@tanstack/react-table";
 import { useState } from "react";
 
@@ -21,13 +22,17 @@ export type UseDataTableProps<TData> = {
   columns: ColumnDef<TData>[];
   enableExpand?: boolean;
   getSubRows?: (row: TData) => TData[] | undefined;
-}
+  columnVisibility?: VisibilityState;
+  onColumnVisibilityChange?: OnChangeFn<VisibilityState>;
+};
 
 export function useDataTable<TData>({
   data,
   columns,
   enableExpand = false,
   getSubRows,
+  columnVisibility: controlledColumnVisibility,
+  onColumnVisibilityChange,
 }: UseDataTableProps<TData>) {
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -42,20 +47,20 @@ export function useDataTable<TData>({
       sorting,
       columnFilters,
       rowSelection,
-      columnVisibility,
+      columnVisibility: controlledColumnVisibility ?? columnVisibility,
       ...(enableExpand ? { expanded } : {}),
     },
-
+    
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: onColumnVisibilityChange ?? setColumnVisibility,
+    
     ...(enableExpand ? { onExpandedChange: setExpanded } : {}),
-
     enableRowSelection: true,
     ...(enableExpand && getSubRows ? { getSubRows } : {}),
     autoResetExpanded: false,
-
+    
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),

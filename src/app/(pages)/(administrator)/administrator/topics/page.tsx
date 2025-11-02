@@ -1,4 +1,3 @@
-import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
 
 import { TopicsTableClient } from "@/features/administrator/topics/data-table/topics-data-table-client";
@@ -8,20 +7,8 @@ import { breadcrumbs } from "@/features/administrator/topics/data/data";
 import { getAllTopics } from "@/database/topics";
 import { getForumsForAddTopic} from "@/database/forums";
 
-const getCachedAllData = unstable_cache(
-  async () => {
-    const [topics, forums] = await Promise.all([getAllTopics(), getForumsForAddTopic()]);
-    return { topics, forums }; 
-  },
-  ["topics"],
-  {
-    tags: ["admin-mgt-topics"],
-    revalidate: 60,
-  }
-);
-
 async function TopicsTable() {
-  const { topics, forums } = await getCachedAllData();
+  const [topics, forums] = await Promise.all([getAllTopics(), getForumsForAddTopic()]);
 
   return <TopicsTableClient topics={topics} forums={forums} />;
 }

@@ -1,9 +1,14 @@
 import "server-only"
 
+import { cacheTag, cacheLife } from "next/cache";
 import { sql } from "@/lib/neon-database";
 import type { Reply } from "@/types/reply"
 
 export const getAllReplies = async (): Promise<Reply[]> => {
+  "use cache"
+  cacheTag("admin-replies")
+  cacheLife('hours')
+
   try {
     const rows = await sql`
       SELECT

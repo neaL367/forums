@@ -23,7 +23,6 @@ export function EmailSettingsForm() {
     action: changeEmailAction,
     initialState,
     loadingMessage: "Updating your email address...",
-    successRedirect: "/account-settings",
     awaitSession: true,
   });
 

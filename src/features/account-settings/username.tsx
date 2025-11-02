@@ -21,7 +21,6 @@ export function UsernameSettingsForm() {
       action: changeUsernameAction,
       initialState,
       loadingMessage: "Updating your email address...",
-      successRedirect: "/account-settings",
       awaitSession: true,
     });
 

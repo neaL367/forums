@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { authServer } from "@/lib/auth-server";
 import { getForumDepth, updateForum } from "@/database/forums";
 import { UpdateForumSchema } from "@/zod/administrator/forum/update-forum";
@@ -69,7 +69,7 @@ export async function updateForumAction(
       parentForumId,
     });
 
-    revalidateTag("admin-mgt-forums");
+    updateTag("admin-forums");
 
     return {
       message: "Forum updated successfully",
