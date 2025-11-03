@@ -20,7 +20,7 @@ export function UsernameSettingsForm() {
     useForm<ChangeUsernameFormData>({
       action: changeUsernameAction,
       initialState,
-      loadingMessage: "Updating your email address...",
+      loadingMessage: "Updating your username...",
       awaitSession: true,
     });
 
@@ -35,6 +35,36 @@ export function UsernameSettingsForm() {
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-4">
+          <div>
+            <label
+              htmlFor="username"
+              className="text-sm font-medium text-muted-foreground"
+            >
+              Username
+            </label>
+            <Input
+              id="username"
+              name="username"
+              defaultValue={
+                state.inputs?.username ??
+                session?.user.username ??
+                ""
+              }
+              className="mt-1"
+              required
+              placeholder="Enter your username"
+              disabled={pending}
+            />
+            {state.errors?.username && (
+              <p className="text-xs text-red-500 mt-1">
+                {state.errors.username[0]}
+              </p>
+            )}
+            <p className="text-xs text-muted-foreground mt-1">
+              This is your unique login username
+            </p>
+          </div>
+
           <div>
             <label
               htmlFor="displayUsername"

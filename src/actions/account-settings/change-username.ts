@@ -16,6 +16,7 @@ export async function changeUsernameAction(
   formData: FormData,
 ): Promise<ChangeUsernameFormState> {
   const rawData: ChangeUsernameFormData = {
+    username: formData.get("username") as string,
     displayUsername: formData.get("displayUsername") as string,
   }
 
@@ -29,7 +30,7 @@ export async function changeUsernameAction(
     }
   }
 
-  const { displayUsername } = validated.data
+  const { username, displayUsername } = validated.data
 
   try {
     const session = await authServer();
@@ -46,6 +47,7 @@ export async function changeUsernameAction(
 
     await auth.api.updateUser({
       body: {
+        username: username,
         displayUsername: displayUsername,
       },
       headers: await headers(),
