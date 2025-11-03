@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { SignInFormClient } from "@/features/auth/sign-in-client";
+import { SignInFormClient } from "@/features/auth/sign-in/sign-in-client";
 import { authServer } from "@/lib/auth-server";
 
 export default async function SignInPage() {

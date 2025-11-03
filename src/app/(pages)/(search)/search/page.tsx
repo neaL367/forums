@@ -1,6 +1,6 @@
-import Members from "@/features/search/members";
-import Forums from "@/features/search/forums";
-import Topics from "@/features/search/topics";
+import { Members } from "@/features/search/members/members";
+import { Forums } from "@/features/search/forums/forums";
+import { Topics } from "@/features/search/topics/topics";
 
 export default async function SearchPage({
   searchParams,

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { AccountSettingsSidebar } from "@/features/account-settings/shared/sidebar-navigation";
+import { AccountSettingsSidebar } from "@/features/member/account-settings/shared/sidebar-navigation";
 
 import { authServer } from "@/lib/auth-server";
 

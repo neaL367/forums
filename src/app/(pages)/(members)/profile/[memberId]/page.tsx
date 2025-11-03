@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { authServer } from "@/lib/auth-server";
 import { getMemberProfileById } from "@/database/members";
-import { ProfileClient } from "@/features/profile/profile-client";
+import { ProfileClient } from "@/features/member/profile/profile-client";
 
 import type { MemberProfile } from "@/types/member";
 import type { Metadata } from "next";

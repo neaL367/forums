@@ -1,0 +1,32 @@
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getTopicsByTitle } from "@/database/topics";
+
+export async function Topics({ query }: { query: string }) {
+  const filteredTopics = await getTopicsByTitle(query);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Topics ({filteredTopics.length})</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        {filteredTopics.length > 0 ? (
+          filteredTopics.map((topic) => (
+            <Link
+              key={topic.id}
+              href={`/topics/${topic.id}`}
+              className="block hover:bg-muted/50 p-2 rounded-md transition-colors"
+            >
+              <p className="font-medium">{topic.title}</p>
+            </Link>
+          ))
+        ) : (
+          <p className="text-muted-foreground">
+            No topics found for &quot;{query}&quot;.
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}

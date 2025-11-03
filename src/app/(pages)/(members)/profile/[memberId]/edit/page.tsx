@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { authServer } from "@/lib/auth-server";
 import { getMemberProfileById } from "@/database/members";
-import { EditProfile } from "@/features/profile/edit-profile";
+import { EditProfile } from "@/features/member/profile/edit/edit-profile";
 
 import type { Metadata } from "next";
 
