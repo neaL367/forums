@@ -33,6 +33,7 @@ export function useForm<TFormData>({
   const [waitingForSession, setWaitingForSession] = useState(false);
   const loadingToastRef = useRef<string | number | null>(null);
   const hasShownSuccessToastRef = useRef(false);
+  const hasRedirectedRef = useRef(false);
 
   const wrappedAction = async (
     prevState: FormState<TFormData>,
@@ -65,8 +66,9 @@ export function useForm<TFormData>({
       if (awaitSession) {
         setWaitingForSession(true);
         refetch();
-      } else if (successRedirect) {
-        router.push(successRedirect as Route);
+      } else if (successRedirect && !hasRedirectedRef.current) {
+        hasRedirectedRef.current = true;
+        router.replace(successRedirect as Route);
       }
     } else {
       toast.error(state.message);
@@ -76,8 +78,9 @@ export function useForm<TFormData>({
   useEffect(() => {
     if (!awaitSession || !waitingForSession || !session) return;
 
-    if (successRedirect) {
-      router.push(successRedirect as Route);
+    if (successRedirect && !hasRedirectedRef.current) {
+      hasRedirectedRef.current = true;
+      router.replace(successRedirect as Route);
       router.refresh();
     }
 

@@ -24,6 +24,7 @@ export function useDialog<TFormData>({
   const [open, setOpen] = useState(false);
   const loadingToastRef = useRef<string | number | null>(null);
   const hasShownSuccessToastRef = useRef(false);
+  const hasCalledCallbackRef = useRef(false);
 
   const wrappedAction = async (
     prevState: FormState<TFormData>,
@@ -31,6 +32,7 @@ export function useDialog<TFormData>({
   ) => {
     loadingToastRef.current = toast.loading(loadingMessage);
     hasShownSuccessToastRef.current = false;
+    hasCalledCallbackRef.current = false;
     return action(prevState, formData);
   };
 
@@ -40,12 +42,13 @@ export function useDialog<TFormData>({
   );
 
   useEffect(() => {
-    if (!state?.message) return;
-
-    if (loadingToastRef.current) {
+    // Always dismiss loading toast when state changes (success or error)
+    if (loadingToastRef.current && (state?.message || state?.success !== undefined)) {
       toast.dismiss(loadingToastRef.current);
       loadingToastRef.current = null;
     }
+
+    if (!state?.message) return;
 
     if (state.success) {
       if (!hasShownSuccessToastRef.current) {
@@ -53,7 +56,10 @@ export function useDialog<TFormData>({
         toast.success(state.message);
       }
       setOpen(false);
-      onSuccessCallbackAction?.();
+      if (onSuccessCallbackAction && !hasCalledCallbackRef.current) {
+        hasCalledCallbackRef.current = true;
+        onSuccessCallbackAction();
+      }
     } else {
       toast.error(state.message);
     }
@@ -61,6 +67,11 @@ export function useDialog<TFormData>({
 
   const onOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
+    // Reset refs when dialog closes to allow fresh state on next open
+    if (!newOpen) {
+      hasShownSuccessToastRef.current = false;
+      hasCalledCallbackRef.current = false;
+    }
   };
 
   return {
