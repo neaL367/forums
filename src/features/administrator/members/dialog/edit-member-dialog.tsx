@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
+"use client";
 
 import {
   Dialog,
@@ -15,8 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { Member } from "@/types/member";
-import { updateMemberAction } from "@/actions/administrator/members/member";
-import { authClient } from "@/lib/auth-client";
+import { editMemberFormAction } from "@/actions/administrator/members/edit-member";
+import type {
+  EditMemberFormData,
+  EditMemberFormState,
+} from "@/formdata/administrator/member/edit-member";
+import { useDialog } from "@/hooks/use-dialog";
 
 interface EditMemberDialogProps {
   member: Member;
@@ -24,38 +26,22 @@ interface EditMemberDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function EditMemberDialog({ member, open, onOpenChange }: EditMemberDialogProps) {
-  const { refetch } = authClient.useSession();
+const initialState: EditMemberFormState = {
+  success: false,
+  message: "",
+};
 
-  const [loading, setLoading] = useState(false);
-  const [editForm, setEditForm] = useState({
-    username: member.username || "",
-    displayUsername: member.displayUsername || "",
-    image: member.image || "",
+export function EditMemberDialog({
+  member,
+  open,
+  onOpenChange,
+}: EditMemberDialogProps) {
+  const { state, formAction, pending } = useDialog<EditMemberFormData>({
+    action: editMemberFormAction,
+    initialState,
+    loadingMessage: "Updating member...",
+    onSuccessCallbackAction: () => onOpenChange(false),
   });
-
-
-  const handleEditMember = async () => {
-    setLoading(true);
-    try {
-      await updateMemberAction({
-        username: editForm.username,
-        displayUsername: editForm.displayUsername,
-        image: editForm.image,
-      });
-      toast.success("Member updated successfully");
-      refetch();
-      onOpenChange(false);
-    } catch {
-      toast.error("Failed to update member");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateField = (field: string, value: string) => {
-    setEditForm(prev => ({ ...prev, [field]: value }));
-  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -66,47 +52,78 @@ export function EditMemberDialog({ member, open, onOpenChange }: EditMemberDialo
             Update {member.username}&apos;s information.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+
+        <form action={formAction} className="grid gap-4 py-4">
+          <input type="hidden" name="memberId" value={member.id} />
           
           <div className="grid gap-2">
             <Label htmlFor="username">Username</Label>
             <Input
               id="username"
-              value={editForm.username}
-              onChange={(e) => updateField("username", e.target.value)}
+              name="username"
               placeholder="Enter username..."
+              defaultValue={
+                !state.success
+                  ? (state.inputs?.username ?? member.username)
+                  : member.username
+              }
             />
+            {state.errors?.username && (
+              <p className="text-sm text-red-600">{state.errors.username[0]}</p>
+            )}
           </div>
+
           <div className="grid gap-2">
             <Label htmlFor="displayUsername">Display Username</Label>
             <Input
               id="displayUsername"
-              value={editForm.displayUsername}
-              onChange={(e) => updateField("displayUsername", e.target.value)}
+              name="displayUsername"
               placeholder="Enter display username..."
+              defaultValue={
+                !state.success
+                  ? (state.inputs?.displayUsername ?? member.displayUsername)
+                  : member.displayUsername
+              }
             />
+            {state.errors?.displayUsername && (
+              <p className="text-sm text-red-600">
+                {state.errors.displayUsername[0]}
+              </p>
+            )}
           </div>
+
           <div className="grid gap-2">
             <Label htmlFor="image">Profile Image URL</Label>
             <Input
               id="image"
+              name="image"
               type="url"
-              value={editForm.image}
-              onChange={(e) => updateField("image", e.target.value)}
               placeholder="Enter image URL..."
+              defaultValue={
+                !state.success
+                  ? (state.inputs?.image ?? member.image ?? "")
+                  : (member.image ?? "")
+              }
             />
+            {state.errors?.image && (
+              <p className="text-sm text-red-600">{state.errors.image[0]}</p>
+            )}
           </div>
-         
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button onClick={handleEditMember} disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save Changes
-          </Button>
-        </DialogFooter>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={pending}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={pending}>
+              {pending ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

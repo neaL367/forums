@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
+"use client";
+
 import {
   Dialog,
   DialogContent,
@@ -13,8 +12,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+
 import { Member } from "@/types/member";
-import { banMemberAction } from "@/actions/administrator/members/ban";
+import { banMemberFormAction } from "@/actions/administrator/members/ban-member";
+import type {
+  BanMemberFormData,
+  BanMemberFormState,
+} from "@/formdata/administrator/member/ban-member";
+import { useDialog } from "@/hooks/use-dialog";
 
 interface BanMemberDialogProps {
   member: Member;
@@ -22,42 +27,22 @@ interface BanMemberDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function BanMemberDialog({ member, open, onOpenChange }: BanMemberDialogProps) {
-  const [loading, setLoading] = useState(false);
-  const [banReason, setBanReason] = useState("");
-  const [banExpiresIn, setBanExpiresIn] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
+const initialState: BanMemberFormState = {
+  success: false,
+  message: "",
+};
 
-  const validateForm = () => {
-    if (!banReason && !banExpiresIn) {
-      setError("Please provide a reason or an expiration time.");
-      return false;
-    }
-    if (banExpiresIn && isNaN(parseInt(banExpiresIn))) {
-      setError("Expiration time must be a valid number.");
-      return false;
-    }
-    setError(null);
-    return true;
-  };
-
-  const handleBanMember = async () => {
-    if (!validateForm()) return;
-
-    setLoading(true);
-    try {
-      const expiresIn = banExpiresIn ? parseInt(banExpiresIn) * 86400 : undefined; // convert days to seconds
-      await banMemberAction(member.id, banReason, expiresIn);
-      toast.success("Member banned successfully");
-      onOpenChange(false);
-      setBanReason("");
-      setBanExpiresIn("");
-    } catch {
-      toast.error("Failed to ban member");
-    } finally {
-      setLoading(false);
-    }
-  };
+export function BanMemberDialog({
+  member,
+  open,
+  onOpenChange,
+}: BanMemberDialogProps) {
+  const { state, formAction, pending } = useDialog<BanMemberFormData>({
+    action: banMemberFormAction,
+    initialState,
+    loadingMessage: "Banning member...",
+    onSuccessCallbackAction: () => onOpenChange(false),
+  });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -68,46 +53,71 @@ export function BanMemberDialog({ member, open, onOpenChange }: BanMemberDialogP
             Ban {member.username}. This action can be reversed later.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+
+        <form action={formAction} className="grid gap-4 py-4">
+          <input type="hidden" name="memberId" value={member.id} />
+
           <div className="grid gap-2">
             <Label htmlFor="banReason">Reason</Label>
             <Textarea
               id="banReason"
-              value={banReason}
-              onChange={(e) => setBanReason(e.target.value)}
+              name="banReason"
               placeholder="Enter ban reason..."
+              defaultValue={
+                !state.success ? (state.inputs?.banReason ?? "") : ""
+              }
             />
+            {state.errors?.banReason && (
+              <p className="text-sm text-red-600">
+                {state.errors.banReason[0]}
+              </p>
+            )}
           </div>
+
           <div className="grid gap-2">
-            <Label htmlFor="banExpires">Expires in (days, optional)</Label>
+            <Label htmlFor="banExpiresIn">Expires in (days, optional)</Label>
             <Input
-              id="banExpires"
+              id="banExpiresIn"
+              name="banExpiresIn"
               type="number"
-              value={banExpiresIn}
-              onChange={(e) => setBanExpiresIn(e.target.value)}
               placeholder="Leave empty for permanent ban"
+              defaultValue={
+                !state.success ? (state.inputs?.banExpiresIn ?? "") : ""
+              }
               aria-describedby="banExpiresHint"
             />
-            <small id="banExpiresHint" className="text-sm text-muted-foreground">
+            <small
+              id="banExpiresHint"
+              className="text-sm text-muted-foreground"
+            >
               If left empty, the ban will be permanent.
             </small>
+            {state.errors?.banExpiresIn && (
+              <p className="text-sm text-red-600">
+                {state.errors.banExpiresIn[0]}
+              </p>
+            )}
           </div>
-          {error && <div className="text-sm text-red-500">{error}</div>}
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={handleBanMember}
-            disabled={loading}
-            aria-label="Ban Member"
-          >
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Ban Member
-          </Button>
-        </DialogFooter>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={pending}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="destructive"
+              disabled={pending}
+              aria-label="Ban Member"
+            >
+              {pending ? "Banning..." : "Ban Member"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

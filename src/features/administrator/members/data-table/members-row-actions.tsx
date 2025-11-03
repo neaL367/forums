@@ -1,3 +1,5 @@
+"use client";
+
 import { toast } from "sonner";
 import { useCallback, useMemo, useState } from "react";
 import { MoreHorizontal, Loader2 } from "lucide-react";
@@ -21,7 +23,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 
 import { actions } from "@/features/administrator/members/data/data";
-import { setMemberRoleAction } from "@/actions/administrator/members/member";
+import { setMemberRoleAction } from "@/actions/administrator/members/set-member-role";
 
 import { BanMemberDialog } from "@/features/administrator/members/dialog/ban-member-dialog";
 import { SetPasswordDialog } from "@/features/administrator/members/dialog/set-password-dialog";
@@ -34,7 +36,6 @@ interface MemberRowActionsProps {
   row: Row<Member>;
 }
 
-// Define dialog types for type safety
 type DialogType =
   | "none"
   | "ban"
@@ -82,31 +83,31 @@ export function MembersRowActions({ row }: MemberRowActionsProps) {
       switch (actionLabel) {
         case "View Profile":
           window.open(`/profile/${member.id}`, "_blank");
-          break;
+          return;
         case "Edit Member":
           setActiveDialog("editMember");
-          break;
+          return;
         case "Set Password":
           setActiveDialog("setPassword");
-          break;
+          return;
         case "Impersonate":
           setActiveDialog("impersonate");
-          break;
+          return;
         case "Manage Sessions":
           setActiveDialog("manageSessions");
-          break;
+          return;
         case "Revoke All Sessions":
           setActiveDialog("revokeAllSessions");
-          break;
+          return;
         case "Ban Member":
           setActiveDialog("ban");
-          break;
+          return;
         case "Unban Member":
           setActiveDialog("unban");
-          break;
+          return;
         case "Remove Member":
           setActiveDialog("remove");
-          break;
+          return;
       }
     },
     [member.id],

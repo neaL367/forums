@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
 
 import {
   AlertDialog,
@@ -13,11 +14,16 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { impersonateMemberAction } from "@/actions/administrator/members/impersonate";
-import { unbanMemberAction } from "@/actions/administrator/members/ban";
-import { removeMemberAction } from "@/actions/administrator/members/member";
-import { revokeAllSessionsMemberAction } from "@/actions/administrator/members/revoke";
+import { useDialog } from "@/hooks/use-dialog";
+import { impersonateMemberFormAction } from "@/actions/administrator/members/impersonate-member";
+import { unbanMemberFormAction } from "@/actions/administrator/members/unban-member";
+import { removeMemberFormAction } from "@/actions/administrator/members/remove-member";
+import { revokeAllSessionsFormAction } from "@/actions/administrator/members/revoke-all-sessions";
 import type { Member } from "@/types/member";
+import type { UnbanMemberFormState } from "@/formdata/administrator/member/unban-member";
+import type { RemoveMemberFormState } from "@/formdata/administrator/member/remove-member";
+import type { ImpersonateMemberFormState } from "@/formdata/administrator/member/impersonate-member";
+import type { RevokeAllSessionsFormState } from "@/formdata/administrator/member/revoke-all-sessions";
 
 interface ConfirmationDialogsProps {
   member: Member;
@@ -25,67 +31,51 @@ interface ConfirmationDialogsProps {
   onClose: () => void;
 }
 
-export function ConfirmationDialogs({ 
-  member, 
-  alertType, 
-  onClose 
+const initialState = {
+  success: false,
+  message: "",
+};
+
+export function ConfirmationDialogs({
+  member,
+  alertType,
+  onClose,
 }: ConfirmationDialogsProps) {
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
 
+  const unbanDialog = useDialog<{ memberId: string }>({
+    action: unbanMemberFormAction,
+    initialState: initialState as UnbanMemberFormState,
+    loadingMessage: "Unbanning member...",
+    onSuccessCallbackAction: () => onClose(),
+  });
 
-  const handleUnbanMember = async () => {
-    setLoading(true);
-    try {
-      await unbanMemberAction(member.id);
-      toast.success("Member unbanned successfully");
+  const removeDialog = useDialog<{ memberId: string }>({
+    action: removeMemberFormAction,
+    initialState: initialState as RemoveMemberFormState,
+    loadingMessage: "Removing member...",
+    onSuccessCallbackAction: () => onClose(),
+  });
+
+  const impersonateDialog = useDialog<{ memberId: string }>({
+    action: impersonateMemberFormAction,
+    initialState: initialState as ImpersonateMemberFormState,
+    loadingMessage: "Starting impersonation...",
+    onSuccessCallbackAction: () => {
       onClose();
-    } catch  {
-      toast.error("Failed to unban member");
-    } finally {
-      setLoading(false);
-    }
-  };
+      router.push("/");
+      router.refresh();
+    },
+  });
 
-  const handleImpersonate = async () => {
-    setLoading(true);
-    try {
-      await impersonateMemberAction(member.id);
-      toast.success("Impersonation started");
-      onClose();
-      // Redirect or refresh as needed
-      window.location.href = "/";
-    } catch  {
-      toast.error("Failed to impersonate member");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const revokeDialog = useDialog<{ memberId: string }>({
+    action: revokeAllSessionsFormAction,
+    initialState: initialState as RevokeAllSessionsFormState,
+    loadingMessage: "Revoking all sessions...",
+    onSuccessCallbackAction: () => onClose(),
+  });
 
-  const handleRemoveMember = async () => {
-    setLoading(true);
-    try {
-      await removeMemberAction(member.id);
-      toast.success("Member removed successfully");
-      onClose();
-    } catch  {
-      toast.error("Failed to remove member");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRevokeAllSessions = async () => {
-    setLoading(true);
-    try {
-      await revokeAllSessionsMemberAction(member.id);
-      toast.success("All sessions revoked successfully");
-      onClose();
-    } catch  {
-      toast.error("Failed to revoke sessions");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getDialogConfig = () => {
     switch (alertType) {
@@ -94,7 +84,7 @@ export function ConfirmationDialogs({
           title: "Unban Member",
           description: `Are you sure you want to unban ${member.username}? They will regain access immediately.`,
           action: "Unban",
-          handler: handleUnbanMember,
+          dialog: unbanDialog,
           destructive: false,
         };
       case "remove":
@@ -102,7 +92,7 @@ export function ConfirmationDialogs({
           title: "Remove Member",
           description: `Are you sure you want to permanently remove ${member.username}? This action cannot be undone.`,
           action: "Remove",
-          handler: handleRemoveMember,
+          dialog: removeDialog,
           destructive: true,
         };
       case "impersonate":
@@ -110,7 +100,7 @@ export function ConfirmationDialogs({
           title: "Impersonate Member",
           description: `You are about to impersonate ${member.username}. You will be logged in as this user.`,
           action: "Impersonate",
-          handler: handleImpersonate,
+          dialog: impersonateDialog,
           destructive: false,
         };
       case "revokeAllSessions":
@@ -118,7 +108,7 @@ export function ConfirmationDialogs({
           title: "Revoke All Sessions",
           description: `Are you sure you want to revoke all sessions for ${member.username}? They will be logged out from all devices.`,
           action: "Revoke All",
-          handler: handleRevokeAllSessions,
+          dialog: revokeDialog,
           destructive: false,
         };
       default:
@@ -129,23 +119,40 @@ export function ConfirmationDialogs({
   const config = getDialogConfig();
   if (!config) return null;
 
+  const { formAction, pending, open, onOpenChange } = config.dialog;
+
   return (
-    <AlertDialog open={!!alertType} onOpenChange={(open) => { if (!open) onClose(); }}>
+    <AlertDialog
+      open={open && !!alertType}
+      onOpenChange={(isOpen) => {
+        onOpenChange(isOpen);
+        if (!isOpen) onClose();
+      }}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{config.title}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {config.description}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{config.description}</AlertDialogDescription>
         </AlertDialogHeader>
+        <form ref={formRef} action={formAction}>
+          <input type="hidden" name="memberId" value={member.id} />
+        </form>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={config.handler}
-            disabled={loading}
-            className={config.destructive ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : ""}
+          <AlertDialogCancel disabled={pending} onClick={onClose}>
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(e) => {
+              e.preventDefault();
+              formRef.current?.requestSubmit();
+            }}
+            disabled={pending}
+            className={
+              config.destructive
+                ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                : ""
+            }
           >
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {config.action}
           </AlertDialogAction>
         </AlertDialogFooter>

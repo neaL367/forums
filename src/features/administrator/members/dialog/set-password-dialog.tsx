@@ -1,6 +1,4 @@
-import { toast } from "sonner";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
+"use client";
 
 import {
   Dialog,
@@ -15,8 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { Member } from "@/types/member";
-import { setMemberPasswordAction } from "@/actions/administrator/members/member";
-
+import { setPasswordFormAction } from "@/actions/administrator/members/set-password";
+import type {
+  SetPasswordFormData,
+  SetPasswordFormState,
+} from "@/formdata/administrator/member/set-password";
+import { useDialog } from "@/hooks/use-dialog";
 
 interface SetPasswordDialogProps {
   member: Member;
@@ -24,41 +26,22 @@ interface SetPasswordDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function SetPasswordDialog({ member, open, onOpenChange }: SetPasswordDialogProps) {
-  const [loading, setLoading] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const initialState: SetPasswordFormState = {
+  success: false,
+  message: "",
+};
 
-
-  const handleSetPassword = async () => {
-    if (!newPassword.trim()) {
-      toast.error("Password cannot be empty");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    if (newPassword.length < 8) {
-      toast.error("Password must be at least 8 characters long");
-      return;
-    }
-    
-    setLoading(true);
-    try {
-      await setMemberPasswordAction(member.id, newPassword);
-      toast.success("Password updated successfully");
-      onOpenChange(false);
-      setNewPassword("");
-      setConfirmPassword("");
-    } catch {
-      toast.error("Failed to update password");
-    } finally {
-      setLoading(false);
-    }
-  };
+export function SetPasswordDialog({
+  member,
+  open,
+  onOpenChange,
+}: SetPasswordDialogProps) {
+  const { state, formAction, pending } = useDialog<SetPasswordFormData>({
+    action: setPasswordFormAction,
+    initialState,
+    loadingMessage: "Updating password...",
+    onSuccessCallbackAction: () => onOpenChange(false),
+  });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -69,40 +52,64 @@ export function SetPasswordDialog({ member, open, onOpenChange }: SetPasswordDia
             Set a new password for {member.username}.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+
+        <form action={formAction} className="grid gap-4 py-4">
+          <input type="hidden" name="memberId" value={member.id} />
+
           <div className="grid gap-2">
             <Label htmlFor="newPassword">New Password</Label>
             <Input
               id="newPassword"
+              name="newPassword"
               type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Enter new password..."
+              defaultValue={
+                !state.success ? (state.inputs?.newPassword ?? "") : ""
+              }
             />
+            {state.errors?.newPassword && (
+              <p className="text-sm text-red-600">
+                {state.errors.newPassword[0]}
+              </p>
+            )}
           </div>
+
           <div className="grid gap-2">
             <Label htmlFor="confirmPassword">Confirm Password</Label>
             <Input
               id="confirmPassword"
+              name="confirmPassword"
               type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm new password..."
+              defaultValue={
+                !state.success ? (state.inputs?.confirmPassword ?? "") : ""
+              }
             />
+            {state.errors?.confirmPassword && (
+              <p className="text-sm text-red-600">
+                {state.errors.confirmPassword[0]}
+              </p>
+            )}
           </div>
+
           <div className="text-xs text-muted-foreground">
             Password must be at least 8 characters long.
           </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button onClick={handleSetPassword} disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Update Password
-          </Button>
-        </DialogFooter>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={pending}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={pending}>
+              {pending ? "Updating..." : "Update Password"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

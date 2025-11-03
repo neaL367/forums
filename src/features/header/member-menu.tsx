@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignOutButton } from "@/features/header/signout-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { stopImpersonationAction } from "@/actions/administrator/members/impersonate";
+import { stopImpersonationAction } from "@/actions/administrator/members/impersonate-member";
 import type { Member, Session } from "@/lib/auth";
 
 interface MemberMenuProps {

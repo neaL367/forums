@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+"use client";
+
+import { useState, useEffect, useCallback, useRef } from "react";
 import { format } from "date-fns";
 import { Loader2, Monitor, Smartphone, Tablet, Globe } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   Dialog,
@@ -21,12 +22,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import {
-  listUserSessionsAction,
-  revokeMemberSessionAction,
-} from "@/actions/administrator/members/revoke";
+import { useDialog } from "@/hooks/use-dialog";
+import { listUserSessionsAction } from "@/actions/administrator/members/list-sessions";
+import { revokeSessionFormAction } from "@/actions/administrator/members/revoke-session";
 import type { Member } from "@/types/member";
 import type { Session } from "@/lib/auth";
+import type {
+  RevokeSessionFormData,
+  RevokeSessionFormState,
+} from "@/formdata/administrator/member/revoke-session";
 
 interface SessionManagementDialogProps {
   member: Member;
@@ -41,7 +45,26 @@ export function SessionManagementDialog({
 }: SessionManagementDialogProps) {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(false);
-  const [revoking, setRevoking] = useState<string | null>(null);
+  const [revokingToken, setRevokingToken] = useState<string | null>(null);
+  const revokeFormRef = useRef<HTMLFormElement>(null);
+
+  const revokeDialog = useDialog<RevokeSessionFormData>({
+    action: revokeSessionFormAction,
+    initialState: {
+      success: false,
+      message: "",
+    } as RevokeSessionFormState,
+    loadingMessage: "Revoking session...",
+    onSuccessCallbackAction: () => {
+      if (revokingToken) {
+        // Remove the session from the list
+        setSessions((prev) =>
+          prev.filter((s) => s.token !== revokingToken),
+        );
+        setRevokingToken(null);
+      }
+    },
+  });
 
   const loadSessions = useCallback(async () => {
     setLoading(true);
@@ -61,7 +84,7 @@ export function SessionManagementDialog({
         );
       }
     } catch {
-      toast.error("Failed to load sessions");
+      // Error handling is done in the action
     } finally {
       setLoading(false);
     }
@@ -73,17 +96,17 @@ export function SessionManagementDialog({
     }
   }, [loadSessions, open]);
 
-  const handleRevokeSession = async (sessionToken: string) => {
-    setRevoking(sessionToken);
-    try {
-      await revokeMemberSessionAction(sessionToken);
-      toast.success("Session revoked successfully");
-      // Remove the session from the list
-      setSessions(sessions.filter((s) => s.token !== sessionToken));
-    } catch {
-      toast.error("Failed to revoke session");
-    } finally {
-      setRevoking(null);
+  const handleRevokeSession = (sessionToken: string) => {
+    setRevokingToken(sessionToken);
+    // Update hidden input and submit form
+    if (revokeFormRef.current) {
+      const tokenInput = revokeFormRef.current.querySelector(
+        'input[name="sessionToken"]',
+      ) as HTMLInputElement;
+      if (tokenInput) {
+        tokenInput.value = sessionToken;
+      }
+      revokeFormRef.current.requestSubmit();
     }
   };
 
@@ -126,14 +149,18 @@ export function SessionManagementDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px]">
-        <DialogHeader>
-          <DialogTitle>Manage Sessions - {member.username}</DialogTitle>
-          <DialogDescription>
-            View and manage all active sessions for this user.
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <form ref={revokeFormRef} action={revokeDialog.formAction}>
+        <input type="hidden" name="sessionToken" />
+      </form>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[700px]">
+          <DialogHeader>
+            <DialogTitle>Manage Sessions - {member.username}</DialogTitle>
+            <DialogDescription>
+              View and manage all active sessions for this user.
+            </DialogDescription>
+          </DialogHeader>
 
         {loading ? (
           <div className="flex items-center justify-center py-8">
@@ -203,11 +230,13 @@ export function SessionManagementDialog({
                           size="sm"
                           onClick={() => handleRevokeSession(session.token)}
                           disabled={
-                            revoking === session.token ||
+                            revokingToken === session.token ||
+                            revokeDialog.pending ||
                             isSessionExpired(session.expiresAt)
                           }
                         >
-                          {revoking === session.token ? (
+                          {revokingToken === session.token &&
+                          revokeDialog.pending ? (
                             <>
                               <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                               Revoking...
@@ -251,5 +280,6 @@ export function SessionManagementDialog({
         )}
       </DialogContent>
     </Dialog>
+    </>
   );
 }
