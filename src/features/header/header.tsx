@@ -10,7 +10,7 @@ export async function Header() {
   const member = session?.user;
 
   return (
-    <header className="z-10 sticky top-0 w-full border-b bg-black">
+    <header className="z-10 sticky top-0 w-full border-b border-b-zinc-800 bg-black">
       <div className="flex items-center justify-between gap-4 px-8 h-20">
         <Link href="/" className="flex items-center gap-2">
           <div className="flex flex-col">
