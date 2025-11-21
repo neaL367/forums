@@ -51,7 +51,7 @@ export default function RootLayout({
             <SidebarWrapper>
               <div className="w-full flex flex-col">
                 <Header />
-                <main>{children}</main>
+                {children}
               </div>
             </SidebarWrapper>
           </Suspense>
